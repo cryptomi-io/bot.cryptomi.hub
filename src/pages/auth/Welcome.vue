@@ -8,6 +8,7 @@ import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const userStore = useUserStore()
+const { login } = useAuth()
 const images = ['/images/slider/slide-1.jpg', '/images/slider/slide-2.png']
 const router = useRouter()
 const isLoading = ref(true)
@@ -18,13 +19,19 @@ onMounted(() => {
   }, 1500)
 })
 
-const signIn = async() => {
+const signIn = async () => {
   isLoading.value = true
-  setTimeout(() => {
-    userStore.login()
+  const userChatId = 123123123
+  const isLogin = await login(userChatId)
+  if (isLogin ) {
+    userStore.setIsLoggedIn()
     router.push({ name: 'home' })
     isLoading.value = false
-  }, 2000)
+  } else {
+    userStore.setIsLoggedIn(false)
+    isLoading.value = false
+    alert('Не удалось авторизоваться')
+  }
 }
 </script>
 

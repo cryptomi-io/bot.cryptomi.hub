@@ -1,7 +1,5 @@
 import { $api } from '@/http/index.js'
 export default function useAuth() {
-  const apiPath = 'https://dev.cryptomi.io/api/'
-
   return {
     register,
     login
@@ -36,16 +34,10 @@ export default function useAuth() {
    * @param user User to log in
    * @returns {Promise<JSONResponse>}
    */
-  async function login(user) {
-    const response = await $api('auth/login', {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'client-platform': 'browser'
-      },
-      body: user
-    })
-
-    return response
+  async function login(chatId) {
+    const response = await $api.post(`auth/login/telegram`, { chatId: String(chatId) })
+    return response.data.status === 'fail' ? false : true
   }
+
+ 
 }

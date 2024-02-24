@@ -1,4 +1,6 @@
 import { defineStore } from 'pinia'
+import { $api } from '@/http/index.js'
+
 
 export const useUserStore = defineStore({
   id: 'user',
@@ -31,7 +33,7 @@ export const useUserStore = defineStore({
     }
   }),
   getters: {
-    isLoggedIn: (state) => state.isAuth,
+    isLoggedIn: (state) => state.isAuth
   },
   actions: {
     setProfile(profile) {
@@ -47,11 +49,11 @@ export const useUserStore = defineStore({
     clearProfile() {
       this.profile = null
       this.isAuth = true
-      this.balance = null,
-      this.referral = null
+      ;(this.balance = null), (this.referral = null)
     },
-    setIsLoggedIn(isLoggedIn) {
+    setIsLoggedIn(isLoggedIn = true) {
       if (isLoggedIn) {
+        this.isAuth = true
         this.fetchProfile()
       } else {
         this.clearProfile()
@@ -59,12 +61,17 @@ export const useUserStore = defineStore({
     },
     async fetchProfile() {
       try {
+        const response = await $api.get(`auth/profile`)
+        const profile = response?.data?.data?.result
+        if(!profile) this.logout()
+        
         this.setProfile({
-          id: '123',
-          uuid: 'qwer412-qwr12rp-qwe31-r123eqw',
-          nickname: 'John Doe',
-          avatar: 'http://placeholder.co/300x300'
+          id: profile?.id,
+          uuid: profile?.uuid,
+          nickname: profile?.nickname,
+          avatar: profile?.avatar || 'http://placeholder.co/300x300'
         })
+        
         this.setBalance({
           usd: 0,
           btc: 0
@@ -92,10 +99,10 @@ export const useUserStore = defineStore({
         console.error(error)
       }
     },
-    async login() {
-      this.clearProfile()
-    },
+    
+  
     async logout() {
+      this.isAuth = false
       this.clearProfile()
     }
   }
