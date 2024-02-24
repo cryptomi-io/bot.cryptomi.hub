@@ -32,6 +32,7 @@ const signIn = async () => {
   isLoading.value = true
   const userChatId = 123123123
   const isLogin = await login(userChatId)
+  aler(isLogin)
   if (isLogin ) {
     userStore.setIsLoggedIn()
     router.push({ name: 'home' })
