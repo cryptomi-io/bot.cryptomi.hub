@@ -14,7 +14,16 @@ const router = useRouter()
 const isLoading = ref(true)
 
 onMounted(() => {
-  setTimeout(() => {
+  //Сразу же пытаемся авторизоваться
+  setTimeout(async() => {
+    //пока здесь не подтягивается идентификатор из телеграм
+    const userChatId = 123123123
+    const isLogin = await login(userChatId)
+    if (isLogin ) {
+      userStore.setIsLoggedIn()
+      router.push({ name: 'home' })
+      isLoading.value = false
+    }
     isLoading.value = false
   }, 1500)
 })
