@@ -1,0 +1,37 @@
+[
+  {
+    "name": "Home",
+    "icon": "codicon:home",
+    "path": "/",
+    "isGuest": false,
+    "inMenu": true
+  },
+  {
+    "name": "Bots",
+    "icon": "codicon:robot",
+    "path": "/bots",
+    "isGuest": false,
+    "inMenu": true
+  },
+  {
+    "name": "Quests",
+    "icon": "codicon:star-full",
+    "path": "/quests",
+    "isGuest": false,
+    "inMenu": true
+  },
+  {
+    "name": "Premium",
+    "icon": "codicon:ruby",
+    "path": "/premium",
+    "isGuest": false,
+    "inMenu": true
+  },
+  {
+    "name": "Referral",
+    "icon": "clarity:users-line",
+    "path": "/referral",
+    "isGuest": false,
+    "inMenu": true
+  }
+]
