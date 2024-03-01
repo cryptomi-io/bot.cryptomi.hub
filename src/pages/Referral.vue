@@ -15,10 +15,11 @@ onMounted(() => {
   }, 1000)
 })
 
-const refLink = computed(() => user.value?.referral?.link || '')
+
+const refLink = 'https://cryptomi.io/register?ref=' + user.profile?.uuid
 const copyLink = () => {
   const input = document.createElement('input')
-  input.value = refLink.value
+  input.value = refLink
   document.body.appendChild(input)
   input.select()
   document.execCommand('copy')
@@ -84,12 +85,37 @@ const copyLink = () => {
     <template v-else>
       <Card class="py-3 px-4 flex-col">
         <img
-          :src="user?.profile?.avatar ? user?.profile?.avatar : 'http://placeholder.co/300x300'"
+          :src="user?.profile?.avatar ? 'https://cryptomi.io'+user?.profile?.avatar : 'http://placeholder.co/300x300'"
           alt="placeholder"
           class="w-[50px] h-[50px] rounded-full"
         />
-        <div class="text-md text-white font-bold mt-2">{{ user?.profile?.nickname }}</div>
-        <div class="text-sm text-zinc-400">Level: {{ user?.referral.level }}</div>
+        <div class="text-md text-white font-bold mt-2">@{{ user?.profile?.nickname }}</div>
+        <div class="text-sm text-zinc-400">Level: 
+          <span class="py-1 px-1.5 inline-flex items-center gap-x-1 text-xs font-medium bg-green-100 text-green-800 rounded-full dark:bg-green-500/10 dark:text-green-500">
+           <svg class="flex-shrink-0 size-3" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="2" y2="6"/><line x1="12" x2="12" y1="18" y2="22"/><line x1="4.93" x2="7.76" y1="4.93" y2="7.76"/><line x1="16.24" x2="19.07" y1="16.24" y2="19.07"/><line x1="2" x2="6" y1="12" y2="12"/><line x1="18" x2="22" y1="12" y2="12"/><line x1="4.93" x2="7.76" y1="19.07" y2="16.24"/><line x1="16.24" x2="19.07" y1="7.76" y2="4.93"/></svg>
+            Soon
+          </span>
+
+        </div>
+      </Card>
+      <Card class="py-9 px-4 flex-col gap-2">
+        <Icon icon="vaadin:piggy-bank-coin" class="w-10 h-10 text-green-500" />
+        <div class="text-lg mt-1 text-white font-bold">Refer and Earn</div>
+        <span class="text-zinc-300 text-center text-sm"
+          >Refer your friends and earn for 10% of every customer that completes 1 deposit for
+          platform
+        </span>
+        <div class="rounded-md overflow-hidden w-full flex mt-2">
+            <input
+              v-model="refLink"
+              type="text"
+              readonly="readonly"
+              class="w-full bg-zinc-900 text-zinc-400 p-3 text-sm"
+            />
+          <button @click="copyLink" class="bg-green-500 p-3 h-full">
+            <Icon icon="material-symbols:content-copy" class="w-5 h-5 text-white" />
+          </button>
+        </div>
       </Card>
       <Card class="py-3 px-4 flex-col gap-2">
         <div class="text-md text-white font-bold">Current referrals</div>
@@ -108,11 +134,6 @@ const copyLink = () => {
         <div class="flex justify-between w-full text-sm py-2">
           <span class="text-zinc-300">Total referrals</span>
           <span class="text-white"> {{ user?.referral?.info?.total_referrals }}</span>
-        </div>
-        <div
-          class="flex border border-zinc-600 text-white mt-2 text-center justify-center rounded-2xl px-3 py-2 w-full"
-        >
-          Your current rank
         </div>
       </Card>
       <Card class="py-3 px-4 flex-col gap-2">
@@ -137,11 +158,11 @@ const copyLink = () => {
       </Card>
       <div class="grid grid-cols-2 gap-2">
         <Card class="py-8 px-4 flex-col">
-          <div class="text-2xl text-white font-bold">{{ user?.referral?.info?.value }} VB</div>
+          <div class="text-2xl text-white font-bold">{{ user?.referral?.info?.value }} CTMI</div>
           <div class="text-sm text-zinc-400">Your value</div>
         </Card>
         <Card class="py-8 px-4 flex-col">
-          <div class="text-2xl text-white font-bold">{{ user?.referral?.info?.daily }} VB</div>
+          <div class="text-2xl text-white font-bold">{{ user?.referral?.info?.daily }} CTMI</div>
           <div class="text-sm text-zinc-400">Daily value</div>
         </Card>
       </div>
@@ -191,25 +212,6 @@ const copyLink = () => {
           <span class="text-white bg-zinc-900 p-1 text-xs rounded-md">
             {{ user?.referral?.rank_info?.token_after_purchase.toFixed(2) }}%</span
           >
-        </div>
-      </Card>
-      <Card class="py-9 px-4 flex-col gap-2">
-        <Icon icon="vaadin:piggy-bank-coin" class="w-10 h-10 text-green-500" />
-        <div class="text-lg mt-1 text-white font-bold">Refer and Earn</div>
-        <span class="text-zinc-300 text-center text-sm"
-          >Refer your friends and earn for 10% of every customer that completes 1 deposit for
-          platform
-        </span>
-        <div class="rounded-md overflow-hidden w-full flex mt-2">
-            <input
-              v-model="refLink"
-              type="text"
-              readonly="readonly"
-              class="w-full bg-zinc-900 text-zinc-400 p-3 text-sm"
-            />
-          <button @click="copyLink" class="bg-green-500 p-3 h-full">
-            <Icon icon="material-symbols:content-copy" class="w-5 h-5 text-white" />
-          </button>
         </div>
       </Card>
     </template>

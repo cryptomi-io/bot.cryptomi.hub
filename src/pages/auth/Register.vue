@@ -43,7 +43,7 @@ const formHandleSubmit = () => {}
           placeholder="********"
           class="rounded-xl w-full bg-zinc-900 text-zinc-400 p-3 text-sm"
         />
-        <Button text="Sign Up" type="primary" class="!w-full" />
+        <Button text="Sign Up" type="primary" class="!w-full" disabled/>
       </form>
     </Card>
   </div>

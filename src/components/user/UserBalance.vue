@@ -5,7 +5,7 @@ import { useUserStore } from '@/store/user'
 import { computed, onMounted, ref } from 'vue'
 const userStore = useUserStore()
 const isLoading = ref(true)
-
+console.log(userStore)
 const balance = computed(() => userStore.balance || {})
 onMounted(() => {
   isLoading.value = true

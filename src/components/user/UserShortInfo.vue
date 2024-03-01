@@ -23,12 +23,12 @@ onMounted(() => {
     </template>
     <template v-else>
       <img
-        :src="profile?.avatar ? profile?.avatar : 'http://placeholder.co/300x300'"
+        :src="profile?.avatar ? 'https://cryptomi.io'+profile?.avatar : 'http://placeholder.co/300x300'"
         alt="placeholder"
         class="w-10 h-10 rounded-full"
       />
       <div class="flex flex-col">
-        <div class="text-md font-bold">{{ profile?.nickname }}</div>
+        <div class="text-md font-bold">@{{ profile?.nickname }}</div>
         <div class="text-xs text-zinc-400">{{ profile?.uuid }}</div>
       </div>
     </template>

@@ -41,7 +41,7 @@ onMounted(async () => {
         <Card v-for="(item, i) in wallets" :key="i" class="py-3 px-4">
           <div class="flex gap-2 items-center">
             <img
-              src="http://placeholder.co/300x300"
+              :src="'https://cryptomi.io/img/crypto/'+item?.currency?.toLowerCase()+'.png'"
               alt="placeholder"
               class="w-10 h-10 rounded-full"
             />

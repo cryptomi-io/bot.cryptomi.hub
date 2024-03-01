@@ -1,43 +1,39 @@
-import { $api } from '@/http/index.js'
+// Импортируем fetch API напрямую, используем глобальный fetch в Nuxt 3
+import { $api } from '@/http';
 export default function useAuth() {
+
   return {
     register,
     login
   }
 
-  /**
-   * @desc Register new user
-   * @param user User to register
-   * @returns {Promise<JSONResponse>}
-   */
   async function register(nickname, email, password) {
-    // Attempt register
-    const response = await $api('auth/register', {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'client-platform': 'browser'
-      },
-      body: {
+    
+    const response = await $api.post(`auth/register`, {
         nickname,
         email,
-        password,
-        ref
+        password
+      })
+      
+      if (!response?.status !== 200 && response?.data?.error && response?.data?.error.status !==200) {
+        throw new Error('Произошла ошибка при регистрации');
       }
-    })
-
-    return response
+    
+    return response?.data;
   }
 
-  /**
-   * @desc Register new user
-   * @param user User to log in
-   * @returns {Promise<JSONResponse>}
-   */
   async function login(chatId) {
-    const response = await $api.post(`auth/login/telegram`, { chatId: String(chatId) })
-    return response.data.status === 'fail' ? false : true
-  }
+    
+    const response = await $api.post(`auth/login/telegram`, {
+        chatId: String(chatId) 
+      })
+      
+    if (response?.status !== 200) {
+      throw new Error('Произошла ошибка при входе');
+    }
+    
+    const data = response.data;
 
- 
+    return data?.status !== 'fail';
+  }
 }
