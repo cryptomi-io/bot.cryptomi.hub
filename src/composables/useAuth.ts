@@ -1,6 +1,9 @@
 // Импортируем fetch API напрямую, используем глобальный fetch в Nuxt 3
 import { $api } from '@/http';
+import { useWebAppPopup } from 'vue-tg';
+
 export default function useAuth() {
+  const { showAlert } = useWebAppPopup()
 
   return {
     register,
@@ -13,10 +16,11 @@ export default function useAuth() {
         nickname,
         email,
         password,
-        telegram_chat_id
+        telegram_chat_id: String(telegram_chat_id)
       })
       
       if (!response?.status !== 200 && response?.data?.error && response?.data?.error.status !==200) {
+        showAlert('Произошла ошибка при регистрации')
         throw new Error('Произошла ошибка при регистрации');
       }
     
@@ -30,6 +34,7 @@ export default function useAuth() {
       })
       
     if (response?.status !== 200) {
+      showAlert('Произошла ошибка при входе')
       throw new Error('Произошла ошибка при входе');
     }
     

@@ -1,16 +1,16 @@
 <script setup>
-import Button from '@/components/ui/Button.vue'
-import Loader from '@/components/ui/Loader.vue'
-import Slider from '@/components/ui/Slider.vue'
+import Button from '@/components/ui/Button.vue';
+import Loader from '@/components/ui/Loader.vue';
+import Slider from '@/components/ui/Slider.vue';
 import useAuth from '@/composables/useAuth';
-import { notify } from "notiwind"
+import { notify } from "notiwind";
 
 const { login } = useAuth();
 
-import { useUserStore } from '@/store/user'
-import { onMounted, ref } from 'vue'
+import { useUserStore } from '@/store/user';
+import { onMounted, ref } from 'vue';
 
-import { useRouter } from 'vue-router'
+import { useRouter } from 'vue-router';
 import { useWebApp } from 'vue-tg';
 
 
@@ -20,8 +20,8 @@ const router = useRouter()
 const isLoading = ref(true)
 
 const { initDataUnsafe } = useWebApp();
-// let chatId = initDataUnsafe?.user?.id;
-let chatId = 6754514787
+let chatId = initDataUnsafe?.user?.id;
+// let chatId = 6754514787
 console.log(chatId)
 onMounted(async() => {
   //Сразу же пытаемся авторизоваться
