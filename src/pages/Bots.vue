@@ -1,16 +1,16 @@
 <script setup>
 const bots = [
   {
-    cover: 'http://placeholder.co/200x100',
-    icon: 'http://placeholder.co/80x80',
+    cover: '/images/assets/bot_banner.png',
+    icon: '/images/assets/bot_logo.png',
     title: '@cryptomi_token_anylyzer',
     description: 'BOT TOKEN ANALYZER',
     link: 'https://t.me/cryptomi_token_anylyzer',
     released: false
   },
   {
-    cover: 'http://placeholder.co/200x100',
-    icon: 'http://placeholder.co/80x80',
+    cover: '/images/assets/bot_banner_dex.png',
+    icon: '/images/assets/bot_logo_dex.png',
     title: '@cryptomi_wallet_anylyzer',
     description: 'BOT TOKEN ANALYZER',
     link: 'https://t.me/cryptomi_wallet_anylyzer',

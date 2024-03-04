@@ -34,7 +34,6 @@ onMounted(() => {
         </div>
         <div class="text-zinc-400 text-sm">= {{ balance.btc }} BTC</div>
       </div>
-      <Button text="Deposit" type="primary" size="sm" class="shrink-0" />
     </template>
   </Card>
 </template>

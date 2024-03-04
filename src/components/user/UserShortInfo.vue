@@ -4,6 +4,7 @@ import { ref, onMounted, computed } from 'vue'
 const isLoading = ref(true)
 const userStore = useUserStore()
 const profile = computed(() => userStore.profile || {})
+
 onMounted(() => {
   isLoading.value = true
   userStore.fetchProfile()

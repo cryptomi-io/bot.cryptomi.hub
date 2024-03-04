@@ -14,7 +14,7 @@ export const useUserStore = defineStore({
     },
     referral: {
       level: 3,
-      link: 'https://cryptomi.com/referral',
+      link: 'https://cryptomi.io/referral',
       rank_info: {
         staking: 0,
         deposit: 1,
@@ -69,6 +69,7 @@ export const useUserStore = defineStore({
           id: profile?.id,
           uuid: profile?.uuid,
           nickname: profile?.nickname,
+          ctmi: profile?.ctmi_balance,
           avatar: profile?.avatar || 'http://placeholder.co/300x300'
         })
         
@@ -78,7 +79,7 @@ export const useUserStore = defineStore({
         })
         this.setReferral({
           level: 3,
-          link: 'https://cryptomi.com/referral',
+          link: 'https://cryptomi.io/referral',
           rank_info: {
             staking: 0,
             deposit: 1,

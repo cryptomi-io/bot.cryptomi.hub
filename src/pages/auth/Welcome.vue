@@ -20,7 +20,7 @@ const router = useRouter()
 const isLoading = ref(true)
 
 const { initDataUnsafe } = useWebApp();
-//let chatId = initDataUnsafe?.user?.id;
+// let chatId = initDataUnsafe?.user?.id;
 let chatId = 6754514787
 console.log(chatId)
 onMounted(async() => {

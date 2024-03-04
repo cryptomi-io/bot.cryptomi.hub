@@ -1,5 +1,9 @@
 <script setup>
-import Button from '@/components/ui/Button.vue'
+import Button from '@/components/ui/Button.vue';
+import useAuth from '@/composables/useAuth';
+
+const { register } = useAuth();
+
 const formData = {
   nickname: '',
   email: '',
@@ -7,7 +11,9 @@ const formData = {
   confirmPassword: ''
 }
 
-const formHandleSubmit = () => {}
+const formHandleSubmit = () => {
+  debugger
+}
 </script>
 
 <template>
@@ -38,7 +44,7 @@ const formHandleSubmit = () => {}
         />
         <input
           v-model="formData.confirmPassword"
-          type="confirm password"
+          type="password"
           required
           placeholder="********"
           class="rounded-xl w-full bg-zinc-900 text-zinc-400 p-3 text-sm"
