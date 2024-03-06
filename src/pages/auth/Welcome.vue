@@ -9,7 +9,6 @@ const { login } = useAuth();
 
 import { useUserStore } from '@/store/user';
 import { onMounted, ref } from 'vue';
-
 import { useRouter } from 'vue-router';
 import { useWebApp } from 'vue-tg';
 
@@ -18,6 +17,7 @@ const userStore = useUserStore()
 const images = ['/images/slider/slide.png']
 const router = useRouter()
 const isLoading = ref(true)
+
 
 const { initDataUnsafe } = useWebApp();
 //let chatId = initDataUnsafe?.user?.id;
