@@ -1,5 +1,5 @@
-import { $api } from '@/http';
-import { defineStore } from 'pinia';
+import { $api } from '@/services/http'
+import { defineStore } from 'pinia'
 
 export const useWalletsStore = defineStore({
   id: 'wallets',
@@ -7,8 +7,8 @@ export const useWalletsStore = defineStore({
     list: []
   }),
   actions: {
-    addWalletToList(wallet){
-      this.list = [...this.list , wallet]
+    addWalletToList(wallet) {
+      this.list = [...this.list, wallet]
     },
     setWallets(wallets) {
       this.list = wallets
@@ -16,15 +16,19 @@ export const useWalletsStore = defineStore({
     async fetchWallets() {
       try {
         const response = await $api.post(`wallets/spot/getby`, {
-          currencies: "usdt,btc,eth"
+          currencies: 'usdt,btc,eth'
         })
-      
-      if (!response?.status !== 200 && response?.data?.error && response?.data?.error.status !==200) {
-        throw new Error('Произошла ошибка запроса');
-      }
-      this.setWallets(response?.data?.data?.result)
-      
-       /** this.setWallets([
+
+        if (
+          !response?.status !== 200 &&
+          response?.data?.error &&
+          response?.data?.error.status !== 200
+        ) {
+          throw new Error('Произошла ошибка запроса')
+        }
+        this.setWallets(response?.data?.data?.result)
+
+        /** this.setWallets([
           {
             currency: 'CTMI',
             chain: 'Ethereum'

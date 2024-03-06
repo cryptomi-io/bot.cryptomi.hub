@@ -1,6 +1,5 @@
+import { $api } from '@/services/http.js'
 import { defineStore } from 'pinia'
-import { $api } from '@/http/index.js'
-
 
 export const useUserStore = defineStore({
   id: 'user',
@@ -63,8 +62,8 @@ export const useUserStore = defineStore({
       try {
         const response = await $api.get(`auth/profile`)
         const profile = response?.data?.data?.result
-        if(!profile) this.logout()
-        
+        if (!profile) this.logout()
+
         this.setProfile({
           id: profile?.id,
           uuid: profile?.uuid,
@@ -72,7 +71,7 @@ export const useUserStore = defineStore({
           ctmi: profile?.ctmi_balance,
           avatar: profile?.avatar || 'http://placeholder.co/300x300'
         })
-        
+
         this.setBalance({
           usd: 0,
           btc: 0
@@ -100,8 +99,7 @@ export const useUserStore = defineStore({
         console.error(error)
       }
     },
-    
-  
+
     async logout() {
       this.isAuth = false
       this.clearProfile()

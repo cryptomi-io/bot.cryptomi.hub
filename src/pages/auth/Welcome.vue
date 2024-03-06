@@ -1,58 +1,60 @@
 <script setup>
-import Button from '@/components/ui/Button.vue';
-import Loader from '@/components/ui/Loader.vue';
-import Slider from '@/components/ui/Slider.vue';
-import useAuth from '@/composables/useAuth';
-import { notify } from "notiwind";
+import Button from '@/components/ui/Button.vue'
+import Loader from '@/components/ui/Loader.vue'
+import Slider from '@/components/ui/Slider.vue'
+import useAuth from '@/composables/useAuth'
+import { notify } from 'notiwind'
 
-const { login } = useAuth();
+const { login } = useAuth()
 
-import { useUserStore } from '@/store/user';
-import { onMounted, ref } from 'vue';
+import { useUserStore } from '@/store/user'
+import { onMounted, ref } from 'vue'
 
-import { useRouter } from 'vue-router';
-import { useWebApp } from 'vue-tg';
-
+import { useRouter } from 'vue-router'
+import { useWebApp } from 'vue-tg'
 
 const userStore = useUserStore()
 const images = ['/images/slider/slide.png']
 const router = useRouter()
 const isLoading = ref(true)
 
-const { initDataUnsafe } = useWebApp();
+const { initDataUnsafe } = useWebApp()
 //let chatId = initDataUnsafe?.user?.id;
- let chatId = 6754514787
+let chatId = 6754514787
 console.log(chatId)
-onMounted(async() => {
+onMounted(async () => {
   //Сразу же пытаемся авторизоваться
-  await setTimeout(async() => {
+  await setTimeout(async () => {
     //пока здесь не подтягивается идентификатор из телеграм
     const isLogin = await login(chatId)
-    if (isLogin ) {
+    if (isLogin) {
       userStore.setIsLoggedIn()
       router.push({ name: 'home' })
       isLoading.value = false
-    } 
+    }
     isLoading.value = false
   }, 1500)
 })
 
 const signIn = async () => {
   isLoading.value = true
-  let chatId = initDataUnsafe.user.id;
+  let chatId = initDataUnsafe.user.id
   const isLogin = await login(chatId)
-  if (isLogin ) {
+  if (isLogin) {
     userStore.setIsLoggedIn()
     router.push({ name: 'home' })
     isLoading.value = false
   } else {
     userStore.setIsLoggedIn(false)
     isLoading.value = false
-    notify({
-      group: "foo",
-      title: "Success",
-      text: "Your account was registered!"
-    }, 4000) // 4s
+    notify(
+      {
+        group: 'foo',
+        title: 'Success',
+        text: 'Your account was registered!'
+      },
+      4000
+    ) // 4s
   }
 }
 </script>
@@ -64,7 +66,12 @@ const signIn = async () => {
     <Slider class="h-screen w-full fixed z-10 top-0 left-0" :images="images" />
     <div class="flex flex-col relative z-50 gap-5">
       <div class="flex flex-col gap-3">
-        <Button text="Login by Telegram" type="primary" :clickHandler="signIn"  class="text-white font-bold"/>
+        <Button
+          text="Login by Telegram"
+          type="primary"
+          :clickHandler="signIn"
+          class="text-white font-bold"
+        />
         <Button
           text="Sign Up"
           type="secondary"

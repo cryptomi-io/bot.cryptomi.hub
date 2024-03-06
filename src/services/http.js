@@ -1,10 +1,13 @@
 import axios from 'axios'
 
-
 const $api = axios.create({
   withCredentials: true,
-  baseURL: `https://cryptomi.io/api/`
+  baseURL:
+    import.meta.env.VITE_NODE_ENV === 'development'
+      ? import.meta.env.VITE_DEV_API_URL
+      : import.meta.env.VITE_PRODUCTION_API_URL
 })
+
 const authInterceptor = (config) => {
   return config
 }
