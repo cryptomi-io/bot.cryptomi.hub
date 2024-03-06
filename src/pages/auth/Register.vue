@@ -58,28 +58,28 @@ const formHandleSubmit = async () => {
           type="text"
           required
           placeholder="nickname"
-          class="rounded-xl w-full bg-zinc-900 text-zinc-400 p-3 text-sm"
+          class="rounded-xl w-full bg-zinc-900 text-zinc-400 p-3 text-sm focus:outline-none"
         />
         <input
           v-model="formData.email"
           type="email"
           required
           placeholder="email@email.com"
-          class="rounded-xl w-full bg-zinc-900 text-zinc-400 p-3 text-sm"
+          class="rounded-xl w-full bg-zinc-900 text-zinc-400 p-3 text-sm focus:outline-none"
         />
         <input
           v-model="formData.password"
           type="password"
           required
           placeholder="********"
-          class="rounded-xl w-full bg-zinc-900 text-zinc-400 p-3 text-sm"
+          class="rounded-xl w-full bg-zinc-900 text-zinc-400 p-3 text-sm focus:outline-none"
         />
         <input
           v-model="formData.confirmPassword"
           type="password"
           required
           placeholder="********"
-          class="rounded-xl w-full bg-zinc-900 text-zinc-400 p-3 text-sm"
+          class="rounded-xl w-full bg-zinc-900 text-zinc-400 p-3 text-sm focus:outline-none"
         />
         <Button text="Sign Up" type="primary" class="!w-full"/>
       </form>

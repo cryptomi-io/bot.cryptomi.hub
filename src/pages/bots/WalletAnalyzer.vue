@@ -3,14 +3,15 @@ import Button from '@/components/ui/Button.vue'
 import Card from '@/components/ui/Card.vue'
 
 import { useEtherscan } from '@/services/analyzer/etherscan'
+import { toast } from 'vue3-toastify'
+import 'vue3-toastify/dist/index.css'
 
-import { notify } from 'notiwind'
 import { ref } from 'vue'
 
 const { getAnalytics } = useEtherscan()
 
 const formData = ref({
-  wallet: '',
+  wallet: '0x13351e338ca96b6f7bc944a9f4ff809da0c87c8b',
   timePeriod: 30
 })
 const periods = [30, 60, 120]
@@ -19,14 +20,13 @@ const loseTokens = ref([])
 
 const formHandleSubmit = async () => {
   if (!formData.value.wallet) {
-    notify(
-      {
-        group: 'foo',
-        title: 'Error',
-        text: 'Please enter the wallet'
-      },
-      4000
-    ) // 3s
+    toast('Please enter the wallet', {
+      autoClose: 3000,
+      type: 'error',
+      position: 'top-right',
+      theme: 'dark',
+      toastStyle: 'top:10px'
+    }) // ToastOptions
     return
   }
   const result = await getAnalytics(formData.value.wallet, formData.value.timePeriod)
@@ -58,13 +58,11 @@ const formHandleSubmit = async () => {
       <input
         v-model="formData.wallet"
         type="text"
-        required
         placeholder="0x13351e338ca96b6f7bc944a9f4ff809da0c87c8b"
-        class="rounded-xl w-full bg-zinc-900 text-zinc-400 p-3 text-sm"
+        class="rounded-xl w-full bg-zinc-900 text-zinc-400 p-3 text-sm focus:outline-none"
       />
       <Button text="Sign Up" type="primary" class="!w-full mt-2" />
     </form>
-    <div class="text-xs text-zinc-400">Powered by CRYPTOMI</div>
     <Card v-if="topTokens.length" class="py-3 px-4 flex-col text-start !items-start gap-3">
       <div class="text-lg font-bold">Top Tokens</div>
       <div v-for="token in topTokens" :key="token.name" class="w-full mb-5">

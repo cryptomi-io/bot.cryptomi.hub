@@ -36,7 +36,7 @@ const handleClick = () => {
 <template>
   <button
     :class="[
-      'rounded-2xl px-5 py-2 inline-flex cursor-pointer w-auto text-center justify-center',
+      'rounded-2xl px-5 py-2 inline-flex cursor-pointer w-auto text-center justify-center focus:outline-none',
       classes[type],
       sizes[size]
     ]"

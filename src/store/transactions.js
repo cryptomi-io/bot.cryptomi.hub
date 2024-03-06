@@ -48,7 +48,6 @@ export const useTransactionsStore = defineStore({
       } catch (error) {
         console.error(error)
       }
-    },
+    }
   }
 })
-

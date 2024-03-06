@@ -1,8 +1,8 @@
 <script setup>
 import Card from '@/components/ui/Card.vue'
-import { useUserStore } from '@/store/user';
+import { useUserStore } from '@/store/user'
 import { Icon } from '@iconify/vue'
-import { computed, onMounted, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 const user = useUserStore()
 
 const isLoading = ref(false)
@@ -14,7 +14,6 @@ onMounted(() => {
     isLoading.value = false
   }, 1000)
 })
-
 
 const refLink = 'https://cryptomi.io/register?ref=' + user.profile?.uuid
 const copyLink = () => {
@@ -85,17 +84,43 @@ const copyLink = () => {
     <template v-else>
       <Card class="py-3 px-4 flex-col">
         <img
-          :src="user?.profile?.avatar ? 'https://cryptomi.io'+user?.profile?.avatar : 'http://placeholder.co/300x300'"
+          :src="
+            user?.profile?.avatar
+              ? 'https://cryptomi.io' + user?.profile?.avatar
+              : 'http://placeholder.co/300x300'
+          "
           alt="placeholder"
           class="w-[50px] h-[50px] rounded-full"
         />
         <div class="text-md text-white font-bold mt-2">@{{ user?.profile?.nickname }}</div>
-        <div class="text-sm text-zinc-400">Level: 
-          <span class="py-1 px-1.5 inline-flex items-center gap-x-1 text-xs font-medium bg-green-100 text-green-800 rounded-full dark:bg-green-500/10 dark:text-green-500">
-           <svg class="flex-shrink-0 size-3" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="2" y2="6"/><line x1="12" x2="12" y1="18" y2="22"/><line x1="4.93" x2="7.76" y1="4.93" y2="7.76"/><line x1="16.24" x2="19.07" y1="16.24" y2="19.07"/><line x1="2" x2="6" y1="12" y2="12"/><line x1="18" x2="22" y1="12" y2="12"/><line x1="4.93" x2="7.76" y1="19.07" y2="16.24"/><line x1="16.24" x2="19.07" y1="7.76" y2="4.93"/></svg>
+        <div class="text-sm text-zinc-400">
+          Level:
+          <span
+            class="py-1 px-1.5 inline-flex items-center gap-x-1 text-xs font-medium bg-green-100 text-green-800 rounded-full dark:bg-green-500/10 dark:text-green-500"
+          >
+            <svg
+              class="flex-shrink-0 size-3"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="12" x2="12" y1="2" y2="6" />
+              <line x1="12" x2="12" y1="18" y2="22" />
+              <line x1="4.93" x2="7.76" y1="4.93" y2="7.76" />
+              <line x1="16.24" x2="19.07" y1="16.24" y2="19.07" />
+              <line x1="2" x2="6" y1="12" y2="12" />
+              <line x1="18" x2="22" y1="12" y2="12" />
+              <line x1="4.93" x2="7.76" y1="19.07" y2="16.24" />
+              <line x1="16.24" x2="19.07" y1="7.76" y2="4.93" />
+            </svg>
             Soon
           </span>
-
         </div>
       </Card>
       <Card class="py-9 px-4 flex-col gap-2">
@@ -106,12 +131,12 @@ const copyLink = () => {
           platform
         </span>
         <div class="rounded-md overflow-hidden w-full flex mt-2">
-            <input
-              v-model="refLink"
-              type="text"
-              readonly="readonly"
-              class="w-full bg-zinc-900 text-zinc-400 p-3 text-sm"
-            />
+          <input
+            v-model="refLink"
+            type="text"
+            readonly="readonly"
+            class="w-full bg-zinc-900 text-zinc-400 p-3 text-sm focus:outline-none"
+          />
           <button @click="copyLink" class="bg-green-500 p-3 h-full">
             <Icon icon="material-symbols:content-copy" class="w-5 h-5 text-white" />
           </button>
@@ -168,7 +193,9 @@ const copyLink = () => {
       </div>
       <Card class="py-3 px-4 flex-col gap-2">
         <div class="text-md text-white font-bold">Rank comissions</div>
-        <div class="blur-sm flex justify-between items-center w-full text-sm py-2 border-b border-zinc-600">
+        <div
+          class="blur-sm flex justify-between items-center w-full text-sm py-2 border-b border-zinc-600"
+        >
           <div class="flex items-center gap-2">
             <Icon icon="clarity:blocks-group-line" class="text-green-500 w-5 h-5" />
             <span class="text-zinc-300">Staking</span>
@@ -177,7 +204,9 @@ const copyLink = () => {
             >{{ user?.referral?.rank_info?.staking.toFixed(2) }}%</span
           >
         </div>
-        <div class="blur-sm flex justify-between items-center w-full text-sm py-2 border-b border-zinc-600">
+        <div
+          class="blur-sm flex justify-between items-center w-full text-sm py-2 border-b border-zinc-600"
+        >
           <div class="flex items-center gap-2">
             <Icon icon="ph:money" class="text-green-500 w-5 h-5" />
             <span class="text-zinc-300">Deposit</span>
@@ -186,7 +215,9 @@ const copyLink = () => {
             {{ user?.referral?.rank_info?.deposit.toFixed(2) }}%</span
           >
         </div>
-        <div class="blur-sm flex justify-between items-center w-full text-sm py-2 border-b border-zinc-600">
+        <div
+          class="blur-sm flex justify-between items-center w-full text-sm py-2 border-b border-zinc-600"
+        >
           <div class="flex items-center gap-2">
             <Icon icon="mingcute:transfer-3-line" class="text-green-500 w-5 h-5" />
             <span class="text-zinc-300">Trade</span>

@@ -1,7 +1,6 @@
 import { $gecko } from '@/utils/geckoApi.js'
 import { defineStore } from 'pinia'
 
-
 export const useGCoinsStore = defineStore({
   id: 'GCoins',
   state: () => ({
@@ -12,10 +11,11 @@ export const useGCoinsStore = defineStore({
     setTrending(coins) {
       this.coinsTrending = coins
     },
-    async getTrending () {
+    async getTrending() {
       const response = await $gecko.get('search/trending')
-      if(response?.status === 200){
-        const tokens = response?.data?.coins && response.data.coins.map(tokenData=> tokenData.item)
+      if (response?.status === 200) {
+        const tokens =
+          response?.data?.coins && response.data.coins.map((tokenData) => tokenData.item)
         this.setTrending(tokens)
       }
     }

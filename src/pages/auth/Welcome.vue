@@ -3,8 +3,8 @@ import Button from '@/components/ui/Button.vue'
 import Loader from '@/components/ui/Loader.vue'
 import Slider from '@/components/ui/Slider.vue'
 import useAuth from '@/composables/useAuth'
-import { notify } from 'notiwind'
-
+import { toast } from 'vue3-toastify'
+import 'vue3-toastify/dist/index.css'
 const { login } = useAuth()
 
 import { useUserStore } from '@/store/user';
@@ -48,14 +48,14 @@ const signIn = async () => {
   } else {
     userStore.setIsLoggedIn(false)
     isLoading.value = false
-    notify(
-      {
-        group: 'foo',
-        title: 'Success',
-        text: 'Your account was registered!'
-      },
-      4000
-    ) // 4s
+    toast('Your account was registered!', {
+      autoClose: 3000,
+      type: 'success',
+      position: 'top-right',
+      theme: 'dark',
+      toastStyle: 'top:10px'
+    }) // ToastOptions
+    return
   }
 }
 </script>

@@ -1,6 +1,6 @@
 <script setup>
 import { useUserStore } from '@/store/user'
-import { ref, onMounted, computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 const isLoading = ref(true)
 const userStore = useUserStore()
 const profile = computed(() => userStore.profile || {})
@@ -24,7 +24,11 @@ onMounted(() => {
     </template>
     <template v-else>
       <img
-        :src="profile?.avatar ? 'https://cryptomi.io'+profile?.avatar : 'http://placeholder.co/300x300'"
+        :src="
+          profile?.avatar
+            ? 'https://cryptomi.io' + profile?.avatar
+            : 'http://placeholder.co/300x300'
+        "
         alt="placeholder"
         class="w-10 h-10 rounded-full"
       />
@@ -34,6 +38,4 @@ onMounted(() => {
       </div>
     </template>
   </div>
- 
 </template>
-

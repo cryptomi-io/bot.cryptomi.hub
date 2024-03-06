@@ -1,16 +1,13 @@
 <script setup>
-import Button from '@/components/ui/Button.vue'
 import Card from '@/components/ui/Card.vue'
 import { useUserStore } from '@/store/user'
 import { computed, onMounted, ref } from 'vue'
 const userStore = useUserStore()
 const isLoading = ref(true)
 const profile = computed(() => userStore.profile || {})
-const ctmi =
-  {
-    icon: '/images/assets/ctmi.png',
-  }
-
+const ctmi = {
+  icon: '/images/assets/ctmi.png'
+}
 
 onMounted(() => {
   isLoading.value = true
@@ -22,7 +19,7 @@ onMounted(() => {
 })
 </script>
 <template>
- <Card class="py-3 px-4">
+  <Card class="py-3 px-4">
     <template v-if="isLoading">
       <div class="flex flex-col">
         <div class="h-2 bg-neutral-700 rounded w-[110px]"></div>
@@ -33,18 +30,18 @@ onMounted(() => {
     </template>
     <template v-else>
       <div class="flex gap-2 items-center">
-      <img
-        :src="ctmi?.icon ? ctmi?.icon : 'http://placeholder.co/300x300'"
-        alt="placeholder"
-        class="w-10 h-10 rounded-full"
-      />
+        <img
+          :src="ctmi?.icon ? ctmi?.icon : 'http://placeholder.co/300x300'"
+          alt="placeholder"
+          class="w-10 h-10 rounded-full"
+        />
         <div class="flex flex-col">
-       <div class="text-zinc-100 font-bold text-sm">$CTMI</div>
-       <div class="text-zinc-400 text-xs" v-html="profile?.ctmi"></div>
-      </div>
+          <div class="text-zinc-100 font-bold text-sm">$CTMI</div>
+          <div class="text-zinc-400 text-xs" v-html="profile?.ctmi"></div>
+        </div>
       </div>
       <div class="flex flex-col items-end">
-        <div  class="text-zinc-500 text-sm">
+        <div class="text-zinc-500 text-sm">
           <span :class="['text-zinc-100 font-bold']">soon</span>
         </div>
       </div>
