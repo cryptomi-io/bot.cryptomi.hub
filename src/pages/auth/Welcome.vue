@@ -7,18 +7,19 @@ import { notify } from 'notiwind'
 
 const { login } = useAuth()
 
-import { useUserStore } from '@/store/user'
-import { onMounted, ref } from 'vue'
+import { useUserStore } from '@/store/user';
+import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useWebApp } from 'vue-tg';
 
-import { useRouter } from 'vue-router'
-import { useWebApp } from 'vue-tg'
 
 const userStore = useUserStore()
 const images = ['/images/slider/slide.png']
 const router = useRouter()
 const isLoading = ref(true)
 
-const { initDataUnsafe } = useWebApp()
+
+const { initDataUnsafe } = useWebApp();
 //let chatId = initDataUnsafe?.user?.id;
 let chatId = 6754514787
 console.log(chatId)

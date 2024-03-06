@@ -5,8 +5,13 @@ import { useUserStore } from '@/store/user'
 import { computed, onMounted, ref } from 'vue'
 const userStore = useUserStore()
 const isLoading = ref(true)
-console.log(userStore)
-const balance = computed(() => userStore.balance || {})
+const profile = computed(() => userStore.profile || {})
+const ctmi =
+  {
+    icon: '/images/assets/ctmi.png',
+  }
+
+
 onMounted(() => {
   isLoading.value = true
   //FETCH USER INFO HERE IF didn't have before
@@ -17,7 +22,7 @@ onMounted(() => {
 })
 </script>
 <template>
-  <Card class="py-3 px-4">
+ <Card class="py-3 px-4">
     <template v-if="isLoading">
       <div class="flex flex-col">
         <div class="h-2 bg-neutral-700 rounded w-[110px]"></div>
@@ -27,12 +32,21 @@ onMounted(() => {
       <div class="h-7 bg-neutral-700 rounded-2xl w-[80px]"></div>
     </template>
     <template v-else>
-      <div class="flex flex-col">
-        <div class="text-zinc-400 text-xs">Total balance (USD)</div>
-        <div class="text-zinc-500 mt-1 text-2xl">
-          <span class="text-zinc-100 font-bold">${{ balance.usd.toFixed(2) }}</span>
+      <div class="flex gap-2 items-center">
+      <img
+        :src="ctmi?.icon ? ctmi?.icon : 'http://placeholder.co/300x300'"
+        alt="placeholder"
+        class="w-10 h-10 rounded-full"
+      />
+        <div class="flex flex-col">
+       <div class="text-zinc-100 font-bold text-sm">$CTMI</div>
+       <div class="text-zinc-400 text-xs" v-html="profile?.ctmi"></div>
+      </div>
+      </div>
+      <div class="flex flex-col items-end">
+        <div  class="text-zinc-500 text-sm">
+          <span :class="['text-zinc-100 font-bold']">soon</span>
         </div>
-        <div class="text-zinc-400 text-sm">= {{ balance.btc }} BTC</div>
       </div>
     </template>
   </Card>

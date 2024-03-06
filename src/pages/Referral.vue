@@ -156,7 +156,7 @@ const copyLink = () => {
           Coming soon
         </div>
       </Card>
-      <div class="grid grid-cols-2 gap-2">
+      <div class="grid grid-cols-2 gap-2 hidden">
         <Card class="py-8 px-4 flex-col">
           <div class="text-2xl text-white font-bold">{{ user?.referral?.info?.value }} CTMI</div>
           <div class="text-sm text-zinc-400">Your value</div>
@@ -168,7 +168,7 @@ const copyLink = () => {
       </div>
       <Card class="py-3 px-4 flex-col gap-2">
         <div class="text-md text-white font-bold">Rank comissions</div>
-        <div class="flex justify-between items-center w-full text-sm py-2 border-b border-zinc-600">
+        <div class="blur-sm flex justify-between items-center w-full text-sm py-2 border-b border-zinc-600">
           <div class="flex items-center gap-2">
             <Icon icon="clarity:blocks-group-line" class="text-green-500 w-5 h-5" />
             <span class="text-zinc-300">Staking</span>
@@ -177,7 +177,7 @@ const copyLink = () => {
             >{{ user?.referral?.rank_info?.staking.toFixed(2) }}%</span
           >
         </div>
-        <div class="flex justify-between items-center w-full text-sm py-2 border-b border-zinc-600">
+        <div class="blur-sm flex justify-between items-center w-full text-sm py-2 border-b border-zinc-600">
           <div class="flex items-center gap-2">
             <Icon icon="ph:money" class="text-green-500 w-5 h-5" />
             <span class="text-zinc-300">Deposit</span>
@@ -186,7 +186,7 @@ const copyLink = () => {
             {{ user?.referral?.rank_info?.deposit.toFixed(2) }}%</span
           >
         </div>
-        <div class="flex justify-between items-center w-full text-sm py-2 border-b border-zinc-600">
+        <div class="blur-sm flex justify-between items-center w-full text-sm py-2 border-b border-zinc-600">
           <div class="flex items-center gap-2">
             <Icon icon="mingcute:transfer-3-line" class="text-green-500 w-5 h-5" />
             <span class="text-zinc-300">Trade</span>
@@ -195,7 +195,7 @@ const copyLink = () => {
             {{ user?.referral?.rank_info?.trade.toFixed(2) }}%</span
           >
         </div>
-        <div class="flex justify-between items-center w-full text-sm py-2">
+        <div class="blur-sm flex justify-between items-center w-full text-sm py-2">
           <div class="flex items-center gap-2">
             <Icon icon="bx:bot" class="text-green-500 w-5 h-5" />
             <span class="text-zinc-300">Bot investment</span>
@@ -204,7 +204,7 @@ const copyLink = () => {
             {{ user?.referral?.rank_info?.bot_investment.toFixed(2) }}%</span
           >
         </div>
-        <div class="flex justify-between items-center w-full text-sm py-2">
+        <div class="blur-sm flex justify-between items-center w-full text-sm py-2">
           <div class="flex items-center gap-2">
             <Icon icon="humbleicons:coins" class="text-green-500 w-5 h-5" />
             <span class="text-zinc-300">Token after purchase</span>
