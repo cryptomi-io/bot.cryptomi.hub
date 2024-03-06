@@ -8,7 +8,7 @@ export const useEtherscan = () => {
   const ETHERSCAN_API_KEY = import.meta.env.VITE_ETHERSCAN_API_KEY
   const eth = new Etherscan(ETHERSCAN_API_KEY)
   //only for developing
-  const mode = 'dev'
+  const mode = 'prod'
   const { getShitcoinHistoricalMultiplePrices } = useMoralis()
 
   const getAnalytics = async (wallet, days = 120) => {
