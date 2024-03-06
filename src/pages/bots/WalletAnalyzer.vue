@@ -33,7 +33,7 @@ const formHandleSubmit = async () => {
 
   const result = await getAnalytics(formData.value.wallet, formData.value.timePeriod)
   if(!result.length){
-    toast('', {
+    toast('PnL is not calculated for this account', {
       autoClose: 3000,
       type: 'error',
       position: 'top-right',
