@@ -25,7 +25,6 @@ const bots = [
   <div class="flex flex-col gap-3">
     <div class="grid grid-cols-1 gap-1">
       <div
-        @click="goToBot(bot.link)"
         v-for="(bot, i) in bots"
         :key="i"
         class="bg-neutral-800 rounded-xl overflow-hidden flex flex-col"
