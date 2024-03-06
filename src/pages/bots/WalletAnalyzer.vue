@@ -15,7 +15,7 @@ const formData = ref({
   wallet: '',
   timePeriod: 30
 })
-const periods = [1, 7, 30, 60, 90, 120]
+const periods = [1, 7, 30, 60, 90]
 const topTokens = ref([])
 const loseTokens = ref([])
 
@@ -32,6 +32,15 @@ const formHandleSubmit = async () => {
   }
 
   const result = await getAnalytics(formData.value.wallet, formData.value.timePeriod)
+  if(!result.length){
+    toast('', {
+      autoClose: 3000,
+      type: 'error',
+      position: 'top-right',
+      theme: 'dark',
+      toastStyle: 'top:10px'
+    }) // ToastOptions
+  }
   topTokens.value = result
     .filter((token) => token.PnL > 0 || token.unrealizedPnL > 0)
     .sort((a, b) => b.PnL - a.PnL)
@@ -109,9 +118,7 @@ const formHandleSubmitV2 = async () => {
         <div class="flex justify-between w-full text-sm py-2 border-b border-zinc-600">
           <span class="text-zinc-300">Unrelized PnL</span>
           <span class="text-white">
-            {{ token.unrealizedPnL.toFixed(8) }} ({{
-              token.unrealizedPnLPercent < 0.01 ? '~ 0' : token.unrealizedPnLPercent.toFixed(2)
-            }}%)
+            {{ token.unrealizedPnL.toFixed(8) }} ({{token.unrealizedPnLPercent.toFixed(2)}}%)
           </span>
         </div>
       </div>
@@ -138,9 +145,7 @@ const formHandleSubmitV2 = async () => {
         <div class="flex justify-between w-full text-sm py-2 border-b border-zinc-600">
           <span class="text-zinc-300">Unrelized PnL</span>
           <span class="text-white">
-            {{ token.unrealizedPnL.toFixed(8) }} ({{
-              token.unrealizedPnLPercent < 0.01 ? '~ 0' : token.unrealizedPnLPercent.toFixed(2)
-            }}%)
+            {{ token.unrealizedPnL.toFixed(8) }} ({{token.unrealizedPnLPercent.toFixed(2)}}%)
           </span>
         </div>
       </div>

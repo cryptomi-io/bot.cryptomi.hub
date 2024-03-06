@@ -9,6 +9,7 @@ export const useEtherscan = () => {
   const eth = new Etherscan(ETHERSCAN_API_KEY)
   //only for developing
   const mode = 'prod'
+  
   const { getShitcoinHistoricalMultiplePrices } = useMoralis()
 
   const getAnalytics = async (wallet, days = 120) => {
@@ -1101,6 +1102,7 @@ export const useEtherscan = () => {
       }
     ]
   }
+
   const _temp_historycal_price = () => {
     return [
       {
@@ -1483,6 +1485,7 @@ export const useEtherscan = () => {
       }
     ]
   }
+
   return {
     getTransactions,
     getLatestBlockNumber,
