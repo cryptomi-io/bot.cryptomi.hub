@@ -129,7 +129,6 @@ export const useEtherscan = () => {
       let latestTransactionType = null
       let PnL = 0
       let PnLPercent = 0
-      let unrealizedPnL = 0
       token.transactions
         .sort((a, b) => a.timeStamp - b.timeStamp)
         .forEach((transaction) => {
@@ -224,21 +223,48 @@ export const useEtherscan = () => {
         //Считаем сколько в процентах
         PnLPercent = (PnL / totalBuy) * 100
       }
-      //Считаем нереализованный Pnl (остаточный баланс * на текущую цену токена)
-      unrealizedPnL = tokenBalance * 1 //где 1 - это цена тока на данный момент
+
+
 
       //Обновляем информацию о токене
       token.totalBuy = totalBuy
       token.totalSell = totalSell
       token.tokenBalance = tokenBalance
-      token.unrealizedPnL = unrealizedPnL
+      token.unrealizedPnL = 0
+      token.unrealizedPnLPercent = 0
       token.PnL = PnL
       token.PnLPercent = PnLPercent
       token.profitNotItPnL = profitNotItPnL
     })
 
+    const _caForPrices = []
+    Object.values(transactionsTokens)
+      .filter((token) => token.tokenBalance)
+      .forEach((token) => {
+        _caForPrices.push({
+          token_address: token.contractAddress
+        })
+      })
+    if (_caForPrices.length > 0) {
+      const _tokenActualPrices =
+        mode === 'dev'
+          ? _temp_actual_prices()
+          : await getShitcoinHistoricalMultiplePrices(_caForPrices)
+      Object.values(transactionsTokens).forEach((token) => {
+        token.unrealizedPnL =
+          token.tokenBalance *
+          Number(
+            _tokenActualPrices.find((token) => token.token_address === token.contractAddress)
+              .usdPriceFormatted
+          )
+          token.unrealizedPnLPercent = (token.unrealizedPnL / token.tokenBalance) * 100
+      })
+    }
+    console.log(transactionsTokens)
     console.timeEnd('Execution Time')
-    return Object.values(transactionsTokens).filter((token) => token.PnL !== 0)
+    return Object.values(transactionsTokens).filter(
+      (token) => token.PnL !== 0 || token.unrealizedPnL !== 0
+    )
   }
 
   /**
@@ -871,6 +897,210 @@ export const useEtherscan = () => {
     ]
   }
 
+  const _temp_actual_prices = () => {
+    return [
+      {
+        tokenName: 'RATSSS',
+        tokenSymbol: 'RATSSS',
+        tokenLogo: null,
+        tokenDecimals: '8',
+        nativePrice: {
+          value: '1033333333',
+          decimals: 18,
+          name: 'Ether',
+          symbol: 'ETH',
+          address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
+        },
+        usdPrice: 0.000002348878033532,
+        usdPriceFormatted: '0.000002348878033532',
+        exchangeName: 'Uniswap v2',
+        exchangeAddress: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f',
+        tokenAddress: '0xaa742641216545fe7daaf31b29eba818b54bdeb7',
+        priceLastChangedAtBlock: '19109613',
+        verifiedContract: false
+      },
+      {
+        tokenName: 'TADE',
+        tokenSymbol: 'TADE',
+        tokenLogo: null,
+        tokenDecimals: '8',
+        nativePrice: {
+          value: '1108970100',
+          decimals: 18,
+          name: 'Ether',
+          symbol: 'ETH',
+          address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
+        },
+        usdPrice: 0.000002587110696663,
+        usdPriceFormatted: '0.000002587110696663',
+        exchangeName: 'Uniswap v2',
+        exchangeAddress: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f',
+        tokenAddress: '0x7b8ed22c3692581090caaf36d6549969b9835419',
+        priceLastChangedAtBlock: '19067877',
+        verifiedContract: false
+      },
+      {
+        tokenName: 'UASHJSD',
+        tokenSymbol: 'UASHJSD',
+        tokenLogo: null,
+        tokenDecimals: '8',
+        nativePrice: {
+          value: '949846154',
+          decimals: 18,
+          name: 'Ether',
+          symbol: 'ETH',
+          address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
+        },
+        usdPrice: 0.000002130456835563,
+        usdPriceFormatted: '0.000002130456835563',
+        exchangeName: 'Uniswap v2',
+        exchangeAddress: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f',
+        tokenAddress: '0x5d7d6487dc9339154d024d87591090caf9e14807',
+        priceLastChangedAtBlock: '18938721',
+        verifiedContract: false
+      },
+      {
+        tokenName: 'SOLDOGE',
+        tokenSymbol: 'SOLDOGE',
+        tokenLogo: null,
+        tokenDecimals: '8',
+        nativePrice: {
+          value: '2174883721',
+          decimals: 18,
+          name: 'Ether',
+          symbol: 'ETH',
+          address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
+        },
+        usdPrice: 0.000005168962233324,
+        usdPriceFormatted: '0.000005168962233324',
+        exchangeName: 'Uniswap v2',
+        exchangeAddress: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f',
+        tokenAddress: '0xa14d972c20a30ef4de3c9e0dbc55cb1353ddcf70',
+        priceLastChangedAtBlock: '18917093',
+        verifiedContract: false
+      },
+      {
+        tokenName: 'RICTE',
+        tokenSymbol: 'RICTE',
+        tokenLogo: null,
+        tokenDecimals: '8',
+        nativePrice: {
+          value: '4788275862',
+          decimals: 18,
+          name: 'Ether',
+          symbol: 'ETH',
+          address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
+        },
+        usdPrice: 0.00001091379386597,
+        usdPriceFormatted: '0.000010913793865970',
+        exchangeName: 'Uniswap v2',
+        exchangeAddress: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f',
+        tokenAddress: '0x91322d9cb8e403e2d5ebc581ff8f70eb1821e4f9',
+        priceLastChangedAtBlock: '18862605',
+        verifiedContract: false
+      },
+      {
+        tokenName: 'PUSOT',
+        tokenSymbol: 'PUSOT',
+        tokenLogo: null,
+        tokenDecimals: '8',
+        nativePrice: {
+          value: '1773529412',
+          decimals: 18,
+          name: 'Ether',
+          symbol: 'ETH',
+          address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
+        },
+        usdPrice: 0.000004060714208955,
+        usdPriceFormatted: '0.000004060714208955',
+        exchangeName: 'Uniswap v2',
+        exchangeAddress: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f',
+        tokenAddress: '0x785c62392011999700eaa3aee2d7be87ec537add',
+        priceLastChangedAtBlock: '18846773',
+        verifiedContract: false
+      },
+      {
+        tokenName: 'CRAZY AI',
+        tokenSymbol: 'CRAZY AI',
+        tokenLogo: null,
+        tokenDecimals: '8',
+        nativePrice: {
+          value: '21326086957',
+          decimals: 18,
+          name: 'Ether',
+          symbol: 'ETH',
+          address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
+        },
+        usdPrice: 0.000049220999193179,
+        usdPriceFormatted: '0.000049220999193179',
+        exchangeName: 'Uniswap v2',
+        exchangeAddress: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f',
+        tokenAddress: '0xa8a8e5fe66789f797fa655072fda7e2b3eaec2aa',
+        priceLastChangedAtBlock: '18841474',
+        verifiedContract: false
+      },
+      {
+        tokenName: 'ORDI DOGE',
+        tokenSymbol: 'ORDIDOGE',
+        tokenLogo: null,
+        tokenDecimals: '8',
+        nativePrice: {
+          value: '12152747253',
+          decimals: 18,
+          name: 'Ether',
+          symbol: 'ETH',
+          address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
+        },
+        usdPrice: 0.0000267005711161,
+        usdPriceFormatted: '0.000026700571116100',
+        exchangeName: 'Uniswap v2',
+        exchangeAddress: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f',
+        tokenAddress: '0xd9b357cf005a022102babd05dda7216a70da2f7f',
+        priceLastChangedAtBlock: '18832422',
+        verifiedContract: false
+      },
+      {
+        tokenName: 'Freya',
+        tokenSymbol: 'FREYA',
+        tokenLogo: null,
+        tokenDecimals: '9',
+        nativePrice: {
+          value: '5328468',
+          decimals: 18,
+          name: 'Ether',
+          symbol: 'ETH',
+          address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
+        },
+        usdPrice: 1.8155739431e-8,
+        usdPriceFormatted: '0.000000018155739431',
+        exchangeName: 'Uniswap v2',
+        exchangeAddress: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f',
+        tokenAddress: '0x6c00add52419e014bfe4a7caed719818bf7ec2cc',
+        priceLastChangedAtBlock: '19347957',
+        verifiedContract: false
+      },
+      {
+        tokenName: 'PAMPE',
+        tokenSymbol: 'PAMPE',
+        tokenLogo: null,
+        tokenDecimals: '8',
+        nativePrice: {
+          value: '14703384747',
+          decimals: 18,
+          name: 'Ether',
+          symbol: 'ETH',
+          address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
+        },
+        usdPrice: 0.000034615478945616,
+        usdPriceFormatted: '0.000034615478945616',
+        exchangeName: 'Uniswap v2',
+        exchangeAddress: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f',
+        tokenAddress: '0x688a75a4beda5812f82c71bba0b6d45ae17c4381',
+        priceLastChangedAtBlock: '18745739',
+        verifiedContract: false
+      }
+    ]
+  }
   const _temp_historycal_price = () => {
     return [
       {

@@ -12,8 +12,8 @@ import { ref } from 'vue'
 const { getAnalytics } = useEtherscan()
 
 const formData = ref({
-  wallet: '0x13351e338ca96b6f7bc944a9f4ff809da0c87c8b',
-  timePeriod: 1
+  wallet: '',
+  timePeriod: 30
 })
 const periods = [1, 7, 30, 60, 90, 120]
 const topTokens = ref([])
@@ -33,11 +33,11 @@ const formHandleSubmit = async () => {
 
   const result = await getAnalytics(formData.value.wallet, formData.value.timePeriod)
   topTokens.value = result
-    .filter((token) => token.PnL > 0)
+    .filter((token) => token.PnL > 0 || token.unrealizedPnL > 0)
     .sort((a, b) => b.PnL - a.PnL)
     .slice(0, 5)
   loseTokens.value = result
-    .filter((token) => token.PnL < 0)
+    .filter((token) => token.PnL < 0 || token.unrealizedPnL < 0)
     .sort((a, b) => b.PnL - a.PnL)
     .slice(0, 5)
 }
@@ -101,7 +101,17 @@ const formHandleSubmitV2 = async () => {
         <div class="flex justify-between w-full text-sm py-2 border-b border-zinc-600">
           <span class="text-zinc-300">PnL</span>
           <span class="text-white">
-            {{ token.PnL.toFixed(8) }} ({{ token.PnLPercent.toFixed(2) }}%)
+            {{ token.PnL.toFixed(8) }} ({{
+              token.PnLPercent < 0.01 ? '~ 0' : token.PnLPercent.toFixed(2)
+            }}%)
+          </span>
+        </div>
+        <div class="flex justify-between w-full text-sm py-2 border-b border-zinc-600">
+          <span class="text-zinc-300">Unrelized PnL</span>
+          <span class="text-white">
+            {{ token.unrealizedPnL.toFixed(8) }} ({{
+              token.unrealizedPnLPercent < 0.01 ? '~ 0' : token.unrealizedPnLPercent.toFixed(2)
+            }}%)
           </span>
         </div>
       </div>
@@ -120,13 +130,17 @@ const formHandleSubmitV2 = async () => {
         <div class="flex justify-between w-full text-sm py-2 border-b border-zinc-600">
           <span class="text-zinc-300">PnL</span>
           <span class="text-white">
-            {{ token.PnL.toFixed(8) }} ({{ token.PnLPercent.toFixed(2) }}%)
+            {{ token.PnL.toFixed(8) }} ({{
+              token.PnLPercent < 0.01 ? '~ 0' : token.PnLPercent.toFixed(2)
+            }}%)
           </span>
         </div>
         <div class="flex justify-between w-full text-sm py-2 border-b border-zinc-600">
           <span class="text-zinc-300">Unrelized PnL</span>
           <span class="text-white">
-            {{ token.unrealizedPnL.toFixed(8) }} ({{ token.PnLPercent.toFixed(2) }}%)
+            {{ token.unrealizedPnL.toFixed(8) }} ({{
+              token.unrealizedPnLPercent < 0.01 ? '~ 0' : token.unrealizedPnLPercent.toFixed(2)
+            }}%)
           </span>
         </div>
       </div>
