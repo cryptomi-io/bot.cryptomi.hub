@@ -5,24 +5,23 @@ import Slider from '@/components/ui/Slider.vue'
 import useAuth from '@/composables/useAuth'
 import { toast } from 'vue3-toastify'
 import 'vue3-toastify/dist/index.css'
-const { login } = useAuth()
+const { login, register } = useAuth()
 
-import { useUserStore } from '@/store/user';
-import { onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { useWebApp } from 'vue-tg';
-
+import { useUserStore } from '@/store/user'
+import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useWebApp } from 'vue-tg'
 
 const userStore = useUserStore()
 const images = ['/images/slider/slide.png']
 const router = useRouter()
 const isLoading = ref(true)
 
-
-const { initDataUnsafe } = useWebApp();
+const { initDataUnsafe } = useWebApp()
 //let chatId = initDataUnsafe?.user?.id;
-let chatId = 6754514787
-console.log(chatId)
+console.log(initDataUnsafe?.user)
+
+let chatId = 6754514128
 onMounted(async () => {
   //Сразу же пытаемся авторизоваться
   await setTimeout(async () => {
@@ -39,23 +38,32 @@ onMounted(async () => {
 
 const signIn = async () => {
   isLoading.value = true
-  let chatId = initDataUnsafe.user.id
-  const isLogin = await login(chatId)
-  if (isLogin) {
-    userStore.setIsLoggedIn()
-    router.push({ name: 'home' })
-    isLoading.value = false
-  } else {
-    userStore.setIsLoggedIn(false)
-    isLoading.value = false
-    toast('Your account was registered!', {
+  // const nickname = initDataUnsafe.user.nickname
+  // const chatId = initDataUnsafe.user.id
+  const nickname = 'telegram user'
+  const chatId = 6754514128
+
+  //Регистрируем пользователя
+  try {
+    await register(nickname, chatId)
+    toast('You have successfully registered', {
       autoClose: 3000,
       type: 'success',
       position: 'top-right',
       theme: 'dark',
       toastStyle: 'top:10px'
     }) // ToastOptions
-    return
+    userStore.setIsLoggedIn()
+    router.push({ name: 'home' })
+    isLoading.value = false
+  } catch (e) {
+    toast('Something went wrong', {
+      autoClose: 3000,
+      type: 'error',
+      position: 'top-right',
+      theme: 'dark',
+      toastStyle: 'top:10px'
+    }) // ToastOptions
   }
 }
 </script>
@@ -72,11 +80,6 @@ const signIn = async () => {
           type="primary"
           :clickHandler="signIn"
           class="text-white font-bold"
-        />
-        <Button
-          text="Sign Up"
-          type="secondary"
-          :clickHandler="() => router.push({ name: 'register' })"
         />
       </div>
       <p class="text-center mt-3 text-xs">
