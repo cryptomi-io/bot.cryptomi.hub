@@ -297,7 +297,7 @@ export const useEtherscan = () => {
     })
 
     try {
-      const response = await $etherscan.get(`&${params}`)
+      const response = await $etherscan.get(`?${params}`)
       return parseInt(response?.data?.result, 16)
     } catch (error) {
       console.error(error)

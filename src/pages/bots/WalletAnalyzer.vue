@@ -12,10 +12,10 @@ import { ref } from 'vue'
 const { getAnalytics } = useEtherscan()
 
 const formData = ref({
-  wallet: '',
+  wallet: '0x13351e338ca96b6f7bc944a9f4ff809da0c87c8b',
   timePeriod: 1
 })
-const periods = [1, 7, 30, 60, 90]
+const periods = [1, 7, 30, 60, 90, 120]
 const topTokens = ref([])
 const loseTokens = ref([])
 
@@ -30,25 +30,16 @@ const formHandleSubmit = async () => {
     }) // ToastOptions
     return
   }
-  try {
-    const result = await getAnalytics(formData.value.wallet, formData.value.timePeriod)
-    topTokens.value = result
-      .filter((token) => token.PnL > 0)
-      .sort((a, b) => b.PnL - a.PnL)
-      .slice(0, 5)
-    loseTokens.value = result
-      .filter((token) => token.PnL < 0)
-      .sort((a, b) => b.PnL - a.PnL)
-      .slice(0, 5)
-  } catch (error) {
-    toast('Something went wrong', {
-      autoClose: 3000,
-      type: 'error',
-      position: 'top-right',
-      theme: 'dark',
-      toastStyle: 'top:10px'
-    })
-  }
+
+  const result = await getAnalytics(formData.value.wallet, formData.value.timePeriod)
+  topTokens.value = result
+    .filter((token) => token.PnL > 0)
+    .sort((a, b) => b.PnL - a.PnL)
+    .slice(0, 5)
+  loseTokens.value = result
+    .filter((token) => token.PnL < 0)
+    .sort((a, b) => b.PnL - a.PnL)
+    .slice(0, 5)
 }
 const formHandleSubmitV2 = async () => {
   try {
