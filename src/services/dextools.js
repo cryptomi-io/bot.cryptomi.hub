@@ -1,5 +1,5 @@
 import axios from 'axios'
-const API_KEY = "yZIeOdvLWd7XQPUf1T7yc3QQZZfw2K0n20OOaTDS";
+const API_KEY = import.meta.env.VITE_DEXTOOLS_API_KEY;
 
 const $dt = axios.create({
   baseURL: `https://public-api.dextools.io/trial/v2/`,

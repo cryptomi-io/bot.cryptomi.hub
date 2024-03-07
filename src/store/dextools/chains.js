@@ -1,4 +1,4 @@
-import { $dt } from '@/utils/dextools.js'
+import { $dt } from '@/services/dextools.js'
 import { defineStore } from 'pinia'
 
 export const useDexChains = defineStore({

@@ -1,20 +1,21 @@
 <script setup>
 import Button from '@/components/ui/Button.vue'
 import Card from '@/components/ui/Card.vue'
+import axios from 'axios'
 
-import { useEtherscan } from '@/services/analyzer/etherscan'
 import { toast } from 'vue3-toastify'
 import 'vue3-toastify/dist/index.css'
 
+import { useEtherscan } from '@/composables/useEtherscan'
 import { ref } from 'vue'
 
 const { getAnalytics } = useEtherscan()
 
 const formData = ref({
-  wallet: '0x13351e338ca96b6f7bc944a9f4ff809da0c87c8b',
-  timePeriod: 30
+  wallet: '',
+  timePeriod: 1
 })
-const periods = [30, 60, 120]
+const periods = [1, 7, 30, 60, 90]
 const topTokens = ref([])
 const loseTokens = ref([])
 
@@ -29,9 +30,41 @@ const formHandleSubmit = async () => {
     }) // ToastOptions
     return
   }
-  const result = await getAnalytics(formData.value.wallet, formData.value.timePeriod)
-  topTokens.value = result.topTokens
-  loseTokens.value = result.loseTokens
+  try {
+    const result = await getAnalytics(formData.value.wallet, formData.value.timePeriod)
+    topTokens.value = result
+      .filter((token) => token.PnL > 0)
+      .sort((a, b) => b.PnL - a.PnL)
+      .slice(0, 5)
+    loseTokens.value = result
+      .filter((token) => token.PnL < 0)
+      .sort((a, b) => b.PnL - a.PnL)
+      .slice(0, 5)
+  } catch (error) {
+    toast('Something went wrong', {
+      autoClose: 3000,
+      type: 'error',
+      position: 'top-right',
+      theme: 'dark',
+      toastStyle: 'top:10px'
+    })
+  }
+}
+const formHandleSubmitV2 = async () => {
+  try {
+    const response = await axios.post('http://localhost:3005/api/analyze', {
+      address: formData.value.wallet,
+      timePeriod: formData.value.timePeriod
+    })
+  } catch (error) {
+    toast('Something went wrong', {
+      autoClose: 3000,
+      type: 'error',
+      position: 'top-right',
+      theme: 'dark',
+      toastStyle: 'top:10px'
+    })
+  }
 }
 </script>
 
@@ -61,7 +94,7 @@ const formHandleSubmit = async () => {
         placeholder="0x13351e338ca96b6f7bc944a9f4ff809da0c87c8b"
         class="rounded-xl w-full bg-zinc-900 text-zinc-400 p-3 text-sm focus:outline-none"
       />
-      <Button text="Sign Up" type="primary" class="!w-full mt-2" />
+      <Button text="Check wallet" type="primary" class="!w-full mt-2" />
     </form>
     <Card v-if="topTokens.length" class="py-3 px-4 flex-col text-start !items-start gap-3">
       <div class="text-lg font-bold">Top Tokens</div>
@@ -75,21 +108,9 @@ const formHandleSubmit = async () => {
           <span class="text-white">{{ token.transactions.length }}</span>
         </div>
         <div class="flex justify-between w-full text-sm py-2 border-b border-zinc-600">
-          <span class="text-zinc-300">Total sell</span>
-          <span class="text-white"
-            >{{ token.totalSellValue }} ({{ token.totalSellPrice.toFixed(2) }}USDT)</span
-          >
-        </div>
-        <div class="flex justify-between w-full text-sm py-2 border-b border-zinc-600">
-          <span class="text-zinc-300">Total buy</span>
-          <span class="text-white"
-            >{{ token.totalBuyValue }} ({{ token.totalBuyPrice.toFixed(2) }}USDT)</span
-          >
-        </div>
-        <div class="flex justify-between w-full text-sm py-2 border-b border-zinc-600">
           <span class="text-zinc-300">PnL</span>
           <span class="text-white">
-            {{ token.pnl_value }} ({{ token.pnl_percent.toFixed(2) }}%)
+            {{ token.PnL.toFixed(8) }} ({{ token.PnLPercent.toFixed(2) }}%)
           </span>
         </div>
       </div>
@@ -106,22 +127,19 @@ const formHandleSubmit = async () => {
           <span class="text-white">{{ token.transactions.length }}</span>
         </div>
         <div class="flex justify-between w-full text-sm py-2 border-b border-zinc-600">
-          <span class="text-zinc-300">Total sell</span>
-          <span class="text-white"
-            >{{ token.totalSellValue }} ({{ token.totalSellPrice.toFixed(2) }}USDT)</span
-          >
-        </div>
-        <div class="flex justify-between w-full text-sm py-2 border-b border-zinc-600">
-          <span class="text-zinc-300">Total buy</span>
-          <span class="text-white">{{ token.totalBuyValue }} ({{ token.totalBuyPrice }}USDT)</span>
-        </div>
-        <div class="flex justify-between w-full text-sm py-2 border-b border-zinc-600">
           <span class="text-zinc-300">PnL</span>
           <span class="text-white">
-            {{ token.pnl_value }} ({{ token.pnl_percent.toFixed(2) }}%)
+            {{ token.PnL.toFixed(8) }} ({{ token.PnLPercent.toFixed(2) }}%)
+          </span>
+        </div>
+        <div class="flex justify-between w-full text-sm py-2 border-b border-zinc-600">
+          <span class="text-zinc-300">Unrelized PnL</span>
+          <span class="text-white">
+            {{ token.unrealizedPnL.toFixed(8) }} ({{ token.PnLPercent.toFixed(2) }}%)
           </span>
         </div>
       </div>
     </Card>
   </div>
 </template>
+@/services/etherscan

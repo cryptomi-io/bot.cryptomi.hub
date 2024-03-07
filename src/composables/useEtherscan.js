@@ -1,12 +1,16 @@
+import { $etherscan } from '@/services/etherscan'
 import { Etherscan } from 'etherscan-ts'
 import Web3 from 'web3'
-import { useMoralis } from './moralis'
+
+import { useMoralis } from './useMoralis'
 
 export const useEtherscan = () => {
   const ETHERSCAN_API_KEY = import.meta.env.VITE_ETHERSCAN_API_KEY
   const eth = new Etherscan(ETHERSCAN_API_KEY)
+  //only for developing
   const mode = 'dev'
   const { getShitcoinHistoricalMultiplePrices } = useMoralis()
+
   const getAnalytics = async (wallet, days = 120) => {
     console.time('Execution Time')
 
@@ -18,6 +22,14 @@ export const useEtherscan = () => {
     const _tokenDataForGetPrices = []
     const _tokenPricesData = {}
 
+    if (!transactions.length) {
+      return {
+        transactionsTokens: [],
+        topTokens: [],
+        loseTokens: [],
+        tokensWithBalance: []
+      }
+    }
     //Generate array for get multiple plrices
     transactions.forEach((transaction) => {
       const { contractAddress, blockNumber } = transaction
@@ -54,62 +66,179 @@ export const useEtherscan = () => {
       const { contractAddress, tokenDecimal, tokenName, tokenSymbol } = transaction
       const side =
         transaction.from.toLocaleLowerCase() === wallet.toLocaleLowerCase() ? 'SELL' : 'BUY'
-      const price = _tokenPricesData[contractAddress][transaction.blockNumber].usdPrice
+
       transaction.side = side
-      transaction.usdPrice = getQuantityByValue(transaction.value) * price
+      transaction.tokenUSDPrice =
+        _tokenPricesData[contractAddress][transaction.blockNumber].usdPrice
+
       let token = transactionsTokens[contractAddress]
+
       if (!token) {
         token = {
           tokenDecimal,
           contractAddress,
           name: tokenName,
           symbol: tokenSymbol,
-          transactions: [transaction],
-          totalBuyValue: 0,
-          totalBuyPrice: 0,
-          totalSellValue: 0,
-          totalSellPrice: 0
+          transactions: [
+            {
+              blockNumber: transaction.blockNumber,
+              contractAddress: transaction.contractAddress,
+              cumulativeGasUsed: transaction.cumulativeGasUsed,
+              from: transaction.from,
+              gas: transaction.gas,
+              gasPrice: transaction.gasPrice,
+              gasUsed: transaction.gasUsed,
+              side: transaction.side,
+              timeStamp: transaction.timeStamp,
+              to: transaction.to,
+              tokenName: transaction.tokenName,
+              tokenSymbol: transaction.tokenSymbol,
+              tokenUSDPrice: transaction.tokenUSDPrice,
+              value: transaction.value
+            }
+          ]
         }
         transactionsTokens[contractAddress] = token
       } else {
-        token.transactions.push(transaction)
-      }
-      if (side === 'BUY') {
-        token.totalBuyValue += getQuantityByValue(transaction.value)
-        token.totalBuyPrice += getQuantityByValue(transaction.value) * price
-      } else if (side === 'SELL') {
-        token.totalSellValue += getQuantityByValue(transaction.value)
-        token.totalSellPrice += getQuantityByValue(transaction.value) * price
+        token.transactions.push({
+          blockNumber: transaction.blockNumber,
+          contractAddress: transaction.contractAddress,
+          cumulativeGasUsed: transaction.cumulativeGasUsed,
+          from: transaction.from,
+          gas: transaction.gas,
+          gasPrice: transaction.gasPrice,
+          gasUsed: transaction.gasUsed,
+          side: transaction.side,
+          timeStamp: transaction.timeStamp,
+          to: transaction.to,
+          tokenName: transaction.tokenName,
+          tokenSymbol: transaction.tokenSymbol,
+          tokenUSDPrice: transaction.tokenUSDPrice,
+          value: transaction.value
+        })
       }
     })
 
+    console.log('----------Token transactions---------')
+    console.log(transactionsTokens)
     Object.values(transactionsTokens).forEach((token) => {
-      token.remainderBalance = token.totalBuyValue - token.totalSellValue
-      token.pnl_value = token.totalSellPrice - token.totalBuyPrice
-      token.pnl_percent = token.totalBuyPrice ? (token.pnl_value / token.totalBuyPrice) * 100 : 100
-      token.pnl_unrealized = 0
+      let profitNotItPnL = 0
+      let tokenBalance = 0
+      let totalBuy = 0
+      let totalSell = 0
+      let latestTransactionType = null
+      let PnL = 0
+      let PnLPercent = 0
+      let unrealizedPnL = 0
+      token.transactions
+        .sort((a, b) => a.timeStamp - b.timeStamp)
+        .forEach((transaction) => {
+          if (latestTransactionType === 'SELL') {
+            if (transaction.side === 'SELL') {
+              //Если пользователь в очередной раз продает токен то проверяем какой объем он продает
+              //если продал больше чем купил ранее
+              if (weiToNumber(transaction.value) > tokenBalance) {
+                //Получаем кол-во токенов которые не используются при рассчете PnL
+                const notProfitValue = weiToNumber(transaction.value) - tokenBalance
+                //Увеличиваем профит который не учитывается при рассчете PnL
+                profitNotItPnL +=
+                  notProfitValue * transaction.tokenUSDPrice -
+                  weiToNumber(transaction.gasPrice * transaction.gasUsed)
+                //Обновляем сколько было продано токена
+                totalSell +=
+                  tokenBalance * transaction.tokenUSDPrice -
+                  weiToNumber(transaction.gasPrice * transaction.gasUsed)
+                //Обнуляем баланс предполагая что было продано все
+                tokenBalance = 0
+                //если продал меньше или столько же чем купил ранее
+              } else if (transaction.value <= tokenBalance) {
+                //Обновляем сумму на которую было продано
+                totalSell +=
+                  weiToNumber(transaction.value) * transaction.tokenUSDPrice -
+                  weiToNumber(transaction.gasPrice * transaction.gasUsed)
+                //Обновляем остаточный баланс
+                tokenBalance -= weiToNumber(transaction.value)
+              }
+            } else if (transaction.side === 'BUY') {
+              //Если пользователь ранее продавал а теперь вновь купил то обновляем общую сумму покупки
+              totalBuy +=
+                weiToNumber(transaction.value) * transaction.tokenUSDPrice +
+                weiToNumber(transaction.gasPrice * transaction.gasUsed)
+              //Обновляем баланс купленного
+              tokenBalance += weiToNumber(transaction.value)
+            }
+          } else if (latestTransactionType === 'BUY') {
+            if (transaction.side === 'SELL') {
+              //если продал больше чем купил ранее
+              if (weiToNumber(transaction.value) > tokenBalance) {
+                //Получаем кол-во токенов которые не используются при рассчете PnL
+                const notProfitValue = weiToNumber(transaction.value) - tokenBalance
+                //Увеличиваем профит который не учитывается при рассчете PnL
+                profitNotItPnL +=
+                  notProfitValue * transaction.tokenUSDPrice -
+                  weiToNumber(transaction.gasPrice * transaction.gasUsed)
+                //Обновляем сколько было продано токена
+                totalSell +=
+                  tokenBalance * transaction.tokenUSDPrice -
+                  weiToNumber(transaction.gasPrice * transaction.gasUsed)
+                //Обнуляем баланс предполагая что было продано все
+                tokenBalance = 0
+                //если продал меньше или столько же чем купил ранее
+              } else if (weiToNumber(transaction.value) <= tokenBalance) {
+                //Обновляем сумму на которую было продано
+                totalSell +=
+                  weiToNumber(transaction.value) * transaction.tokenUSDPrice -
+                  weiToNumber(transaction.gasPrice * transaction.gasUsed)
+                //Обновляем остаточный баланс
+                tokenBalance -= weiToNumber(transaction.value)
+              }
+            } else if (transaction.side === 'BUY') {
+              //Если купил снова то обновляем общую сумму покупки токена
+              totalBuy +=
+                weiToNumber(transaction.value) * transaction.tokenUSDPrice +
+                weiToNumber(transaction.gasPrice * transaction.gasUsed)
+              //Обновляем информацию о кол-ве токенов
+              tokenBalance += weiToNumber(transaction.value)
+            }
+          } else {
+            //если нет информации о том покупал ли пользователь ранее или продавал
+            latestTransactionType = transaction.side
+            if (transaction.side === 'SELL') {
+              //Если продал то мы записываем профит который не учитывается при рассчете PnL
+              profitNotItPnL +=
+                weiToNumber(transaction.value) * transaction.tokenUSDPrice -
+                weiToNumber(transaction.gasPrice * transaction.gasUsed)
+            } else if (transaction.side === 'BUY') {
+              //Если купил то обновляем общую стоимость покупки и баланс токенов
+              totalBuy +=
+                weiToNumber(transaction.value) * transaction.tokenUSDPrice +
+                weiToNumber(transaction.gasPrice * transaction.gasUsed)
+              tokenBalance += weiToNumber(transaction.value)
+            }
+          }
+        })
+      //После огромного числа проверок и рассчетов мы имеет totalSell & totalBuy для того чтобы рассчитать PnL
+      //Если пользователь продавал купленный токен в переданном интервале времени
+      if (totalBuy !== 0 && totalSell !== 0) {
+        PnL = totalSell - totalBuy
+        //Считаем сколько в процентах
+        PnLPercent = (PnL / totalBuy) * 100
+      }
+      //Считаем нереализованный Pnl (остаточный баланс * на текущую цену токена)
+      unrealizedPnL = tokenBalance * 1 //где 1 - это цена тока на данный момент
+
+      //Обновляем информацию о токене
+      token.totalBuy = totalBuy
+      token.totalSell = totalSell
+      token.tokenBalance = tokenBalance
+      token.unrealizedPnL = unrealizedPnL
+      token.PnL = PnL
+      token.PnLPercent = PnLPercent
+      token.profitNotItPnL = profitNotItPnL
     })
-
-    const loseTokens = Object.values(transactionsTokens)
-      .sort((a, b) => b.totalBuyValue - a.totalBuyValue)
-      .slice(0, 3)
-    const topTokens = Object.values(transactionsTokens)
-      .sort((a, b) => b.totalSellValue - a.totalSellValue)
-      .slice(0, 3)
-
-    const tokensWithBalance = Object.values(transactionsTokens).filter(
-      (token) => token.totalBuyValue > 0
-    )
-    console.log('----------Token by transactions---------')
-    const res = {
-      transactionsTokens,
-      topTokens,
-      loseTokens,
-      tokensWithBalance
-    }
 
     console.timeEnd('Execution Time')
-    return res
+    return Object.values(transactionsTokens).filter((token) => token.PnL !== 0)
   }
 
   /**
@@ -162,12 +291,14 @@ export const useEtherscan = () => {
    * @return {number} The latest block number in decimal format.
    */
   const getLatestBlockNumber = async () => {
-    const url = `https://api.etherscan.io/api?module=proxy&action=eth_blockNumber&apikey=${ETHERSCAN_API_KEY}`
+    const params = new URLSearchParams({
+      module: 'proxy',
+      action: 'eth_blockNumber'
+    })
 
     try {
-      const response = await fetch(url)
-      const data = await response.json()
-      return parseInt(data.result, 16)
+      const response = await $etherscan.get(`&${params}`)
+      return parseInt(response?.data?.result, 16)
     } catch (error) {
       console.error(error)
     }
@@ -180,6 +311,9 @@ export const useEtherscan = () => {
    * @return {type} the quantity in ether
    */
   const getQuantityByValue = (value) => {
+    return Number(Web3.utils.fromWei(value, 'ether'))
+  }
+  const weiToNumber = (value) => {
     return Number(Web3.utils.fromWei(value, 'ether'))
   }
 
@@ -1123,6 +1257,7 @@ export const useEtherscan = () => {
     getTransactions,
     getLatestBlockNumber,
     getQuantityByValue,
+    weiToNumber,
     getBlocksFilterByDate,
     getAnalytics,
     getEthLastPrice

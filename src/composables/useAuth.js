@@ -11,10 +11,10 @@ export default function useAuth() {
   }
 
   async function register(
-    nickname: string,
-    email: string,
-    password: string,
-    telegram_chat_id: string
+    nickname,
+    email,
+    password,
+    telegram_chat_id
   ) {
     const response = await $api.post(`auth/register`, {
       nickname,
@@ -35,7 +35,7 @@ export default function useAuth() {
     return response?.data
   }
 
-  async function login(chatId: string) {
+  async function login(chatId) {
     const response = await $api.post(`auth/login/telegram`, {
       chatId: String(chatId)
     })

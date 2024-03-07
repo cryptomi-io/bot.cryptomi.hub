@@ -1,4 +1,4 @@
-import { $gecko } from '@/utils/geckoApi.js'
+import { $gecko } from '@/services/gecko.js'
 import { defineStore } from 'pinia'
 
 export const useGCoinsStore = defineStore({

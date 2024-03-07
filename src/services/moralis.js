@@ -1,12 +1,15 @@
 import axios from 'axios'
-const API_KEY = "CG-kEvr2xhjjbUuBaZZ5CPa8VPK";
+const API_KEY = import.meta.env.VITE_MORALIS_API_KEY;
 
-const $gecko = axios.create({
-  baseURL: `https://pro-api.coingecko.com/api/v3/`,
-  headers: {'x-cg-pro-api-key': API_KEY}
+const $moralis = axios.create({
+  baseURL: `https://deep-index.moralis.io/api/v2/`,
+  headers: {
+    'Content-Type': 'application/json',
+    'X-API-Key': API_KEY
+  }
 })
 
-$gecko.interceptors.response.use(
+$moralis.interceptors.response.use(
   (config) => {
     return config
   },
@@ -20,4 +23,4 @@ $gecko.interceptors.response.use(
   }
 )
 
-export { $gecko }
+export { $moralis }
