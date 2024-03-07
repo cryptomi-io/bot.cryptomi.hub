@@ -3,7 +3,7 @@ import { useMoralis } from './useMoralis'
 
 export const useAnalytics = () => {
   //only for developing
-  const mode = 'dev'
+  const mode = 'prod'
 
   const { getShitcoinHistoricalMultiplePrices } = useMoralis()
 
