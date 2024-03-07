@@ -4,10 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev:start": "pm2 start dev.config.cjs",
-    "dev:stop": "pm2 stop dev.config.cjs",
-    "build:start": "pm2 start build.config.cjs",
-    "build:stop": "pm2 stop build.config.cjs",
+    "dev:start": "vite --port 3000",
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
