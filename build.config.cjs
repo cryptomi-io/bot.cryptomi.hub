@@ -1,14 +1,13 @@
 module.exports = {
   apps: [
     {
-      name: 'vite',
-      script: 'vite',
-      args: '--port 3000',
+      name: 'cryptomi_bot_client',
+      script: 'npm',
+      args: 'run build',
       interpreter: 'none',
-      watch: true,
     },
     {
-      name: 'server',
+      name: 'cryptomi_bot_server',
       script: 'server/index.js',
       args: '--port 3005',
       watch: true,
