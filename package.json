@@ -7,7 +7,7 @@
     "dev:start": "pm2 start dev.config.cjs",
     "dev:stop": "pm2 stop dev.config.cjs",
     "build:start": "pm2 start build.config.cjs",
-    "build:stop": "pm2 stop build.config.cjs",    
+    "build:stop": "pm2 stop build.config.cjs",
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
@@ -16,6 +16,7 @@
   "dependencies": {
     "axios": "^1.6.7",
     "etherscan-ts": "^1.1.0",
+    "events": "^3.3.0",
     "express": "^4.18.2",
     "notiwind": "^2.0.2",
     "pinia": "^2.1.7",
