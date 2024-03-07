@@ -24,7 +24,6 @@ export default function useAuth() {
       response?.data?.error &&
       response?.data?.error.status !== 200
     ) {
-      showAlert('Произошла ошибка при регистрации')
       throw new Error('Произошла ошибка при регистрации')
     }
 
@@ -37,7 +36,6 @@ export default function useAuth() {
     })
 
     if (response?.status !== 200) {
-      showAlert('Произошла ошибка при входе')
       throw new Error('Произошла ошибка при входе')
     }
 
