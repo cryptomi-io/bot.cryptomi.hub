@@ -1,8 +1,8 @@
+import cors from 'cors'
 import dotenv from 'dotenv'
 import express from 'express'
 import morgan from 'morgan'
 import process from 'process'
-import cors from 'cors'
 import { CronSchedule } from './modules/cron/cron.module.js'
 import router from './router.js'
 

@@ -1,8 +1,8 @@
 <script setup>
-import Card from '@/components/ui/Card.vue'
-import { useDexChains } from '@/store/dextools/chains'
+import Card from '@/components/ui/Card.vue';
+import { useDexChains } from '@/store/dextools/chains';
 //import { useGCoinsStore } from '@/store/gecko/coins'
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue';
 
 //const GCoinsStore = useGCoinsStore()
 const DexChains = useDexChains()
@@ -38,26 +38,17 @@ onMounted(async () => {
   isLoading.value = true
   //здесь надо доработать на получение по сети
   if (!DexChains.gainers.length) {
-    await DexChains.getGainers(currentChain.value)
+    DexChains.getGainers(currentChain.value)
   }
   if (!DexChains.losers.length) {
-    //Тайм-аут потому что ловит ошибку 429 - too many requests
-    setTimeout(async () => {
-      await DexChains.getLosers(currentChain.value)
-    }, 1000)
+    DexChains.getLosers(currentChain.value)    
   }
-  // await DexChains.getChains()
-  setTimeout(() => {
-    isLoading.value = false
-  }, 1000)
+  isLoading.value = false
 })
 watch(currentChain, async (newVal) => {
   isLoading.value = true
-  await DexChains.getGainers(newVal)
-  setTimeout(async () => {
-    await await DexChains.getLosers(newVal)
-  }, 1000)
-  console.log(Gainers)
+  DexChains.getGainers(newVal)
+  DexChains.getLosers(newVal)
   isLoading.value = false
 })
 </script>
@@ -145,7 +136,7 @@ watch(currentChain, async (newVal) => {
         <router-link
           v-for="(item, i) in Gainers"
           :key="i"
-          :to="`/dex/${currentChain}/${item?.mainToken?.address}`"
+          :to="`/dex/${currentChain}/${item?.token?.id}`"
         >
           <Card class="py-3 px-4">
             <div class="flex gap-2 items-center">
@@ -155,7 +146,7 @@ watch(currentChain, async (newVal) => {
                   class="inline-block w-10 h-10 rounded-full"
                   :src="
                     'https://www.dextools.io/resources/tokens/logos/ether/' +
-                    item?.mainToken?.address +
+                    item?.token?.id +
                     '.png'
                   "
                   alt="Image Description"
@@ -171,7 +162,7 @@ watch(currentChain, async (newVal) => {
               </div>
               <div class="flex flex-col">
                 <div class="text-zinc-100 font-bold text-sm">
-                  {{ item?.mainToken?.symbol }} / {{ item?.sideToken?.symbol }}
+                  {{ item?.pair }}
                 </div>
                 <div class="text-zinc-400 text-xs" v-html="item?.price.toFixed(8)"></div>
               </div>
@@ -220,7 +211,7 @@ watch(currentChain, async (newVal) => {
         <router-link
           v-for="(item, i) in Losers"
           :key="i"
-          :to="`/dex/${currentChain}/${item?.mainToken?.address}`"
+          :to="`/dex/${currentChain}/${item?.token?.id}`"
           class="w-full"
         >
           <Card class="py-3 px-4">
@@ -231,7 +222,7 @@ watch(currentChain, async (newVal) => {
                   class="inline-block w-10 h-10 rounded-full"
                   :src="
                     'https://www.dextools.io/resources/tokens/logos/ether/' +
-                    item?.mainToken?.address +
+                    item?.token?.id +
                     '.png'
                   "
                   alt="Image Description"
@@ -247,7 +238,7 @@ watch(currentChain, async (newVal) => {
               </div>
               <div class="flex flex-col">
                 <div class="text-zinc-100 font-bold text-sm">
-                  {{ item?.mainToken?.symbol }} / {{ item?.sideToken?.symbol }}
+                  {{ item?.pair }}
                 </div>
                 <div class="text-zinc-400 text-xs" v-html="item?.price.toFixed(8)"></div>
               </div>
@@ -272,4 +263,3 @@ watch(currentChain, async (newVal) => {
     </div>
   </div>
 </template>
-../../store/dextools/chains

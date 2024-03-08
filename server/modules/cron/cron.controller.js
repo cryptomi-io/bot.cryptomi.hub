@@ -45,38 +45,38 @@ export class CronController {
           }
 
           // Create or update tokens in database
-          const token = await prisma.token.upsert({
+          let token = await prisma.token.findUnique({
             where: {
               id: tokenData.id
-            },
-            update: {
-              name: tokenData.name,
-              symbol: tokenData.symbol,
-              factory: tokenData.factory,
-              exchange: tokenData.exchange
-            },
-            create: {
-              ...tokenData
             }
           })
-          const gainerData = {
-            token_id: token.id,
-            pair: item.mainToken.symbol + '/' + item.sideToken.symbol,
-            rank: item?.rank,
-            chain: chain.id,
-            exchange: item.exchange.name,
-            side: 'gainer',
-            timestamp: item?.creationTime,
-            price: item?.price,
-            price24h: item?.price24h,
-            variation24h: item?.variation24h,
-            creationBlock: item?.creationBlock
+          if (!token) {
+            token = await prisma.token.create({
+              data: {
+                ...tokenData
+              }
+            })
           }
-          await prisma.rank_tokens.create({
-            data: {
-              ...gainerData
+          if (token) {
+            const gainerData = {
+              token_id: token.id,
+              pair: item.mainToken.symbol + '/' + item.sideToken.symbol,
+              rank: item?.rank,
+              chain: chain.id,
+              exchange: item.exchange.name,
+              side: 'gainer',
+              timestamp: item?.creationTime,
+              price: item?.price,
+              price24h: item?.price24h,
+              variation24h: item?.variation24h,
+              creationBlock: item?.creationBlock
             }
-          })
+            await prisma.rank_tokens.create({
+              data: {
+                ...gainerData
+              }
+            })
+          }
         })
 
         await delay(2000)
@@ -98,40 +98,40 @@ export class CronController {
             symbol: item.mainToken.symbol,
             factory: item.exchange.factory
           }
-
-          // Create or update tokens in database
-          const token = await prisma.token.upsert({
+          let token = await prisma.token.findUnique({
             where: {
               id: tokenData.id
-            },
-            update: {
-              name: tokenData.name,
-              symbol: tokenData.symbol,
-              factory: tokenData.factory,
-              exchange: tokenData.exchange
-            },
-            create: {
-              ...tokenData
             }
           })
-          const loserData = {
-            token_id: token.id,
-            pair: item.mainToken.symbol + '/' + item.sideToken.symbol,
-            rank: item?.rank,
-            chain: chain.id,
-            exchange: item.exchange.name,
-            side: 'loser',
-            timestamp: item?.creationTime,
-            price: item?.price,
-            price24h: item?.price24h,
-            variation24h: item?.variation24h,
-            creationBlock: item?.creationBlock
+
+          // Create token
+          if (!token) {
+            token = await prisma.token.create({
+              data: {
+                ...tokenData
+              }
+            })
           }
-          await prisma.rank_tokens.create({
-            data: {
-              ...loserData
+          if (token) {
+            const loserData = {
+              token_id: token.id,
+              pair: item.mainToken.symbol + '/' + item.sideToken.symbol,
+              rank: item?.rank,
+              chain: chain.id,
+              exchange: item.exchange.name,
+              side: 'loser',
+              timestamp: item?.creationTime,
+              price: item?.price,
+              price24h: item?.price24h,
+              variation24h: item?.variation24h,
+              creationBlock: item?.creationBlock
             }
-          })
+            await prisma.rank_tokens.create({
+              data: {
+                ...loserData
+              }
+            })
+          }
         })
       })
       console.log('[GAINERS_LOSERS] Cron job executed successfully')

@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { $dt } from '../../services/dextools.js'
+import { $hub } from '../../services/hub.js'
 
 export const useDexChains = defineStore({
   id: 'chains',
@@ -51,7 +52,8 @@ export const useDexChains = defineStore({
     },
     async getGainers(chain) {
       //https://public-api.dextools.io/trial/v2/ranking/ether/gainers
-      const response = await $dt.get('ranking/' + chain + '/gainers')
+      // const response = await $dt.get('ranking/' + chain + '/gainers')
+      const response = await $hub.get('market/info/' + chain + '/gainer')
       if (response?.status === 200) {
         const gainers = response?.data?.data
         this.setGainers(gainers)
@@ -59,7 +61,9 @@ export const useDexChains = defineStore({
     },
     async getLosers(chain) {
       //https://public-api.dextools.io/trial/v2/ranking/ether/losers
-      const response = await $dt.get('ranking/' + chain + '/losers')
+      // const response = await $dt.get('ranking/' + chain + '/losers')
+      const response = await $hub.get('market/info/' + chain + '/loser')
+
       if (response?.status === 200) {
         const losers = response?.data?.data
         this.setLosers(losers)
