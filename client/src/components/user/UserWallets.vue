@@ -1,8 +1,8 @@
 <script setup>
-import Card from '@/components/ui/Card.vue';
-import { useDexChains } from '@/store/dextools/chains';
+import Card from '@/components/ui/Card.vue'
+import { useDexChains } from '@/store/dextools/chains'
 //import { useGCoinsStore } from '@/store/gecko/coins'
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue'
 
 //const GCoinsStore = useGCoinsStore()
 const DexChains = useDexChains()
@@ -13,6 +13,7 @@ const DexChains = useDexChains()
 const tokensForView = 8
 const isGainersOpen = ref(false)
 const isLosersOpen = ref(false)
+const loadImage = ref(true)
 const ChainsList = computed(() => DexChains.list || [])
 
 const Gainers = computed(() => {
@@ -41,7 +42,7 @@ onMounted(async () => {
     DexChains.getGainers(currentChain.value)
   }
   if (!DexChains.losers.length) {
-    DexChains.getLosers(currentChain.value)    
+    DexChains.getLosers(currentChain.value)
   }
   isLoading.value = false
 })
@@ -75,7 +76,13 @@ watch(currentChain, async (newVal) => {
             class="flex items-center flex-col"
           >
             <img
-              :src="'https://www.dextools.io/resources/chains/med/' + item?.id + '.png'"
+              v-if="currentChain != item?.id"
+              :src="'/images/chains/' + item?.id + '.png'"
+              class="rounded-full w-10 h-10 object-cover border-2 grayscale"
+            />
+            <img
+              v-else
+              :src="'/images/chains/' + item?.id + '.png'"
               class="rounded-full w-10 h-10 object-cover border-2"
             />
             <h5 class="text-zinc-400 text-xs mt-2">{{ item?.name }}</h5>
@@ -150,14 +157,14 @@ watch(currentChain, async (newVal) => {
                     '.png'
                   "
                   alt="Image Description"
+                  placeholder="TT"
+                  @error="$event.target.class = 'hidden'"
                 />
+
                 <span
                   class="absolute bottom-1 end-1 block p-1 rounded-full transform translate-y-1/3 translate-x-1/3 border-1 w-5 h-5"
                 >
-                  <img
-                    :src="'https://www.dextools.io/resources/chains/med/ether.png'"
-                    alt="placeholder"
-                  />
+                  <img :src="'/images/chains/' + currentChain + '.png'" alt="placeholder" />
                 </span>
               </div>
               <div class="flex flex-col">
@@ -222,18 +229,18 @@ watch(currentChain, async (newVal) => {
                   class="inline-block w-10 h-10 rounded-full"
                   :src="
                     'https://www.dextools.io/resources/tokens/logos/ether/' +
-                    item?.token?.id +
+                    item?.token?.address +
                     '.png'
                   "
                   alt="Image Description"
+                  placeholder="TT"
+                  @error="$event.target.class = 'hidden'"
                 />
+
                 <span
                   class="absolute bottom-1 end-1 block p-1 rounded-full transform translate-y-1/3 translate-x-1/3 border-1 w-5 h-5"
                 >
-                  <img
-                    :src="'https://www.dextools.io/resources/chains/med/ether.png'"
-                    alt="placeholder"
-                  />
+                  <img :src="'/images/chains/' + currentChain + '.png'" alt="placeholder" />
                 </span>
               </div>
               <div class="flex flex-col">
