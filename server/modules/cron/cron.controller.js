@@ -50,6 +50,7 @@ export class CronController {
               id: tokenData.id
             }
           })
+          console.log(token)
           if (!token) {
             token = await prisma.token.create({
               data: {
