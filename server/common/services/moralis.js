@@ -1,10 +1,9 @@
-import axios from 'axios';
-import dotenv from 'dotenv';
-import process from 'process';
+import axios from 'axios'
+import dotenv from 'dotenv'
+import process from 'process'
 dotenv.config()
 
-
-const API_KEY = process.env.MORALIS_API_KEY;
+const API_KEY = process.env.MORALIS_API_KEY
 
 const $moralis = axios.create({
   baseURL: `https://deep-index.moralis.io/api/v2/`,
@@ -28,4 +27,4 @@ $moralis.interceptors.response.use(
   }
 )
 
-export { $moralis };
+export { $moralis }

@@ -1,14 +1,13 @@
-import axios from 'axios';
-import dotenv from 'dotenv';
-import process from 'process';
+import axios from 'axios'
+import dotenv from 'dotenv'
+import process from 'process'
 dotenv.config()
 
-
-const API_KEY = process.env.GECKO_API_KEY;
+const API_KEY = process.env.GECKO_API_KEY
 
 const $gecko = axios.create({
   baseURL: `https://pro-api.coingecko.com/api/v3/`,
-  headers: {'x-cg-pro-api-key': API_KEY}
+  headers: { 'x-cg-pro-api-key': API_KEY }
 })
 
 $gecko.interceptors.response.use(
@@ -25,4 +24,4 @@ $gecko.interceptors.response.use(
   }
 )
 
-export { $gecko };
+export { $gecko }

@@ -25,20 +25,20 @@ export const useDextools = () => {
       "reddit": ""
     }
    */
-    const getTokenInfoByAddress = async (chain, address) => {
-      //https://public-api.dextools.io/trial/v2/token/ether/0xfb7b4564402e5500db5bb6d63ae671302777c75a
-     try {
-       const response = await $dt.get('token/'+chain+'/'+address)
-        if (response?.status === 200) {
-          return response?.data?.data
-        }
-     } catch (error) {
-        console.log(error)
+  const getTokenInfoByAddress = async (chain, address) => {
+    //https://public-api.dextools.io/trial/v2/token/ether/0xfb7b4564402e5500db5bb6d63ae671302777c75a
+    try {
+      const response = await $dt.get('token/' + chain + '/' + address)
+      if (response?.status === 200) {
+        return response?.data?.data
       }
-      return null
+    } catch (error) {
+      console.log(error)
     }
-    
-    /**
+    return null
+  }
+
+  /**
      * Retrieve audit information of a specific token.
      * GET /v2/token/{chain}/{address}/audit
      * 
@@ -60,18 +60,18 @@ export const useDextools = () => {
       isPotentiallyScam * string Token is potentially a scam
       updatedAt * date-time Audit update date
      */
-     const getTokenAuditByAddress = async (chain, address) => {
-      try {
-       const response = await $dt.get('token/'+chain+'/'+address+'/audit')
-        if (response?.status === 200) {
-          return response?.data?.data
-        }
-     } catch (error) {
-        console.log(error)
+  const getTokenAuditByAddress = async (chain, address) => {
+    try {
+      const response = await $dt.get('token/' + chain + '/' + address + '/audit')
+      if (response?.status === 200) {
+        return response?.data?.data
       }
-      return null
+    } catch (error) {
+      console.log(error)
     }
-    /**
+    return null
+  }
+  /**
      * Obtain additional information about a specific token.
      * GET /v2/token/{chain}/{address}/info
      * 
@@ -82,19 +82,19 @@ export const useDextools = () => {
       holders * number Token holder count
       transactions * number Token transaction count
      */
-     const getTokenAdditInfoByAddress = async (chain, address) => {
-      try {
-       const response = await $dt.get('token/'+chain+'/'+address+'/info')
-        if (response?.status === 200) {
-          return response?.data?.data
-        }
-     } catch (error) {
-        console.log(error)
+  const getTokenAdditInfoByAddress = async (chain, address) => {
+    try {
+      const response = await $dt.get('token/' + chain + '/' + address + '/info')
+      if (response?.status === 200) {
+        return response?.data?.data
       }
-      return null
+    } catch (error) {
+      console.log(error)
     }
-    
-      /**
+    return null
+  }
+
+  /**
      * Get lock information of a specific token.
      * GET /v2/token/{chain}/{address}/locks
      * 
@@ -110,19 +110,19 @@ export const useDextools = () => {
         lockDate date-time Lock date
         unlockDate * date-time Unlock date
      */
-     const getTokenLockInfoByAddress = async (chain, address) => {
-      try {
-       const response = await $dt.get('token/'+chain+'/'+address+'/locks')
-        if (response?.status === 200) {
-          return response?.data?.data
-        }
-     } catch (error) {
-        console.log(error)
+  const getTokenLockInfoByAddress = async (chain, address) => {
+    try {
+      const response = await $dt.get('token/' + chain + '/' + address + '/locks')
+      if (response?.status === 200) {
+        return response?.data?.data
       }
-      return null
+    } catch (error) {
+      console.log(error)
     }
-    
-    /**
+    return null
+  }
+
+  /**
      * Retrieve price information of a specific token.
      * GET /v2/token/{chain}/{address}/price 
      {
@@ -142,17 +142,17 @@ export const useDextools = () => {
       "variation24h": 0
       }
      */
-     const getTokenPriceByAddress = async (chain, address) => {
-      try {
-       const response = await $dt.get('token/'+chain+'/'+address+'/price')
-        if (response?.status === 200) {
-          return response?.data?.data
-        }
-     } catch (error) {
-        console.log(error)
+  const getTokenPriceByAddress = async (chain, address) => {
+    try {
+      const response = await $dt.get('token/' + chain + '/' + address + '/price')
+      if (response?.status === 200) {
+        return response?.data?.data
       }
-      return null
+    } catch (error) {
+      console.log(error)
     }
+    return null
+  }
   const getChains = async () => {
     // "https://public-api.dextools.io/trial/v2/blockchain" \
     const response = await $dt.get('blockchain', {
@@ -164,32 +164,31 @@ export const useDextools = () => {
 
     if (response?.status === 200) {
       return response?.data?.data?.results
-    }else{
+    } else {
       return []
     }
   }
   const getGainers = async (chain) => {
     //https://public-api.dextools.io/trial/v2/ranking/ether/gainers
-    const response = await $dt.get('ranking/'+chain+'/gainers')
-    
+    const response = await $dt.get('ranking/' + chain + '/gainers')
+
     if (response?.status === 200) {
       return response?.data?.data
-    }else{
+    } else {
       return []
     }
-    
   }
   const getLosers = async (chain) => {
     //https://public-api.dextools.io/trial/v2/ranking/ether/losers
-    const response = await $dt.get('ranking/'+chain+'/losers')
-    
+    const response = await $dt.get('ranking/' + chain + '/losers')
+
     if (response?.status === 200) {
       return response?.data?.data
-    }else{
+    } else {
       return []
     }
   }
-  return  {
+  return {
     getChains,
     getGainers,
     getLosers,

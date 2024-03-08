@@ -2,7 +2,6 @@ import { $etherscan } from '../services/etherscan'
 import { Etherscan } from 'etherscan-ts'
 import Web3 from 'web3'
 
-
 export const useEtherscan = () => {
   const ETHERSCAN_API_KEY = import.meta.env.VITE_ETHERSCAN_API_KEY
   const $eth = new Etherscan(ETHERSCAN_API_KEY)

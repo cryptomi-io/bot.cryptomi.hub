@@ -7,16 +7,14 @@ routes.push({
   path: '/dex/:chain/:address',
   component: TokenDetail,
   props: true // Это позволит передать :chain и :address как props в компонент
-});
-
-
+})
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
   scrollBehavior(to, from, savedPosition) {
     // возвращаем требуемую позицию скролла
-    return { top: 0 };
+    return { top: 0 }
   }
 })
 
@@ -25,9 +23,9 @@ router.beforeEach((to, from, next) => {
 
   if (AUTH_ROUTES.find((item) => item.path === to.path) && !isAuth) {
     next('/welcome')
-  } else if(isAuth && GUEST_ROUTES.find((item) => item.path === to.path)){
+  } else if (isAuth && GUEST_ROUTES.find((item) => item.path === to.path)) {
     next('/')
-  }else{
+  } else {
     next()
   }
 })

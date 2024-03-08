@@ -2,23 +2,17 @@ import { PrismaClient } from '@prisma/client'
 import { validationResult } from 'express-validator'
 import { useDextools } from '../../common/hooks/useDextools.js'
 
-const { 
-  getTokenInfoByAddress, 
-  getTokenAuditByAddress, 
-  } = useDextools()
+const { getTokenInfoByAddress, getTokenAuditByAddress } = useDextools()
 
 const prisma = new PrismaClient()
 
 export class MarketController {
-
-  
   async getMarkets(req, res) {
-
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() })
     }
-    const {chain, type} = req.params
+    const { chain, type } = req.params
     console.log(chain, type)
     const response = await prisma.rank_tokens.findMany({
       where: {
@@ -31,8 +25,7 @@ export class MarketController {
     })
     console.log(response)
 
-    res.json({status:'success', data:response})
-
+    res.json({ status: 'success', data: response })
   }
 
   async getTokenInfo(req, res) {
@@ -40,7 +33,7 @@ export class MarketController {
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() })
     }
-    const {address, chain} = req.params
+    const { address, chain } = req.params
 
     let token = null
     let isUpdateInfo = false
@@ -51,17 +44,16 @@ export class MarketController {
       }
     })
     //Try to get token from db
-    if(!db_token){
+    if (!db_token) {
       const token_info_res = await getTokenInfoByAddress(chain, address)
-      if(!token_info_res) return
+      if (!token_info_res) return
       db_token = await prisma.token.create({
-        data:{
+        data: {
           id: token_info_res?.address,
-          symbol:token_info_res?.symbol,
+          symbol: token_info_res?.symbol,
           name: token_info_res?.name,
           exchange: '',
-          factory: '',
-          
+          factory: ''
         }
       })
     }
@@ -70,12 +62,10 @@ export class MarketController {
       ...db_token,
       additional_info: db_token?.additional_info ? JSON.parse(db_token.additional_info) : null
     }
-    
-
 
     //if token doesn't has additional info.info
-    if(!token?.additional_info?.info || !Object.values(token?.additional_info?.info).length){
-      await delay(1000) 
+    if (!token?.additional_info?.info || !Object.values(token?.additional_info?.info).length) {
+      await delay(1000)
       const info_response = await getTokenInfoByAddress(chain, address)
       token.additional_info = {
         ...token.additional_info,
@@ -83,8 +73,8 @@ export class MarketController {
       }
       isUpdateInfo = true
     }
-    if(!token?.additional_info?.audit ||!Object.values(token?.additional_info?.audit).length){
-      await delay(1000) 
+    if (!token?.additional_info?.audit || !Object.values(token?.additional_info?.audit).length) {
+      await delay(1000)
       const audit_response = await getTokenAuditByAddress(chain, address)
       token.additional_info = {
         ...token.additional_info,
@@ -92,9 +82,8 @@ export class MarketController {
       }
       isUpdateInfo = true
     }
-    
-    if(isUpdateInfo){
 
+    if (isUpdateInfo) {
       await prisma.token.update({
         where: {
           id: address
@@ -105,11 +94,10 @@ export class MarketController {
       })
     }
 
-
-    res.json({status:'success', data:token})
+    res.json({ status: 'success', data: token })
   }
 }
 
 function delay(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms))
+  return new Promise((resolve) => setTimeout(resolve, ms))
 }

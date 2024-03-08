@@ -10,10 +10,7 @@ export default function useAuth() {
     login
   }
 
-  async function register(
-    nickname,
-    telegram_chat_id
-  ) {
+  async function register(nickname, telegram_chat_id) {
     const response = await $cryptomi.post(`auth/register/telegram`, {
       nickname,
       telegram_chat_id: String(telegram_chat_id)

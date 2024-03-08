@@ -7,22 +7,22 @@ export const useDexChains = defineStore({
     //isLoading: false,
     list: [
       {
-        'id': 'ether',
-        'name': 'Ethereum'
+        id: 'ether',
+        name: 'Ethereum'
       },
       {
-        'id': 'blast',
-        'name': 'Blast'
+        id: 'blast',
+        name: 'Blast'
       },
       {
-        'id': 'bsc',
-        'name': 'BNB Chain'
+        id: 'bsc',
+        name: 'BNB Chain'
       },
       {
-        'id': 'solana',
-        'name': 'Solana'
-      },
-      ],
+        id: 'solana',
+        name: 'Solana'
+      }
+    ],
     gainers: [],
     losers: []
   }),
@@ -30,10 +30,10 @@ export const useDexChains = defineStore({
     setList(chains) {
       this.list = chains
     },
-    setGainers(gainers){
+    setGainers(gainers) {
       this.gainers = gainers
     },
-    setLosers(losers){
+    setLosers(losers) {
       this.losers = losers
     },
     async getChains() {
@@ -51,18 +51,16 @@ export const useDexChains = defineStore({
     },
     async getGainers(chain) {
       //https://public-api.dextools.io/trial/v2/ranking/ether/gainers
-      const response = await $dt.get('ranking/'+chain+'/gainers')
+      const response = await $dt.get('ranking/' + chain + '/gainers')
       if (response?.status === 200) {
         const gainers = response?.data?.data
         this.setGainers(gainers)
       }
-      
     },
     async getLosers(chain) {
       //https://public-api.dextools.io/trial/v2/ranking/ether/losers
-      const response = await $dt.get('ranking/'+chain+'/losers')
+      const response = await $dt.get('ranking/' + chain + '/losers')
       if (response?.status === 200) {
- 
         const losers = response?.data?.data
         this.setLosers(losers)
       }

@@ -1,9 +1,9 @@
 import axios from 'axios'
-const API_KEY = import.meta.env.VITE_GECKO_API_KEY;
+const API_KEY = import.meta.env.VITE_GECKO_API_KEY
 
 const $gecko = axios.create({
   baseURL: `https://pro-api.coingecko.com/api/v3/`,
-  headers: {'x-cg-pro-api-key': API_KEY}
+  headers: { 'x-cg-pro-api-key': API_KEY }
 })
 
 $gecko.interceptors.response.use(
@@ -18,8 +18,8 @@ $gecko.interceptors.response.use(
       return error.response
     }
     console.log('Retry the request $gecko')
-    await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for 1 second
-    return $gecko(error.config); // Retry the request
+    await new Promise((resolve) => setTimeout(resolve, 1000)) // Wait for 1 second
+    return $gecko(error.config) // Retry the request
   }
 )
 

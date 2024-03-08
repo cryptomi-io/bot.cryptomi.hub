@@ -1,9 +1,9 @@
 import axios from 'axios'
 
-const API_KEY = import.meta.env.VITE_ETHERSCAN_API_KEY;
+const API_KEY = import.meta.env.VITE_ETHERSCAN_API_KEY
 
 const $etherscan = axios.create({
-  baseURL: `https://api.etherscan.io/api`,
+  baseURL: `https://api.etherscan.io/api`
 })
 
 $etherscan.interceptors.response.use(
@@ -18,8 +18,8 @@ $etherscan.interceptors.response.use(
       return error.response
     }
     console.log('Retry the request $etherscan')
-    await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for 1 second
-    return $etherscan(error.config); // Retry the request
+    await new Promise((resolve) => setTimeout(resolve, 1000)) // Wait for 1 second
+    return $etherscan(error.config) // Retry the request
   }
 )
 

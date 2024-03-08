@@ -1,8 +1,30 @@
 {
-    "DB_PATH": "/Users/dab/works/CRYPTOMI/Analyzer API/Database.db",
-    "ETHERSCAN_API_KEY": "DM9W2KBUK6YFTCID42P5FY4568EMPAP5AF",
-    "MORALIS_API_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6Ijg1ZjE4ZjY0LWEyOWQtNGQ2Zi1hNDk3LWU5NmNiMjEwYTczZiIsIm9yZ0lkIjoiMzY1NjQ0IiwidXNlcklkIjoiMzc1Nzg1IiwidHlwZUlkIjoiOGYxYzgzZjYtYzc3ZS00NWM5LWFjMGMtMDg3NGY2NGFhZjhiIiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE3MDA4MjUzMDMsImV4cCI6NDg1NjU4NTMwM30.yieYHhhS_W3lNAwJTq5KFvzKS4ybaaTZrc8NbYIlkCY",
-    "HTTPS_PROVIDER": "https://eth-mainnet.g.alchemy.com/v2/GDfJiOOF47etekdCV0YWEbIwVbhiD89R",
-    "METHODS_TO_FILTER": ["0xe8e33700", "0xf305d719", "0xbaa2abde", "0x02751cec", "0xaf2979eb", "0xded9382a", "0x5b0d5984", "0x2195995c", "0x56a26e87", "0x8d44f13b", "0x7034d120", "0x26ededb8", "0xece8c31c", "0xa9059cbb", "0xc73a2d60", "0x0162e2d0"],
-    "CA_TO_FILTER": ["0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", "0xdac17f958d2ee523a2206206994597c13d831ec7", "0x2170ed0880ac9a755fd29b2688956bd959f933f8", "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"]
+  "DB_PATH": "/Users/dab/works/CRYPTOMI/Analyzer API/Database.db",
+  "ETHERSCAN_API_KEY": "DM9W2KBUK6YFTCID42P5FY4568EMPAP5AF",
+  "MORALIS_API_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6Ijg1ZjE4ZjY0LWEyOWQtNGQ2Zi1hNDk3LWU5NmNiMjEwYTczZiIsIm9yZ0lkIjoiMzY1NjQ0IiwidXNlcklkIjoiMzc1Nzg1IiwidHlwZUlkIjoiOGYxYzgzZjYtYzc3ZS00NWM5LWFjMGMtMDg3NGY2NGFhZjhiIiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE3MDA4MjUzMDMsImV4cCI6NDg1NjU4NTMwM30.yieYHhhS_W3lNAwJTq5KFvzKS4ybaaTZrc8NbYIlkCY",
+  "HTTPS_PROVIDER": "https://eth-mainnet.g.alchemy.com/v2/GDfJiOOF47etekdCV0YWEbIwVbhiD89R",
+  "METHODS_TO_FILTER": [
+    "0xe8e33700",
+    "0xf305d719",
+    "0xbaa2abde",
+    "0x02751cec",
+    "0xaf2979eb",
+    "0xded9382a",
+    "0x5b0d5984",
+    "0x2195995c",
+    "0x56a26e87",
+    "0x8d44f13b",
+    "0x7034d120",
+    "0x26ededb8",
+    "0xece8c31c",
+    "0xa9059cbb",
+    "0xc73a2d60",
+    "0x0162e2d0"
+  ],
+  "CA_TO_FILTER": [
+    "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+    "0xdac17f958d2ee523a2206206994597c13d831ec7",
+    "0x2170ed0880ac9a755fd29b2688956bd959f933f8",
+    "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+  ]
 }

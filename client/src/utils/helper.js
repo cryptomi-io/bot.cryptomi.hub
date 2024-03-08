@@ -44,7 +44,7 @@ export const useHelper = () => {
     return `${address.slice(0, chars + 2)}...${address.slice(-chars)}`
   }
   const delay = (ms) => {
-    return new Promise(resolve => setTimeout(resolve, ms))
+    return new Promise((resolve) => setTimeout(resolve, ms))
   }
 
   return {

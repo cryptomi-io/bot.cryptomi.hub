@@ -2,7 +2,6 @@ import { $dt } from '../services/dextools.js'
 import { $hub } from '../services/hub.js'
 
 export const useDextools = () => {
-  
   /**
    "data": {
     "address": "0xfb7b4564402e5500db5bb6d63ae671302777c75a",
@@ -29,17 +28,17 @@ export const useDextools = () => {
    */
   const getTokenInfoByAddress = async (chain, address) => {
     //https://public-api.dextools.io/trial/v2/token/ether/0xfb7b4564402e5500db5bb6d63ae671302777c75a
-   try {
-     const response = await $dt.get('token/'+chain+'/'+address)
+    try {
+      const response = await $dt.get('token/' + chain + '/' + address)
       if (response?.status === 200) {
         return response?.data?.data
       }
-   } catch (error) {
+    } catch (error) {
       console.log(error)
     }
     return null
   }
-  
+
   /**
    * Retrieve audit information of a specific token.
    * GET /v2/token/{chain}/{address}/audit
@@ -62,13 +61,13 @@ export const useDextools = () => {
     isPotentiallyScam * string Token is potentially a scam
     updatedAt * date-time Audit update date
    */
-   const getTokenAuditByAddress = async (chain, address) => {
+  const getTokenAuditByAddress = async (chain, address) => {
     try {
-     const response = await $dt.get('token/'+chain+'/'+address+'/audit')
+      const response = await $dt.get('token/' + chain + '/' + address + '/audit')
       if (response?.status === 200) {
         return response?.data?.data
       }
-   } catch (error) {
+    } catch (error) {
       console.log(error)
     }
     return null
@@ -84,19 +83,19 @@ export const useDextools = () => {
     holders * number Token holder count
     transactions * number Token transaction count
    */
-   const getTokenAdditInfoByAddress = async (chain, address) => {
+  const getTokenAdditInfoByAddress = async (chain, address) => {
     try {
-     const response = await $dt.get('token/'+chain+'/'+address+'/info')
+      const response = await $dt.get('token/' + chain + '/' + address + '/info')
       if (response?.status === 200) {
         return response?.data?.data
       }
-   } catch (error) {
+    } catch (error) {
       console.log(error)
     }
     return null
   }
-  
-    /**
+
+  /**
    * Get lock information of a specific token.
    * GET /v2/token/{chain}/{address}/locks
    * 
@@ -112,18 +111,18 @@ export const useDextools = () => {
       lockDate date-time Lock date
       unlockDate * date-time Unlock date
    */
-   const getTokenLockInfoByAddress = async (chain, address) => {
+  const getTokenLockInfoByAddress = async (chain, address) => {
     try {
-     const response = await $dt.get('token/'+chain+'/'+address+'/locks')
+      const response = await $dt.get('token/' + chain + '/' + address + '/locks')
       if (response?.status === 200) {
         return response?.data?.data
       }
-   } catch (error) {
+    } catch (error) {
       console.log(error)
     }
     return null
   }
-  
+
   /**
    * Retrieve price information of a specific token.
    * GET /v2/token/{chain}/{address}/price 
@@ -144,21 +143,10 @@ export const useDextools = () => {
     "variation24h": 0
     }
    */
-   const getTokenPriceByAddress = async (chain, address) => {
-      try {
-      const response = await $dt.get('token/'+chain+'/'+address+'/price')
-        if (response?.status === 200) {
-          return response?.data?.data
-        }
-    } catch (error) {
-        console.log(error)
-      }
-      return null
-    }
-  const getTokenInfoFromDbByAddress = async (chain, address) => {
+  const getTokenPriceByAddress = async (chain, address) => {
     try {
-      const response = await $hub.get('market/token/'+chain+'/'+address)
-      if(response.status === 200){
+      const response = await $dt.get('token/' + chain + '/' + address + '/price')
+      if (response?.status === 200) {
         return response?.data?.data
       }
     } catch (error) {
@@ -166,14 +154,24 @@ export const useDextools = () => {
     }
     return null
   }
-  
-  
- return {
-   getTokenPriceByAddress,
-   getTokenLockInfoByAddress,
-   getTokenAdditInfoByAddress,
-   getTokenInfoFromDbByAddress,
-   getTokenAuditByAddress,
-   getTokenInfoByAddress
-}
+  const getTokenInfoFromDbByAddress = async (chain, address) => {
+    try {
+      const response = await $hub.get('market/token/' + chain + '/' + address)
+      if (response.status === 200) {
+        return response?.data?.data
+      }
+    } catch (error) {
+      console.log(error)
+    }
+    return null
+  }
+
+  return {
+    getTokenPriceByAddress,
+    getTokenLockInfoByAddress,
+    getTokenAdditInfoByAddress,
+    getTokenInfoFromDbByAddress,
+    getTokenAuditByAddress,
+    getTokenInfoByAddress
+  }
 }

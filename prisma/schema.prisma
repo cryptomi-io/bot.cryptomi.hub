@@ -13,13 +13,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  chat_id           BigInt   @id  @unique  
-  nickname          String   @unique
-
-  @@map("users")
-}
-
 model Token {
   id                String       @id @unique
   symbol            String    
