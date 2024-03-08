@@ -1,4 +1,4 @@
-import { $api } from '../services/http'
+import { $cryptomi } from '../services/http'
 import { defineStore } from 'pinia'
 
 export const useWalletsStore = defineStore({
@@ -15,7 +15,7 @@ export const useWalletsStore = defineStore({
     },
     async fetchWallets() {
       try {
-        const response = await $api.post(`wallets/spot/getby`, {
+        const response = await $cryptomi.post(`wallets/spot/getby`, {
           currencies: 'usdt,btc,eth'
         })
 

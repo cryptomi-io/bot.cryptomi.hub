@@ -39,12 +39,16 @@ export const useHelper = () => {
     }
   }
 
-  function shortenContractAddress(address, chars = 4) {
+  const shortenContractAddress = (address, chars = 4) => {
     if (!address) return address
     return `${address.slice(0, chars + 2)}...${address.slice(-chars)}`
   }
+  const delay = (ms) => {
+    return new Promise(resolve => setTimeout(resolve, ms))
+  }
 
   return {
+    delay,
     numberFormat,
     countConsecutiveZeros,
     capitalizeFirstLetter,

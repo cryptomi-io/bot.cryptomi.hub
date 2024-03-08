@@ -8,7 +8,7 @@ export class CronSchedule {
   
   
   static run() {
-    // this.updateMarkets()      
+    this.updateMarkets()      
   }
   static updateMarkets() {
     cron.schedule('*/2 * * * *', () => {

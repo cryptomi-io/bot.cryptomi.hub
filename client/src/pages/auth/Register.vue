@@ -1,5 +1,6 @@
 <script setup>
 import Button from '@/components/ui/Button.vue';
+import Loader from '@/components/ui/Loader.vue';
 import useAuth from '@/composables/useAuth';
 import { useRouter } from 'vue-router';
 

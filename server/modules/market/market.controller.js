@@ -2,7 +2,10 @@ import { PrismaClient } from '@prisma/client'
 import { validationResult } from 'express-validator'
 import { useDextools } from '../../common/hooks/useDextools.js'
 
-const { getTokenInfoByAddress, getTokenAuditByAddress } = useDextools()
+const { 
+  getTokenInfoByAddress, 
+  getTokenAuditByAddress, 
+  } = useDextools()
 
 const prisma = new PrismaClient()
 
@@ -50,12 +53,12 @@ export class MarketController {
     //Try to get token from db
     if(!db_token){
       const token_info_res = await getTokenInfoByAddress(chain, address)
-
+      if(!token_info_res) return
       db_token = await prisma.token.create({
         data:{
-          id: token_info_res.address,
-          symbol:token_info_res.symbol,
-          name: token_info_res.name,
+          id: token_info_res?.address,
+          symbol:token_info_res?.symbol,
+          name: token_info_res?.name,
           exchange: '',
           factory: '',
           
@@ -71,10 +74,8 @@ export class MarketController {
 
 
     //if token doesn't has additional info.info
-    if(!token?.additional_info?.info){
-
-      //getTokenInfoByAddress
-      //getTokenAuditByAddress
+    if(!token?.additional_info?.info || !Object.values(token?.additional_info?.info).length){
+      await delay(1000) 
       const info_response = await getTokenInfoByAddress(chain, address)
       token.additional_info = {
         ...token.additional_info,
@@ -82,7 +83,8 @@ export class MarketController {
       }
       isUpdateInfo = true
     }
-    if(!token.additional_info?.audit){
+    if(!token?.additional_info?.audit ||!Object.values(token?.additional_info?.audit).length){
+      await delay(1000) 
       const audit_response = await getTokenAuditByAddress(chain, address)
       token.additional_info = {
         ...token.additional_info,
@@ -90,6 +92,7 @@ export class MarketController {
       }
       isUpdateInfo = true
     }
+    
     if(isUpdateInfo){
 
       await prisma.token.update({
@@ -105,4 +108,8 @@ export class MarketController {
 
     res.json({status:'success', data:token})
   }
+}
+
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms))
 }

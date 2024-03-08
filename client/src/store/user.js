@@ -1,4 +1,4 @@
-import { $api } from '../services/http.js'
+import { $cryptomi } from '../services/http.js'
 import { defineStore } from 'pinia'
 
 export const useUserStore = defineStore({
@@ -60,7 +60,7 @@ export const useUserStore = defineStore({
     },
     async fetchProfile() {
       try {
-        const response = await $api.get(`auth/profile`)
+        const response = await $cryptomi.get(`auth/profile`)
         const profile = response?.data?.data?.result
         if (!profile) this.logout()
 

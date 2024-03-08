@@ -1,5 +1,6 @@
 <script setup>
 import Card from '@/components/ui/Card.vue'
+import Loader from '@/components/ui/Loader.vue'
 import { useDextools } from '@/composables/useDextools'
 import { useHelper } from '@/utils/helper'
 import { Icon } from '@iconify/vue'
@@ -8,13 +9,12 @@ import { useWebAppNavigation } from 'vue-tg'
 import { toast } from 'vue3-toastify'
 
 const { openLink } = useWebAppNavigation()
-const { capitalizeFirstLetter, numberFormat, shortenContractAddress } = useHelper()
+const { capitalizeFirstLetter, numberFormat, shortenContractAddress, delay } = useHelper()
 const {
   getTokenPriceByAddress,
   getTokenLockInfoByAddress,
   getTokenAdditInfoByAddress,
-  getTokenAuditByAddress,
-  getTokenInfoByAddress
+  getTokenInfoFromDbByAddress
 } = useDextools()
 
 const props = defineProps({
@@ -41,19 +41,16 @@ const socialInfo = computed(() => {
   }
 })
 onMounted(async () => {
-  token.value.info = await getTokenInfoByAddress(props.chain, props.address)
-  await setTimeout(async () => {
-    token.value.lock = await getTokenLockInfoByAddress(props.chain, props.address)
-  }, 300)
-  await setTimeout(async () => {
-    token.value.audit = await getTokenAuditByAddress(props.chain, props.address)
-  }, 300)
-  await setTimeout(async () => {
-    token.value.additional = await getTokenAdditInfoByAddress(props.chain, props.address)
-  }, 300)
-  await setTimeout(async () => {
-    token.value.price = await getTokenPriceByAddress(props.chain, props.address)
-  }, 300)
+  const tokenInfo = await getTokenInfoFromDbByAddress(props.chain, props.address)
+  token.value.info = tokenInfo.additional_info.info
+  token.value.audit = tokenInfo.additional_info.audit
+ 
+  token.value.additional = await getTokenAdditInfoByAddress(props.chain, props.address)
+  delay(1000)
+  token.value.lock = await getTokenLockInfoByAddress(props.chain, props.address)
+  delay(1000)
+  token.value.price = await getTokenPriceByAddress(props.chain, props.address)
+  
   isLoading.value = false
 })
 const copy = (text) => {
@@ -69,7 +66,9 @@ const copy = (text) => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-3">
+  <Loader v-if="isLoading" />
+
+  <div v-else class="flex flex-col gap-3">
     <template v-if="isLoading">
       <div class="flex items-center gap-4 w-full">
         <div class="rounded-full animate-pulse bg-neutral-700 h-10 w-10"></div>
@@ -115,14 +114,14 @@ const copy = (text) => {
     <!-- --------SOCIALS------ -->
     <div class="flex w-full gap-1 mt-4">
       <div
-        @click="openLink(token?.info?.website)"
+        @click="token?.info?.website ? openLink(token?.info?.website) : null"
         class="flex bg-neutral-800 rounded-xl items-center py-1 px-4 w-full justify-center gap-1 text-xs text-zinc-300"
       >
         <Icon icon="mdi:web" class="w-4 h-4" />
         <span>Website</span>
       </div>
       <div
-        @click="openLink(token?.info?.twitter)"
+        @click="token?.info?.twitter ? openLink(token?.info?.twitter): null"
         class="flex bg-neutral-800 rounded-xl items-center py-1 px-4 w-full justify-center gap-1 text-xs text-zinc-300"
       >
         <Icon icon="basil:twitter-outline" class="w-4 h-4" />
@@ -329,4 +328,3 @@ const copy = (text) => {
     </div>
   </div>
 </template>
-../../../composables/useDextools../../../utils/helper

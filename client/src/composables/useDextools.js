@@ -1,4 +1,5 @@
 import { $dt } from '../services/dextools.js'
+import { $hub } from '../services/hub.js'
 
 export const useDextools = () => {
   
@@ -144,21 +145,34 @@ export const useDextools = () => {
     }
    */
    const getTokenPriceByAddress = async (chain, address) => {
+      try {
+      const response = await $dt.get('token/'+chain+'/'+address+'/price')
+        if (response?.status === 200) {
+          return response?.data?.data
+        }
+    } catch (error) {
+        console.log(error)
+      }
+      return null
+    }
+  const getTokenInfoFromDbByAddress = async (chain, address) => {
     try {
-     const response = await $dt.get('token/'+chain+'/'+address+'/price')
-      if (response?.status === 200) {
+      const response = await $hub.get('market/token/'+chain+'/'+address)
+      if(response.status === 200){
         return response?.data?.data
       }
-   } catch (error) {
+    } catch (error) {
       console.log(error)
     }
     return null
   }
   
+  
  return {
    getTokenPriceByAddress,
    getTokenLockInfoByAddress,
    getTokenAdditInfoByAddress,
+   getTokenInfoFromDbByAddress,
    getTokenAuditByAddress,
    getTokenInfoByAddress
 }

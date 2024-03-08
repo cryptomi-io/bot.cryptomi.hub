@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from 'axios';
 const API_KEY = import.meta.env.VITE_MORALIS_API_KEY;
 
 const $moralis = axios.create({
@@ -20,7 +20,10 @@ $moralis.interceptors.response.use(
     if (error.response?.status === 420) {
       return error.response
     }
+    console.log('Retry the request $moralis')
+    await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for 1 second
+    return $moralis(error.config); // Retry the request
   }
 )
 
-export { $moralis }
+export { $moralis };

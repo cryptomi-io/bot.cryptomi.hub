@@ -20,6 +20,9 @@ $dt.interceptors.response.use(
     if (error.response?.status === 420) {
       return error.response
     }
+    console.log('Retry the request $dt')
+    await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for 1 second
+    return $dt(error.config); // Retry the request
   }
 )
 

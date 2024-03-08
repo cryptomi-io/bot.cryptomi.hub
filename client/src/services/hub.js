@@ -1,20 +1,19 @@
 import axios from 'axios'
 
-const $cryptomi = axios.create({
-  withCredentials: true,
+const $hub = axios.create({
   baseURL:
     import.meta.env.VITE_NODE_ENV === 'development'
-      ? import.meta.env.VITE_DEV_API_URL
-      : import.meta.env.VITE_PRODUCTION_API_URL
+      ? import.meta.env.VITE_DEV_HUB_API_RUL
+      : import.meta.env.VITE_PRODUCTION_HUB_API_URL
 })
 
 const authInterceptor = (config) => {
   return config
 }
 
-$cryptomi.interceptors.request.use(authInterceptor)
+$hub.interceptors.request.use(authInterceptor)
 
-$cryptomi.interceptors.response.use(
+$hub.interceptors.response.use(
   (config) => {
     return config
   },
@@ -28,4 +27,4 @@ $cryptomi.interceptors.response.use(
   }
 )
 
-export { $cryptomi }
+export { $hub }

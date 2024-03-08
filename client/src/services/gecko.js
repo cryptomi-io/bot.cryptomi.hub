@@ -17,6 +17,9 @@ $gecko.interceptors.response.use(
     if (error.response?.status === 420) {
       return error.response
     }
+    console.log('Retry the request $gecko')
+    await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for 1 second
+    return $gecko(error.config); // Retry the request
   }
 )
 
