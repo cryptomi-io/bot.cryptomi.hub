@@ -3,7 +3,7 @@ import { useMoralis } from './useMoralis'
 
 export const useAnalytics = () => {
   //only for developing
-  const mode = 'prod'
+  const mode = import.meta.env.VITE_NODE_ENV === 'development' ? 'dev' : 'prod'
 
   const { getShitcoinHistoricalMultiplePrices } = useMoralis()
 

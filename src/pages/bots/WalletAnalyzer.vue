@@ -1,15 +1,16 @@
 <script setup>
 import Button from '@/components/ui/Button.vue'
 import Card from '@/components/ui/Card.vue'
-
 import { toast } from 'vue3-toastify'
 import 'vue3-toastify/dist/index.css'
-
 import { useAnalytics } from '@/composables/useAnalytics'
+import { useHelper } from '@/utils/helper'
 import { ref } from 'vue'
 
 const { getPnLAnalyticsByEtherscan } = useAnalytics()
-const isLoading = ref(true)
+const { numberFormat } = useHelper()
+
+const isLoading = ref(false)
 const progressWidth = ref(0)
 const tab = ref('profit')
 const formData = ref({
@@ -57,26 +58,6 @@ const formHandleSubmit = async () => {
     .sort((a, b) => b.PnL - a.PnL || b.unrealizedPnL - a.unrealizedPnL)
     .slice(0, 5)
   isLoading.value = false
-}
-
-const countConsecutiveZeros = (num) => {
-  const str = num.toString()
-  const index = str.indexOf('.')
-  if (index === -1) {
-    return 0
-  }
-  const decimalPart = str.slice(index + 1)
-  const match = decimalPart.match(/^0*/)
-  return match ? match[0].length : 0
-}
-const numberFormat = (number, decimals = 8) => {
-  if (number === 0) return 0
-  const num = number.toFixed(decimals)
-  const count = countConsecutiveZeros(num)
-  const str = num.toString().split('.')
-  return (
-    str[0] + '.' + (count > 0 ? `0<small>${count}</small>` : '') + str[1].slice(count, count + 4)
-  )
 }
 </script>
 

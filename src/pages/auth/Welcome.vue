@@ -18,8 +18,10 @@ const router = useRouter()
 const isLoading = ref(true)
 
 const { initDataUnsafe } = useWebApp()
-let chatId = initDataUnsafe?.user?.id;
-// let chatId = 6754514128
+let chatId = 6754514128
+if (import.meta.env.VITE_NODE_ENV !== 'development') {
+  chatId = initDataUnsafe?.user?.id
+}
 onMounted(async () => {
   //Сразу же пытаемся авторизоваться
   await setTimeout(async () => {
@@ -36,10 +38,13 @@ onMounted(async () => {
 
 const signIn = async () => {
   isLoading.value = true
-  const nickname = initDataUnsafe?.user?.username
-  const chatId = initDataUnsafe?.user?.id
-  // const nickname = 'telegram user
-  // const chatId = 6754514128
+  let chatId = 6754514128
+  let nickname = 'some_username'
+
+  if (import.meta.env.VITE_NODE_ENV !== 'development') {
+    chatId = initDataUnsafe?.user?.id
+    nickname = initDataUnsafe?.user?.username
+  }
 
   //Регистрируем пользователя
   try {
