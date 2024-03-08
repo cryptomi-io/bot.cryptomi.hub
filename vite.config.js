@@ -5,13 +5,19 @@ import vue from '@vitejs/plugin-vue'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  root: './client',
   plugins: [
     vue(),
   ],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
+      '@': fileURLToPath(new URL('./client/src', import.meta.url))
     }
+  },
+  build: {
+    rollupOptions: {
+      input: './client/index.html', // путь к вашему входному файлу
+    },
   },
   server: {
     proxy: {

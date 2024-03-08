@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  chat_id           BigInt   @id  @unique  
+  nickname          String   @unique
+
+  @@map("users")
+}
+
+model Token {
+  id                String       @id @unique
+  symbol            String    
+  name              String
+  exchange          String?
+  factory           String?
+  additional_info   Json?        
+  rank_tokens       rank_tokens[]
+
+  @@map("tokens")
+}
+
+model rank_tokens {
+  id                Int         @id @default(autoincrement())
+  token_id          String
+  chain             String
+  exchange          String
+  pair              String
+  rank              Int
+  side              Side        @default(gainer)
+  timestamp         DateTime?
+  price             Float?
+  price24h          Float?
+  variation24h      Float?
+  creationBlock     Float?
+  token             Token       @relation(fields: [token_id], references: [id])
+
+  @@map("rank_tokens")
+}
+
+
+
+enum Side {
+  gainer
+  loser
+}
+
+
