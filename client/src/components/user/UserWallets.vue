@@ -141,13 +141,13 @@ watch(currentChain, async (newVal) => {
     <!-- TABS -->
     <!-- PLACEHOLDER -->
     <template v-if="isLoading">
-      <div class="flex w-full gap-2 mt-4">
+      <div class="flex w-full gap-2">
         <div class="rounded-xl w-full animate-pulse bg-neutral-700 h-10 w-10"></div>
         <div class="rounded-xl w-full animate-pulse bg-neutral-700 h-10 w-10"></div>
       </div>
     </template>
     <template v-else>
-      <div class="flex w-full gap-2 mt-4">
+      <div class="flex w-full gap-2">
         <div
           @click="tab = 'gainers'"
           :class="[
