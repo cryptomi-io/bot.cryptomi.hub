@@ -21,7 +21,12 @@ export class MarketController {
       },
       include: {
         token: true
-      }
+      },
+      orderBy: [
+        {
+          rank: 'asc'
+        }
+      ]
     })
     console.log(response)
 

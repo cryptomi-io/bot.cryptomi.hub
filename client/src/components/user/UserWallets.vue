@@ -1,8 +1,8 @@
 <script setup>
-import Card from '@/components/ui/Card.vue'
-import { useDexChains } from '@/store/dextools/chains'
+import Card from '@/components/ui/Card.vue';
+import { useDexChains } from '@/store/dextools/chains';
 //import { useGCoinsStore } from '@/store/gecko/coins'
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue';
 
 //const GCoinsStore = useGCoinsStore()
 const DexChains = useDexChains()
@@ -33,8 +33,20 @@ const Losers = computed(() => {
 //const HotPools = ref(false)
 
 const isLoading = ref(true)
+
 const tab = ref('gainers')
 const currentChain = ref('ether')
+
+const imageStatus = reactive({});
+
+const handleImgLoad = (id) => {
+  imageStatus[id] =  true;
+};
+
+const handleImgError = (id) => {
+  imageStatus[id] =  false;
+};
+
 onMounted(async () => {
   isLoading.value = true
   //здесь надо доработать на получение по сети
@@ -50,6 +62,7 @@ watch(currentChain, async (newVal) => {
   isLoading.value = true
   DexChains.getGainers(newVal)
   DexChains.getLosers(newVal)
+  
   isLoading.value = false
 })
 </script>
@@ -157,16 +170,21 @@ watch(currentChain, async (newVal) => {
                     '.png'
                   "
                   alt="Image Description"
-                  placeholder="TT"
-                  @error="$event.target.class = 'hidden'"
+                  @load="handleImgLoad(i)"
+                  @error="handleImgError(i)"
+                  v-if="imageStatus[i]"
                 />
-
+                <div v-else class="inline-flex items-center justify-center w-12 h-12 text-xl text-white bg-indigo-500 rounded-full">
+                  {{ item?.pair.substr(0,1) }}
+                </div>
                 <span
                   class="absolute bottom-1 end-1 block p-1 rounded-full transform translate-y-1/3 translate-x-1/3 border-1 w-5 h-5"
                 >
                   <img :src="'/images/chains/' + currentChain + '.png'" alt="placeholder" />
                 </span>
               </div>
+              
+                 {{ console.log() }}           
               <div class="flex flex-col">
                 <div class="text-zinc-100 font-bold text-sm">
                   {{ item?.pair }}
