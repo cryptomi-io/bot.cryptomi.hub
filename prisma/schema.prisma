@@ -14,7 +14,8 @@ datasource db {
 }
 
 model Token {
-  id                String       @id @unique
+  id                Int       @id @default(autoincrement())
+  address           String
   symbol            String    
   name              String
   exchange          String?
@@ -27,7 +28,7 @@ model Token {
 
 model rank_tokens {
   id                Int         @id @default(autoincrement())
-  token_id          String
+  token_id          Int
   chain             String
   exchange          String
   pair              String

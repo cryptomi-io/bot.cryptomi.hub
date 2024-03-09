@@ -37,7 +37,7 @@ export class CronController {
 
         responseGainers.forEach(async (item) => {
           const tokenData = {
-            id: item.mainToken.address,
+            address: item.mainToken.address,
             name: item.mainToken.name,
             symbol: item.mainToken.symbol,
             exchange: item.exchange.name,
@@ -45,12 +45,12 @@ export class CronController {
           }
 
           // Create or update tokens in database
-          let token = await prisma.token.findUnique({
+          let token = await prisma.token.findFirst({
             where: {
-              id: tokenData.id
+              address: tokenData.address
             }
           })
-          console.log(token)
+          
           if (!token) {
             token = await prisma.token.create({
               data: {
@@ -94,14 +94,15 @@ export class CronController {
 
         responseLosers.forEach(async (item) => {
           const tokenData = {
-            id: item.mainToken.address,
+            address: item.mainToken.address,
             name: item.mainToken.name,
             symbol: item.mainToken.symbol,
+            exchange: item.exchange.name,
             factory: item.exchange.factory
           }
-          let token = await prisma.token.findUnique({
+          let token = await prisma.token.findFirst({
             where: {
-              id: tokenData.id
+              address: item.mainToken.address
             }
           })
 

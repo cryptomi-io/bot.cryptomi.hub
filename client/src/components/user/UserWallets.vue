@@ -1,12 +1,18 @@
 <script setup>
-import Card from '@/components/ui/Card.vue';
-import { useDexChains } from '@/store/dextools/chains';
+import Card from '@/components/ui/Card.vue'
+import { useDextools } from '@/composables/useDextools'
+import { useDexChains } from '@/store/dextools/chains'
 //import { useGCoinsStore } from '@/store/gecko/coins'
-import { computed, onMounted, reactive, ref, watch } from 'vue';
+import { Icon } from '@iconify/vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
+import { toast } from 'vue3-toastify'
+
+const { getTokenInfoFromDbByAddress } = useDextools()
 
 //const GCoinsStore = useGCoinsStore()
 const DexChains = useDexChains()
-
+const router = useRouter()
 /**const TrendingList = computed(() =>
   TrendingListOpen.value ? GCoinsStore.coinsTrending : GCoinsStore.coinsTrending.slice(0, 5) || []
 )**/
@@ -14,6 +20,7 @@ const tokensForView = 8
 const isGainersOpen = ref(false)
 const isLosersOpen = ref(false)
 const loadImage = ref(true)
+const searchTokenAddress = ref('')
 const ChainsList = computed(() => DexChains.list || [])
 
 const Gainers = computed(() => {
@@ -37,15 +44,31 @@ const isLoading = ref(true)
 const tab = ref('gainers')
 const currentChain = ref('ether')
 
-const imageStatus = reactive({});
+const imageStatus = reactive({})
 
 const handleImgLoad = (id) => {
-  imageStatus[id] =  true;
-};
+  imageStatus[id] = true
+}
 
 const handleImgError = (id) => {
-  imageStatus[id] =  false;
-};
+  imageStatus[id] = false
+}
+
+const searchToken = async (address) => {
+  const tokenInfo = await getTokenInfoFromDbByAddress(currentChain.value, address)
+  if (!tokenInfo) {
+    toast('Token not found', {
+      autoClose: 1000,
+      type: 'warning',
+      position: 'top-right',
+      theme: 'dark',
+      toastStyle: 'top:10px'
+    })
+    return
+  } else {
+    router.push(`/dex/${currentChain.value}/${address}`)
+  }
+}
 
 onMounted(async () => {
   isLoading.value = true
@@ -62,7 +85,7 @@ watch(currentChain, async (newVal) => {
   isLoading.value = true
   DexChains.getGainers(newVal)
   DexChains.getLosers(newVal)
-  
+
   isLoading.value = false
 })
 </script>
@@ -89,20 +112,32 @@ watch(currentChain, async (newVal) => {
             class="flex items-center flex-col"
           >
             <img
-              v-if="currentChain != item?.id"
               :src="'/images/chains/' + item?.id + '.png'"
-              class="rounded-full w-10 h-10 object-cover border-2 grayscale"
-            />
-            <img
-              v-else
-              :src="'/images/chains/' + item?.id + '.png'"
-              class="rounded-full w-10 h-10 object-cover border-2"
+              :class="[
+                'rounded-full w-10 h-10 object-cover border-2',
+                currentChain === item?.id ? 'border-green-500' : 'grayscale'
+              ]"
             />
             <h5 class="text-zinc-400 text-xs mt-2">{{ item?.name }}</h5>
           </li>
         </ul>
       </Card>
     </template>
+    <!-- SEARCH TOKEN -->
+    <div class="flex w-full my-2 gap-2">
+      <input
+        v-model="searchTokenAddress"
+        type="text"
+        class="w-full p-2 text-sm text-zinc-100 bg-zinc-900 rounded-xl focus:outline-none h-10"
+        placeholder="Enter token contract address"
+      />
+      <button
+        @click="searchToken(searchTokenAddress)"
+        class="rounded-2xl px-5 py-2 inline-flex cursor-pointer w-auto text-center items-center justify-center focus:outline-none bg-green-500"
+      >
+        <Icon icon="icon-park-outline:search" class="w-5 h-5 text-zinc-900" />
+      </button>
+    </div>
     <!-- TABS -->
     <!-- PLACEHOLDER -->
     <template v-if="isLoading">
@@ -156,7 +191,7 @@ watch(currentChain, async (newVal) => {
         <router-link
           v-for="(item, i) in Gainers"
           :key="i"
-          :to="`/dex/${currentChain}/${item?.token?.id}`"
+          :to="`/dex/${currentChain}/${item?.token?.address}`"
         >
           <Card class="py-3 px-4">
             <div class="flex gap-2 items-center">
@@ -174,8 +209,11 @@ watch(currentChain, async (newVal) => {
                   @error="handleImgError(i)"
                   v-if="imageStatus[i]"
                 />
-                <div v-else class="inline-flex items-center justify-center w-12 h-12 text-xl text-white bg-indigo-500 rounded-full">
-                  {{ item?.pair.substr(0,1) }}
+                <div
+                  v-else
+                  class="inline-flex items-center justify-center w-12 h-12 text-xl text-white bg-indigo-500 rounded-full"
+                >
+                  {{ item?.pair.substr(0, 1) }}
                 </div>
                 <span
                   class="absolute bottom-1 end-1 block p-1 rounded-full transform translate-y-1/3 translate-x-1/3 border-1 w-5 h-5"
@@ -183,8 +221,8 @@ watch(currentChain, async (newVal) => {
                   <img :src="'/images/chains/' + currentChain + '.png'" alt="placeholder" />
                 </span>
               </div>
-              
-                 {{ console.log() }}           
+
+              {{ console.log() }}
               <div class="flex flex-col">
                 <div class="text-zinc-100 font-bold text-sm">
                   {{ item?.pair }}
@@ -236,7 +274,7 @@ watch(currentChain, async (newVal) => {
         <router-link
           v-for="(item, i) in Losers"
           :key="i"
-          :to="`/dex/${currentChain}/${item?.token?.id}`"
+          :to="`/dex/${currentChain}/${item?.token?.address}`"
           class="w-full"
         >
           <Card class="py-3 px-4">

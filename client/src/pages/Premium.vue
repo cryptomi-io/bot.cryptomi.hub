@@ -47,7 +47,7 @@ const premiumBenefits = [
         More freedom and dozens of exclusive features with CRYPTOMI Premium subscription
       </div>
     </div>
-    <Card class="py-3 px-4 flex-col gap-5">
+    <Card class="blur-sm py-3 px-4 flex-col gap-5">
       <div
         v-for="(plan, i) in plans"
         :key="i"
@@ -66,7 +66,7 @@ const premiumBenefits = [
         <div class="text-zinc-400 text-sm">{{ plan.price }}</div>
       </div>
     </Card>
-    <Card class="py-3 px-4 flex-col">
+    <Card class="blur-sm py-3 px-4 flex-col">
       <div
         v-for="(benefit, i) in premiumBenefits"
         :key="i"

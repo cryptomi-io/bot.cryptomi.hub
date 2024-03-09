@@ -13,7 +13,7 @@ export class MarketController {
       return res.status(400).json({ errors: errors.array() })
     }
     const { chain, type } = req.params
-    console.log(chain, type)
+
     const response = await prisma.rank_tokens.findMany({
       where: {
         side: type,
@@ -28,7 +28,6 @@ export class MarketController {
         }
       ]
     })
-    console.log(response)
 
     res.json({ status: 'success', data: response })
   }
@@ -43,18 +42,24 @@ export class MarketController {
     let token = null
     let isUpdateInfo = false
 
-    let db_token = await prisma.token.findUnique({
+    let db_token = await prisma.token.findFirst({
       where: {
-        id: address
+        address: address
       }
     })
     //Try to get token from db
     if (!db_token) {
       const token_info_res = await getTokenInfoByAddress(chain, address)
-      if (!token_info_res) return
+
+      console.log(token_info_res)
+
+      if (!token_info_res) {
+        return res.status(400).json({ status: 'Token not found' })
+      }
+
       db_token = await prisma.token.create({
         data: {
-          id: token_info_res?.address,
+          address: token_info_res?.address,
           symbol: token_info_res?.symbol,
           name: token_info_res?.name,
           exchange: '',
@@ -91,7 +96,7 @@ export class MarketController {
     if (isUpdateInfo) {
       await prisma.token.update({
         where: {
-          id: address
+          id: token.id
         },
         data: {
           additional_info: JSON.stringify(token.additional_info)

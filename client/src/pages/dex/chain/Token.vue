@@ -5,11 +5,13 @@ import { useDextools } from '@/composables/useDextools'
 import { useHelper } from '@/utils/helper'
 import { Icon } from '@iconify/vue'
 import { computed, onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useWebAppNavigation } from 'vue-tg'
 import { toast } from 'vue3-toastify'
 
 const { openLink } = useWebAppNavigation()
 const { capitalizeFirstLetter, numberFormat, shortenContractAddress, delay } = useHelper()
+const router = useRouter()
 const {
   getTokenPriceByAddress,
   getTokenLockInfoByAddress,
@@ -42,15 +44,20 @@ const socialInfo = computed(() => {
 })
 onMounted(async () => {
   const tokenInfo = await getTokenInfoFromDbByAddress(props.chain, props.address)
+  if (!tokenInfo) {
+    router.back()
+    return
+  }
+  console.log(tokenInfo)
   token.value.info = tokenInfo.additional_info.info
   token.value.audit = tokenInfo.additional_info.audit
- 
+
   token.value.additional = await getTokenAdditInfoByAddress(props.chain, props.address)
   delay(1000)
   token.value.lock = await getTokenLockInfoByAddress(props.chain, props.address)
   delay(1000)
   token.value.price = await getTokenPriceByAddress(props.chain, props.address)
-  
+
   isLoading.value = false
 })
 const copy = (text) => {
@@ -121,7 +128,7 @@ const copy = (text) => {
         <span>Website</span>
       </div>
       <div
-        @click="token?.info?.twitter ? openLink(token?.info?.twitter): null"
+        @click="token?.info?.twitter ? openLink(token?.info?.twitter) : null"
         class="flex bg-neutral-800 rounded-xl items-center py-1 px-4 w-full justify-center gap-1 text-xs text-zinc-300"
       >
         <Icon icon="basil:twitter-outline" class="w-4 h-4" />
