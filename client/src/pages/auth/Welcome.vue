@@ -52,9 +52,9 @@ const signIn = async () => {
 
   //Регистрируем пользователя
   try {
+    const referral = localStorage.getItem('ref')
 
-
-    await register(nickname, chatId, ref)
+    await register(nickname, chatId, referral)
     toast('You have successfully registered', {
       autoClose: 3000,
       type: 'success',
