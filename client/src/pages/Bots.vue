@@ -1,21 +1,17 @@
 <script setup>
 const bots = [
   {
-    cover: '/images/assets/bot_banner.webp',
-    icon: '/images/assets/bot_logo.webp',
-    title: '@cryptomi_token_anylyzer',
-    description: 'BOT TOKEN ANALYZER',
-    path: 'https://t.me/cryptomi_token_anylyzer',
-    isExternal: true,
+    cover: '/images/bots/bot_token.png',
+    icon: '/images/bots/bot_token_icon.png',
+    title: 'BOT TOKEN ANALYZER',
+    path: '',
     released: false
   },
   {
-    cover: '/images/assets/bot_banner_dex.webp',
-    icon: '/images/assets/bot_logo_dex.webp',
-    title: '@cryptomi_wallet_anylyzer',
-    description: 'BOT TOKEN ANALYZER',
+    cover: '/images/bots/bot_wallet.png',
+    icon: '/images/bots/bot_wallet_icon.png',
+    title: 'BOT TOKEN ANALYZER',
     path: '/bots/analyzer',
-    isExternal: false,
     released: true
   }
 ]
@@ -29,15 +25,14 @@ const bots = [
         :key="i"
         class="bg-neutral-800 rounded-xl overflow-hidden flex flex-col"
       >
-        <div class="relative h-[120px] flex flex-col justify-end items-center">
-          <img :src="bot.cover" class="absolute w-full h-full object-cover inset-0 z-10" />
-          <div class="p-[3px] rounded-full border border-gray-700 z-20 relative -bottom-5">
-            <img :src="bot.icon" class="w-16 h-16 rounded-full" />
-          </div>
+        <div class="relative w-full" style="padding-bottom: 50%">
+          <img :src="bot.cover" class="top-0 absolute w-full h-full object-cover" />
+          <img :src="bot.icon" class="w-16 h-16 rounded-full absolute -bottom-4 left-5" />
         </div>
-        <div class="pt-8 pb-8 py-2 flex flex-col items-center">
-          <div class="font-bold text-xs mb-2">
-            {{ bot.description }}
+
+        <div class="pt-10 pb-6 py-2 px-3 flex justify-between items-center">
+          <div class="font-bold text-md">
+            {{ bot.title }}
           </div>
           <template v-if="bot.released">
             <router-link :to="bot.path">
