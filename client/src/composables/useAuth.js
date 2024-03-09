@@ -1,6 +1,6 @@
 // Импортируем fetch API напрямую, используем глобальный fetch в Nuxt 3
-import { $cryptomi } from '../services/http'
 import { useWebAppPopup } from 'vue-tg'
+import { $cryptomi } from '../services/http'
 
 export default function useAuth() {
   const { showAlert } = useWebAppPopup()
@@ -10,10 +10,11 @@ export default function useAuth() {
     login
   }
 
-  async function register(nickname, telegram_chat_id) {
+  async function register(nickname, telegram_chat_id, ref='') {
     const response = await $cryptomi.post(`auth/register/telegram`, {
       nickname,
-      telegram_chat_id: String(telegram_chat_id)
+      telegram_chat_id: String(telegram_chat_id),
+      ref
     })
 
     if (

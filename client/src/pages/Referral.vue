@@ -1,8 +1,8 @@
 <script setup>
-import Card from '@/components/ui/Card.vue'
-import { useUserStore } from '@/store/user'
-import { Icon } from '@iconify/vue'
-import { onMounted, ref } from 'vue'
+import Card from '@/components/ui/Card.vue';
+import { useUserStore } from '@/store/user';
+import { Icon } from '@iconify/vue';
+import { onMounted, ref } from 'vue';
 const user = useUserStore()
 
 const isLoading = ref(false)
@@ -15,7 +15,7 @@ onMounted(() => {
   }, 1000)
 })
 
-const refLink = 'https://cryptomi.io/register?ref=' + user.profile?.uuid
+const refLink = 'https://t.me/cryptomiHubBot/?start=ref-' + user.profile?.uuid
 const copyLink = () => {
   const input = document.createElement('input')
   input.value = refLink

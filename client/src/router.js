@@ -1,7 +1,7 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import { routes, AUTH_ROUTES, GUEST_ROUTES } from './data/routes.js'
-import { useUserStore } from './store/user'
 import TokenDetail from '@/pages/dex/chain/Token.vue'
+import { createRouter, createWebHistory } from 'vue-router'
+import { AUTH_ROUTES, GUEST_ROUTES, routes } from './data/routes.js'
+import { useUserStore } from './store/user'
 
 routes.push({
   path: '/dex/:chain/:address',
@@ -20,7 +20,9 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const { isAuth } = useUserStore()
-
+  if(to?.query?.ref){
+    localStorage.setItem('ref', to.query.ref)
+  }
   if (AUTH_ROUTES.find((item) => item.path === to.path) && !isAuth) {
     next('/welcome')
   } else if (isAuth && GUEST_ROUTES.find((item) => item.path === to.path)) {

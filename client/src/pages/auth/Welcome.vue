@@ -22,7 +22,7 @@ const router = useRouter()
 const isLoading = ref(true)
 
 const { initDataUnsafe } = useWebApp()
-let chatId = 675451412822
+let chatId = 6754514128
 if (import.meta.env.VITE_NODE_ENV !== 'development') {
   chatId = initDataUnsafe?.user?.id
 }
@@ -52,7 +52,9 @@ const signIn = async () => {
 
   //Регистрируем пользователя
   try {
-    await register(nickname, chatId)
+
+
+    await register(nickname, chatId, ref)
     toast('You have successfully registered', {
       autoClose: 3000,
       type: 'success',
