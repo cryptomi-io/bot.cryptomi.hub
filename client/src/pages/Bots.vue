@@ -14,7 +14,7 @@ const bots = [
     icon: '/images/assets/bot_logo_dex.webp',
     title: '@cryptomi_wallet_anylyzer',
     description: 'BOT TOKEN ANALYZER',
-    path: '/bots/wallet-analyzer',
+    path: '/bots/analyzer',
     isExternal: false,
     released: true
   }
@@ -27,7 +27,7 @@ const bots = [
       <div
         v-for="(bot, i) in bots"
         :key="i"
-        class="bg-neutral-800 rounded-xl overflow-hidden flex flex-col blur-sm"
+        class="bg-neutral-800 rounded-xl overflow-hidden flex flex-col"
       >
         <div class="relative h-[120px] flex flex-col justify-end items-center">
           <img :src="bot.cover" class="absolute w-full h-full object-cover inset-0 z-10" />
@@ -40,9 +40,9 @@ const bots = [
             {{ bot.description }}
           </div>
           <template v-if="bot.released">
-            <!-- <router-link :to="bot.path"> -->
-            <div class="bg-green-500 text-zinc-900 p-1 text-xs rounded-3xl px-3">Soon</div>
-            <!-- </router-link> -->
+            <router-link :to="bot.path">
+              <div class="bg-green-500 text-zinc-900 p-1 text-xs rounded-3xl px-3">Try it now</div>
+            </router-link>
           </template>
           <template v-else>
             <div class="bg-green-500 text-zinc-900 p-1 text-xs rounded-3xl px-3">Soon</div>

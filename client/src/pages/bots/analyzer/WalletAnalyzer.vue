@@ -1,13 +1,18 @@
 <script setup>
 import Button from '@/components/ui/Button.vue'
 import Card from '@/components/ui/Card.vue'
-import { toast } from 'vue3-toastify'
-import 'vue3-toastify/dist/index.css'
 import { useAnalytics } from '@/composables/useAnalytics'
+import { useBotAnalyzerStore } from '@/store/bots/analyzer'
 import { useHelper } from '@/utils/helper'
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { BackButton } from 'vue-tg'
+import { toast } from 'vue3-toastify'
+import 'vue3-toastify/dist/index.css'
 
+const router = useRouter()
 const { getPnLAnalyticsByEtherscan } = useAnalytics()
+const botAnalyzerStore = useBotAnalyzerStore()
 const { numberFormat } = useHelper()
 
 const isLoading = ref(false)
@@ -35,8 +40,10 @@ const formHandleSubmit = async () => {
     progressWidth.value = 100
     return
   }
+
   progressWidth.value = 30
   const result = await getPnLAnalyticsByEtherscan(formData.value.wallet, formData.value.timePeriod)
+
   if (!result.length) {
     toast('PnL is not calculated for this account', {
       autoClose: 3000,
@@ -48,20 +55,22 @@ const formHandleSubmit = async () => {
     progressWidth.value = 100
     isLoading.value = false
     return
+  } else {
+    botAnalyzerStore.setWallet(formData.value.wallet)
+    botAnalyzerStore.setTimePeriod(formData.value.timePeriod)
+    botAnalyzerStore.setAnalyze(result)
+    router.push(`/bots/analyzer/${formData.value.wallet}/${formData.value.timePeriod}`)
+    return
   }
-  topTokens.value = result
-    .filter((token) => token.PnL > 0 || token.unrealizedPnL > 0)
-    .sort((a, b) => b.PnL - a.PnL || b.unrealizedPnL - a.unrealizedPnL)
-    .slice(0, 5)
-  loseTokens.value = result
-    .filter((token) => token.PnL < 0 || token.unrealizedPnL < 0)
-    .sort((a, b) => b.PnL - a.PnL || b.unrealizedPnL - a.unrealizedPnL)
-    .slice(0, 5)
-  isLoading.value = false
+}
+
+function handleBackButton() {
+  router.back()
 }
 </script>
 
 <template>
+  <BackButton @click="handleBackButton" />
   <div v-if="isLoading" class="progress-bar fixed top-0 left-0 h-1 w-full bg-zinc-900">
     <div
       class="h-1 bg-green-400 transition-all duration-600"
@@ -218,5 +227,4 @@ const formHandleSubmit = async () => {
     </template>
   </div>
 </template>
-@/services/etherscan
-../../composables/useAnalytics../../utils/helper
+@/services/etherscan ../../composables/useAnalytics../../utils/helper
