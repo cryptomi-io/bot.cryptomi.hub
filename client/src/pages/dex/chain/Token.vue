@@ -4,7 +4,7 @@ import Loader from '@/components/ui/Loader.vue'
 import { useDextools } from '@/composables/useDextools'
 import { useHelper } from '@/utils/helper'
 import { Icon } from '@iconify/vue'
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useWebAppNavigation } from 'vue-tg'
 import { toast } from 'vue3-toastify'
@@ -32,6 +32,8 @@ const token = ref({
   additional: {},
   price: {}
 })
+const calcToken = ref(0)
+const calcUSD = ref(0)
 
 const socialInfo = computed(() => {
   if (token.value?.info?.socialInfo) {
@@ -70,6 +72,12 @@ const copy = (text) => {
     toastStyle: 'top:10px'
   })
 }
+watch(calcToken, (newValue) => {
+  calcUSD.value = newValue * token.value.price.price
+})
+watch(calcUSD, (newValue) => {
+  calcToken.value = newValue / token.value.price.price
+})
 </script>
 
 <template>
@@ -331,6 +339,58 @@ const copy = (text) => {
         <div class="text-[11px]">
           {{ capitalizeFirstLetter(token?.audit?.slippageModifiable) || 'N/A' }}
         </div>
+      </div>
+    </div>
+    <!-- Swapper card -->
+    <div
+      class="relative mt-12 pt-12 flex flex-col gap-2 bg-gradient-to-t from-neutral-800 from-10% via-neutral-800 via-30% to-green-500/20 to-90% rounded-lg p-3"
+    >
+      <div class="absolute w-full left-0 -top-10 flex justify-center">
+        <img
+          src="https://placeholder.pics/svg/200x200"
+          class="w-[80px] h-[80px] m-auto rounded-full object-contain"
+        />
+      </div>
+      <div class="text-center text-xs text-white">
+        <div class="font-bold text-md">{{ token.info.name }} ({{ token.info.symbol }})</div>
+      </div>
+      <div class="flex gap-2 justify-center mt-2">
+        <div
+          @click="token?.info?.website ? openLink(token?.info?.website) : null"
+          class="flex bg-neutral-600 rounded-xl items-center py-1 px-4 justify-center gap-1 text-xs text-zinc-300"
+        >
+          <Icon icon="mdi:web" class="w-4 h-4" />
+          <span>Website</span>
+        </div>
+        <div
+          @click="token?.info?.twitter ? openLink(token?.info?.twitter) : null"
+          class="flex bg-neutral-600 rounded-xl items-center py-1 px-4 justify-center gap-1 text-xs text-zinc-300"
+        >
+          <Icon icon="basil:twitter-outline" class="w-4 h-4" />
+          <span>Twitter</span>
+        </div>
+      </div>
+      <hr class="border-neutral-600 my-3" />
+      <div class="flex relative">
+        <input
+          v-model="calcToken"
+          type="number"
+          class="w-full bg-neutral-600 rounded-xl p-2 text-xs text-zinc-300 focus:outline-none"
+          placeholder="0.0"
+        />
+        <span class="absolute right-2 top-1 text-zinc-300">{{ token.info.symbol }}</span>
+      </div>
+      <div class="flex justify-center">
+        <Icon icon="iconamoon:swap" class="w-4 h-4 text-zinc-300" />
+      </div>
+      <div class="flex relative">
+        <input
+          v-model="calcUSD"
+          type="number"
+          class="w-full bg-neutral-600 rounded-xl p-2 text-xs text-zinc-300 focus:outline-none"
+          placeholder="0.0"
+        />
+        <span class="absolute right-2 top-1 text-zinc-300">USD</span>
       </div>
     </div>
   </div>
