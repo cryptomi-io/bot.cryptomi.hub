@@ -13,7 +13,11 @@ import { useRouter } from 'vue-router'
 import { useWebApp } from 'vue-tg'
 
 const userStore = useUserStore()
-const images = ['/images/slider/slide.png']
+const images = [
+  '/images/slider/slide-1.webp',
+  '/images/slider/slide-2.webp',
+  '/images/slider/slide-3.webp'
+]
 const router = useRouter()
 const isLoading = ref(true)
 
@@ -93,4 +97,3 @@ const signIn = async () => {
     </div>
   </div>
 </template>
-../../composables/useAuth../../store/user
