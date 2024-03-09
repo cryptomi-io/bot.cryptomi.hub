@@ -19,7 +19,7 @@ const isLoading = ref(false)
 const progressWidth = ref(0)
 const tab = ref('profit')
 const formData = ref({
-  wallet: '0x13351e338ca96b6f7bc944a9f4ff809da0c87c8b',
+  wallet: '',
   timePeriod: 30
 })
 const periods = [1, 7, 30, 60, 90]

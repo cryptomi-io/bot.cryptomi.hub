@@ -22,7 +22,7 @@ const router = useRouter()
 const isLoading = ref(true)
 
 const { initDataUnsafe } = useWebApp()
-let chatId = 6754514128
+let chatId = 675451412822
 if (import.meta.env.VITE_NODE_ENV !== 'development') {
   chatId = initDataUnsafe?.user?.id
 }

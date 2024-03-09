@@ -23,7 +23,7 @@ const bots = [
       <div
         v-for="(bot, i) in bots"
         :key="i"
-        class="bg-neutral-800 rounded-xl overflow-hidden flex flex-col"
+        class="bg-neutral-800 rounded-xl overflow-hidden flex flex-col blur-sm"
       >
         <div class="relative w-full" style="padding-bottom: 50%">
           <img :src="bot.cover" class="top-0 absolute w-full h-full object-cover" />
