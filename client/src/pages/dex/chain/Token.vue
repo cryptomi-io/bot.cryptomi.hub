@@ -53,7 +53,8 @@ onMounted(async () => {
   console.log(tokenInfo)
   token.value.info = tokenInfo.additional_info.info
   token.value.audit = tokenInfo.additional_info.audit
-
+  token.value.exchange = tokenInfo.exchange
+  
   token.value.additional = await getTokenAdditInfoByAddress(props.chain, props.address)
   delay(1000)
   token.value.lock = await getTokenLockInfoByAddress(props.chain, props.address)
@@ -98,29 +99,17 @@ watch(calcUSD, (newValue) => {
         <!-- --------TOKEN INFO------ -->
         <div class="flex items-center gap-4">
           <div class="relative inline-block">
-            <img
-              class="inline-block w-10 h-10 rounded-full"
-              :src="
-                'https://www.dextools.io/resources/tokens/logos/' +
-                props.chain +
-                '/' +
-                props.address +
-                '.png'
-              "
-              alt="Image Description"
-            />
-            <span
-              class="absolute z-10 top-1 end-1 block p-1 rounded-full transform translate-y-1/3 translate-x-1/3 border-1 w-5 h-5"
-            >
-              <img
-                :src="'https://www.dextools.io/resources/chains/med/' + props.chain + '.png'"
-                alt="placeholder"
-              />
+            <div class="inline-flex items-center justify-center w-12 h-12 text-xl text-white bg-indigo-500 rounded-full">
+              {{ token?.info?.name.substr(0, 1) }}
+            </div>
+            <span class="absolute bottom-1 end-1 block p-1 rounded-full transform translate-y-1/3 translate-x-1/3 border-1 w-5 h-5">
+              <img :src="'/images/chains/' + props.chain + '.png'" alt="placeholder" />
             </span>
           </div>
           <div class="flex flex-col">
             <div class="text-md font-bold">{{ token?.info?.name }} ({{ token?.info?.symbol }})</div>
-            <div class="text-xs text-zinc-400">Ethereum | Exchange name</div>
+            <div class="text-xs text-zinc-400">{{ props.chain }} | {{ token?.exchange }}</div>
+           {{ console.log(tokenInfo) }}
           </div>
         </div>
       </div>
@@ -208,7 +197,7 @@ watch(calcUSD, (newValue) => {
         <div class="text-[10px] text-zinc-400">MARKET CUP</div>
         <div
           class="text-xs text-zinc-50 font-bold"
-          v-html="numberFormat(token?.additional?.mcup)"
+          v-html="numberFormat(token?.price?.price * token?.additional?.totalSupply)"
         ></div>
       </div>
     </div>
@@ -346,10 +335,9 @@ watch(calcUSD, (newValue) => {
       class="relative mt-12 pt-12 flex flex-col gap-2 bg-gradient-to-t from-neutral-800 from-10% via-neutral-800 via-30% to-green-500/20 to-90% rounded-lg p-3"
     >
       <div class="absolute w-full left-0 -top-10 flex justify-center">
-        <img
-          src="https://placeholder.pics/svg/200x200"
-          class="w-[80px] h-[80px] m-auto rounded-full object-contain"
-        />
+         <div class="inline-flex items-center justify-center w-[80px] h-[80px] text-xl text-white bg-indigo-500 rounded-full">
+            {{ token?.info?.name.substr(0, 1) }}
+         </div>
       </div>
       <div class="text-center text-xs text-white">
         <div class="font-bold text-md">{{ token.info.name }} ({{ token.info.symbol }})</div>

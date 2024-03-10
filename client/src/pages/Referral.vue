@@ -50,7 +50,7 @@ const copyLink = () => {
           Your current rank
         </div>
       </Card>
-      <Card class="py-3 px-4 flex-col gap-2">
+      <Card class="py-3 px-4 flex-col gap-2 hidden">
         <div class="text-md text-green-500 font-bold">Vip privelege</div>
         <div class="blur-sm w-full">
           <div class="flex justify-between w-full text-sm py-2 border-b border-zinc-600">
@@ -70,7 +70,7 @@ const copyLink = () => {
           Coming soon
         </div>
       </Card>
-      <div class="grid grid-cols-2 gap-2">
+      <div class="grid grid-cols-2 gap-2 hidden">
         <Card class="py-8 px-4 flex-col">
           <div class="h-8 bg-neutral-700 rounded w-20 mb-1"></div>
           <div class="h-2 bg-neutral-700 rounded w-[100px] mb-1"></div>
@@ -127,8 +127,7 @@ const copyLink = () => {
         <Icon icon="vaadin:piggy-bank-coin" class="w-10 h-10 text-green-500" />
         <div class="text-lg mt-1 text-white font-bold">Refer and Earn</div>
         <span class="text-zinc-300 text-center text-sm"
-          >Refer your friends and earn for 10% of every customer that completes 1 deposit for
-          platform
+          >Refer your friends and earn $CTMI from each.
         </span>
         <div class="rounded-md overflow-hidden w-full flex mt-2">
           <input
@@ -156,12 +155,8 @@ const copyLink = () => {
           <span class="text-zinc-300">Claimed referrals</span>
           <span class="text-white"> {{ user?.referral?.info?.claimed_referrals }}</span>
         </div>
-        <div class="flex justify-between w-full text-sm py-2">
-          <span class="text-zinc-300">Total referrals</span>
-          <span class="text-white"> {{ user?.referral?.info?.total_referrals }}</span>
-        </div>
       </Card>
-      <Card class="py-3 px-4 flex-col gap-2">
+      <Card class="py-3 px-4 flex-col gap-2 hidden">
         <div class="text-md text-green-500 font-bold">Vip privelege</div>
         <div class="blur-sm w-full">
           <div class="flex justify-between w-full text-sm py-2 border-b border-zinc-600">
@@ -191,7 +186,7 @@ const copyLink = () => {
           <div class="text-sm text-zinc-400">Daily value</div>
         </Card>
       </div>
-      <Card class="py-3 px-4 flex-col gap-2">
+      <Card class="py-3 px-4 flex-col gap-2 hidden">
         <div class="text-md text-white font-bold">Rank comissions</div>
         <div
           class="blur-sm flex justify-between items-center w-full text-sm py-2 border-b border-zinc-600"

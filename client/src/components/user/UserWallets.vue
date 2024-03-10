@@ -7,7 +7,9 @@ import { Icon } from '@iconify/vue'
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { toast } from 'vue3-toastify'
+import { useHelper } from '@/utils/helper'
 
+const { numberFormat } = useHelper()
 const { getTokenInfoFromDbByAddress } = useDextools()
 
 //const GCoinsStore = useGCoinsStore()
@@ -221,19 +223,18 @@ watch(currentChain, async (newVal) => {
                   <img :src="'/images/chains/' + currentChain + '.png'" alt="placeholder" />
                 </span>
               </div>
-
-              {{ console.log() }}
               <div class="flex flex-col">
                 <div class="text-zinc-100 font-bold text-sm">
                   {{ item?.pair }}
                 </div>
-                <div class="text-zinc-400 text-xs" v-html="item?.price.toFixed(8)"></div>
+                <div class="text-zinc-400 text-xs" v-html="numberFormat(item?.price) || '-'"></div>
               </div>
             </div>
             <div class="flex flex-col items-end">
               <div class="text-zinc-500 text-sm">
                 <span :class="['text-green-500 font-bold text-sm']"
-                  >+ {{ item?.variation24h.toFixed(2) }}%</span
+                
+                  > {{ numberFormat(item?.variation24h, 2, true) }} %</span
                 >
               </div>
             </div>
@@ -285,14 +286,20 @@ watch(currentChain, async (newVal) => {
                   class="inline-block w-10 h-10 rounded-full"
                   :src="
                     'https://www.dextools.io/resources/tokens/logos/ether/' +
-                    item?.token?.address +
+                    item?.token?.id +
                     '.png'
                   "
                   alt="Image Description"
-                  placeholder="TT"
-                  @error="$event.target.class = 'hidden'"
+                  @load="handleImgLoad(i)"
+                  @error="handleImgError(i)"
+                  v-if="imageStatus[i]"
                 />
-
+                <div
+                  v-else
+                  class="inline-flex items-center justify-center w-12 h-12 text-xl text-white bg-indigo-500 rounded-full"
+                >
+                  {{ item?.pair.substr(0, 1) }}
+                </div>
                 <span
                   class="absolute bottom-1 end-1 block p-1 rounded-full transform translate-y-1/3 translate-x-1/3 border-1 w-5 h-5"
                 >
@@ -303,14 +310,15 @@ watch(currentChain, async (newVal) => {
                 <div class="text-zinc-100 font-bold text-sm">
                   {{ item?.pair }}
                 </div>
-                <div class="text-zinc-400 text-xs" v-html="item?.price.toFixed(8)"></div>
+                <div class="text-zinc-400 text-xs" v-html="numberFormat(item?.price) || '-'"></div>
               </div>
             </div>
             <div class="flex flex-col items-end">
               <div class="text-zinc-500 text-sm">
-                <span :class="['text-red-500 font-bold text-sm']">
-                  {{ item?.variation24h.toFixed(2) }}%</span
-                >
+                <span :class="['text-red-500 font-bold text-sm']"
+                  >
+                 {{ item?.variation24h.toFixed(2) }} %
+                </span>
               </div>
             </div>
           </Card>

@@ -45,7 +45,7 @@ const signIn = async () => {
   let chatId = 6754514128
   let nickname = 'some_username'
 
-  if (import.meta.env.VITE_NODE_ENV !== 'development') {
+ if (import.meta.env.VITE_NODE_ENV !== 'development') {
     chatId = initDataUnsafe?.user?.id
     nickname = initDataUnsafe?.user?.username
   }
