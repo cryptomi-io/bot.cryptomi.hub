@@ -20,7 +20,7 @@ onMounted(async () => {
       <div class="w-full text-left text-white text-md font-bold mb-3">{{ quest.name }}</div>
       <div class="flex flex-col w-full">
         <ol class="w-full relative border-s border-gray-200 dark:border-gray-700">
-          <li class="mb-10 ms-4" v-for="level in Object.values(quest.questLevels[0].levels)">
+          <li class="mb-10 ms-4" v-for="level in Object.values(quest.questLevels[0].levels)" :key="level">
             <div class="absolute w-3 h-3 rounded-full mt-1.5 -start-1.5 bg-green-500"></div>
             <small class="mb-1 text-sm text-white font-normal leading-none">
               {{ level.rangeSubtitle }}
