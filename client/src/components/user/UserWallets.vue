@@ -116,7 +116,7 @@ watch(currentChain, async (newVal) => {
             <img
               :src="'/images/chains/' + item?.id + '.png'"
               :class="[
-                'rounded-full w-10 h-10 object-cover border-2',
+                'rounded-full w-12 h-12 object-cover border-2',
                 currentChain === item?.id ? 'border-green-500' : 'grayscale'
               ]"
             />
@@ -197,19 +197,12 @@ watch(currentChain, async (newVal) => {
         >
           <Card class="py-3 px-4">
             <div class="flex gap-2 items-center">
-              <span> #{{ item?.rank }}</span>
+              <span class="w-6 text-center"> #{{ item?.rank }}</span>
               <div class="relative inline-block">
                 <img
-                  class="inline-block w-10 h-10 rounded-full"
-                  :src="
-                    'https://www.dextools.io/resources/tokens/logos/ether/' +
-                    item?.token?.id +
-                    '.png'
-                  "
-                  alt="Image Description"
-                  @load="handleImgLoad(i)"
-                  @error="handleImgError(i)"
-                  v-if="imageStatus[i]"
+                  class="inline-block w-12 h-12 rounded-full border-2"
+                  :src="`${item?.image}`"
+                  v-if="item?.image"
                 />
                 <div
                   v-else
@@ -234,7 +227,7 @@ watch(currentChain, async (newVal) => {
               <div class="text-zinc-500 text-sm">
                 <span :class="['text-green-500 font-bold text-sm']"
                 
-                  > {{ numberFormat(item?.variation24h, 2, true) }} %</span
+                  > {{ numberFormat(item?.variation24h, 2, true, true) }} %</span
                 >
               </div>
             </div>
@@ -280,19 +273,15 @@ watch(currentChain, async (newVal) => {
         >
           <Card class="py-3 px-4">
             <div class="flex gap-2 items-center w-full">
-              <span> #{{ item?.rank }}</span>
+              <span class="w-6 text-center"> #{{ item?.rank }}</span>
               <div class="relative inline-block">
                 <img
-                  class="inline-block w-10 h-10 rounded-full"
+                  class="inline-block w-12 h-12 rounded-full border-2"
                   :src="
-                    'https://www.dextools.io/resources/tokens/logos/ether/' +
-                    item?.token?.id +
-                    '.png'
+                    `${item?.image}`
                   "
-                  alt="Image Description"
-                  @load="handleImgLoad(i)"
-                  @error="handleImgError(i)"
-                  v-if="imageStatus[i]"
+                  
+                  v-if="item?.image"
                 />
                 <div
                   v-else
@@ -315,9 +304,9 @@ watch(currentChain, async (newVal) => {
             </div>
             <div class="flex flex-col items-end">
               <div class="text-zinc-500 text-sm">
-                <span :class="['text-red-500 font-bold text-sm']"
+                <span :class="['text-red-500 font-bold text-sm shrink-0 whitespace-nowrap']"
                   >
-                 {{ item?.variation24h.toFixed(2) }} %
+                 {{ numberFormat(item?.variation24h,2,true,true) }} %
                 </span>
               </div>
             </div>

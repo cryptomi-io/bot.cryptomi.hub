@@ -2,7 +2,8 @@ import { PrismaClient } from '@prisma/client'
 import { validationResult } from 'express-validator'
 import { useDextools } from '../../common/hooks/useDextools.js'
 
-const { getTokenInfoByAddress, getTokenAuditByAddress } = useDextools()
+
+const { getTokenInfoByAddress, getTokenAuditByAddress, getImageToken } = useDextools()
 
 const prisma = new PrismaClient()
 
@@ -41,7 +42,7 @@ export class MarketController {
 
     let token = null
     let isUpdateInfo = false
-
+    let isUpdateImage = false
     let db_token = await prisma.token.findFirst({
       where: {
         address: address
@@ -56,23 +57,29 @@ export class MarketController {
       if (!token_info_res) {
         return res.status(400).json({ status: 'Token not found' })
       }
-
+      
+      const imageToken = await getImageToken('https://www.dextools.io/resources/tokens/logos/'+chain+'/'+address+'.png', chain);
+      console.log('first upload')
       db_token = await prisma.token.create({
         data: {
           address: token_info_res?.address,
           symbol: token_info_res?.symbol,
           name: token_info_res?.name,
           exchange: '',
-          factory: ''
+          factory: '',
+          image: imageToken,
         }
       })
     }
-
+    
+    
+    
     token = {
       ...db_token,
       additional_info: db_token?.additional_info ? JSON.parse(db_token.additional_info) : null
     }
-
+    
+    
     //if token doesn't has additional info.info
     if (!token?.additional_info?.info || !Object.values(token?.additional_info?.info).length) {
       await delay(1000)
@@ -103,9 +110,35 @@ export class MarketController {
         }
       })
     }
+    
+    const updateImageToken = await getImageToken('https://www.dextools.io/resources/tokens/logos/'+chain+'/'+address+'.png', chain);
+    if(updateImageToken) {
+      token = {
+        ...db_token,
+        image: updateImageToken
+      }
+      isUpdateImage = true;
+      console.log('update upload ' + isUpdateImage)
+    }
+    if(isUpdateImage){
+      console.log(JSON.stringify(token))
+    }
+    if (isUpdateImage) {
+      await prisma.token.update({
+        where: {
+          id: token.id
+        },
+        data: {
+          image: token.image
+        }
+      })
+    }
 
     res.json({ status: 'success', data: token })
   }
+  
+  
+  
 }
 
 function delay(ms) {

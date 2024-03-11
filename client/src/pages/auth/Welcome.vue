@@ -23,9 +23,9 @@ const isLoading = ref(true)
 
 const { initDataUnsafe } = useWebApp()
 let chatId = 6754514128
-if (import.meta.env.VITE_NODE_ENV !== 'development') {
+/*if (import.meta.env.VITE_NODE_ENV !== 'development') {
   chatId = initDataUnsafe?.user?.id
-}
+}*/
 onMounted(async () => {
   //Сразу же пытаемся авторизоваться
   await setTimeout(async () => {
@@ -45,11 +45,11 @@ const signIn = async () => {
   let chatId = 6754514128
   let nickname = 'some_username'
 
- if (import.meta.env.VITE_NODE_ENV !== 'development') {
+/* if (import.meta.env.VITE_NODE_ENV !== 'development') {
     chatId = initDataUnsafe?.user?.id
     nickname = initDataUnsafe?.user?.username
   }
-
+*/
   //Регистрируем пользователя
   try {
     const referral = localStorage.getItem('ref')

@@ -14,7 +14,7 @@ export const useHelper = () => {
     const match = decimalPart.match(/^0*/)
     return match ? match[0].length : 0
   }
-  const numberFormat = (number, decimals = 8, isWhole = false) => {
+  const numberFormat = (number, decimals = 8, isWhole = false, isPercent = false) => {
     if (number === 0) return 0
     if (!number) return '-'
     if (number > 1000 || isWhole) {
@@ -27,7 +27,10 @@ export const useHelper = () => {
       } else if (number >= 1e3) {
         return (number / 1e3).toFixed(1) + 'K'
       } else {
-        return number.toString()
+        if(!isPercent)
+          return number.toString()
+        else
+          return number.toFixed(1)
       }
     } else {
       const num = number.toFixed(decimals)

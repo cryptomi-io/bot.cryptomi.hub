@@ -51,7 +51,7 @@ onMounted(async () => {
     return
   }
   console.log(tokenInfo)
-  token.value.info = tokenInfo.additional_info.info
+  token.value.info = tokenInfo
   token.value.audit = tokenInfo.additional_info.audit
   token.value.exchange = tokenInfo.exchange
   
@@ -82,6 +82,7 @@ watch(calcUSD, (newValue) => {
 </script>
 
 <template>
+  {{ console.log(token)}}
   <Loader v-if="isLoading" />
 
   <div v-else class="flex flex-col gap-3">
@@ -99,17 +100,25 @@ watch(calcUSD, (newValue) => {
         <!-- --------TOKEN INFO------ -->
         <div class="flex items-center gap-4">
           <div class="relative inline-block">
-            <div class="inline-flex items-center justify-center w-12 h-12 text-xl text-white bg-indigo-500 rounded-full">
+            <img
+                  class="inline-block w-12 h-12 rounded-full border-2"
+                  :src="`${token?.info?.image}`"
+                  v-if="token?.info?.image"
+                />
+                <div
+                  v-else
+                  class="inline-flex items-center justify-center w-12 h-12 text-xl text-white bg-indigo-500 rounded-full"
+                >
               {{ token?.info?.name.substr(0, 1) }}
-            </div>
-            <span class="absolute bottom-1 end-1 block p-1 rounded-full transform translate-y-1/3 translate-x-1/3 border-1 w-5 h-5">
+                </div>
+         
+            <span class="absolute bottom-1 end-1 block p-1 rounded-full transform translate-y-1/3 translate-x-1/3 w-5 h-5">
               <img :src="'/images/chains/' + props.chain + '.png'" alt="placeholder" />
             </span>
           </div>
           <div class="flex flex-col">
             <div class="text-md font-bold">{{ token?.info?.name }} ({{ token?.info?.symbol }})</div>
             <div class="text-xs text-zinc-400">{{ props.chain }} | {{ token?.exchange }}</div>
-           {{ console.log(tokenInfo) }}
           </div>
         </div>
       </div>
@@ -335,9 +344,17 @@ watch(calcUSD, (newValue) => {
       class="relative mt-12 pt-12 flex flex-col gap-2 bg-gradient-to-t from-neutral-800 from-10% via-neutral-800 via-30% to-green-500/20 to-90% rounded-lg p-3"
     >
       <div class="absolute w-full left-0 -top-10 flex justify-center">
-         <div class="inline-flex items-center justify-center w-[80px] h-[80px] text-xl text-white bg-indigo-500 rounded-full">
-            {{ token?.info?.name.substr(0, 1) }}
-         </div>
+         <img
+                  class="inline-block w-[80px] h-[80px] rounded-full border-2"
+                  :src="`${token?.info?.image}`"
+                  v-if="token?.info?.image"
+                />
+                <div
+                  v-else
+                  class="inline-flex items-center justify-center w-[80px] h-[80px] text-xl text-white bg-indigo-500 rounded-full"
+                >
+              {{ token?.info?.name.substr(0, 1) }}
+                </div>
       </div>
       <div class="text-center text-xs text-white">
         <div class="font-bold text-md">{{ token.info.name }} ({{ token.info.symbol }})</div>

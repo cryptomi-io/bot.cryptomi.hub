@@ -20,7 +20,8 @@ model Token {
   name              String
   exchange          String?
   factory           String?
-  additional_info   Json?        
+  additional_info   Json?
+  image             String?
   rank_tokens       rank_tokens[]
 
   @@map("tokens")
@@ -39,6 +40,7 @@ model rank_tokens {
   price24h          Float?
   variation24h      Float?
   creationBlock     Float?
+  image             String?
   token             Token       @relation(fields: [token_id], references: [id])
 
   @@map("rank_tokens")

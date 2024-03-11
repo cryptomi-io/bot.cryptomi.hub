@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import { useDextools } from '../../common/hooks/useDextools.js'
-const { getGainers, getLosers } = useDextools()
+const { getGainers, getLosers, getImageToken } = useDextools()
 const prisma = new PrismaClient()
 export class CronController {
   static chains = [
@@ -36,14 +36,17 @@ export class CronController {
         })
 
         responseGainers.forEach(async (item) => {
+          const imageToken = await getImageToken('https://www.dextools.io/resources/tokens/logos/'+chain.id+'/'+item.mainToken.address+'.png', chain.id);
+          //console.log('https://www.dextools.io/resources/tokens/logos/'+chain.id+'/'+item.mainToken.address+'.png')
           const tokenData = {
             address: item.mainToken.address,
             name: item.mainToken.name,
             symbol: item.mainToken.symbol,
             exchange: item.exchange.name,
-            factory: item.exchange.factory
+            factory: item.exchange.factory,
+            image: imageToken,
           }
-
+          //console.log('++++++++'+imageToken)
           // Create or update tokens in database
           let token = await prisma.token.findFirst({
             where: {
@@ -69,7 +72,8 @@ export class CronController {
               price: item?.price,
               price24h: item?.price24h,
               variation24h: item?.variation24h,
-              creationBlock: item?.creationBlock
+              creationBlock: item?.creationBlock,
+              image: imageToken,
             }
             await prisma.rank_tokens.create({
               data: {
@@ -92,12 +96,15 @@ export class CronController {
         })
 
         responseLosers.forEach(async (item) => {
+          const imageToken = await getImageToken('https://www.dextools.io/resources/tokens/logos/'+chain.id+'/'+item.mainToken.address+'.png', chain.id);
+         
           const tokenData = {
             address: item.mainToken.address,
             name: item.mainToken.name,
             symbol: item.mainToken.symbol,
             exchange: item.exchange.name,
-            factory: item.exchange.factory
+            factory: item.exchange.factory,
+            image: imageToken,
           }
           let token = await prisma.token.findFirst({
             where: {
@@ -124,7 +131,8 @@ export class CronController {
               price: item?.price,
               price24h: item?.price24h,
               variation24h: item?.variation24h,
-              creationBlock: item?.creationBlock
+              creationBlock: item?.creationBlock,
+              image: imageToken,
             }
             await prisma.rank_tokens.create({
               data: {
