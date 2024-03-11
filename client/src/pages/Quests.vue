@@ -1,6 +1,12 @@
 <script setup>
 import Button from '@/components/ui/Button.vue'
 import Card from '@/components/ui/Card.vue'
+import useQuests from '@/composables/useQuests';
+
+const { getQuests } = useQuests()
+
+console.log(getQuests())
+
 const quests = [
   {
     title: "Deposit Quest's",
@@ -70,7 +76,7 @@ const quests = [
     <Card v-for="(quest, i) in quests" :key="i" class="py-3 px-4 flex-col gap-5">
       <div class="w-full text-left text-white text-md font-bold mb-3">{{ quest.title }}</div>
       <div class="flex flex-col w-full">
-        <ol class="w-full relative border-s border-gray-200 dark:border-gray-700 w-full">
+        <ol class="w-full relative border-s border-gray-200 dark:border-gray-700">
           <li class="mb-10 ms-4" v-for="condition in quest.conditions" :key="condition">
             <div class="absolute w-3 h-3 rounded-full mt-1.5 -start-1.5 bg-green-500"></div>
             <small class="mb-1 text-sm text-white font-normal leading-none">
