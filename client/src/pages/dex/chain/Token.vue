@@ -130,18 +130,27 @@ watch(calcUSD, (newValue) => {
 
     <!-- --------SOCIALS------ -->
     <div class="flex w-full gap-1 mt-4">
-      <div class="flex bg-neutral-800 rounded-xl items-center w-full flex-start text-zinc-300">
-        <div class="flex gap-1 items-center bg-gray-900 h-full p-1 rounded-xl me-2">
+      <div class="flex bg-neutral-800 rounded-xl items-center w-full justify-between text-zinc-300">
+        <div class="flex gap-1 shrink-0 items-center bg-gray-900 h-full p-1 rounded-xl me-2">
           <Icon icon="fluent-emoji:fire" class="w-6 h-6 text-yellow-500" />
           <span class="font-bold"> #{{ token?.rank }}</span>
         </div>
+        <div class="flex items-center w-full">
+          <div
+            v-for="(item, i) in socialInfo"
+            :key="i"
+            @click="openLink(item[1])"
+            class="px-3 py-2 flex items-center gap-2 text-zinc-300"
+          >
+            <Icon :icon="`cib:${item[0]}`" />
+          </div>
+        </div>
         <div
-          v-for="(item, i) in socialInfo"
-          :key="i"
-          @click="openLink(item[1])"
-          class="px-3 py-2 flex items-center gap-2 text-zinc-300"
+          v-if="Object.values(token?.audit).length"
+          class="text-xs flex gap-1 shrink-0 px-2 bg-green-600 text-zinc-900 rounded-xl p-1"
         >
-          <Icon :icon="`cib:${item[0]}`" />
+          <Icon icon="bxs:check-shield" class="w-4 h-4 text-zinc-900" />
+          Audit
         </div>
       </div>
     </div>
