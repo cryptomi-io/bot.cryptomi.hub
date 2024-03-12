@@ -1,23 +1,15 @@
 <script setup>
-import { computed, ref } from 'vue';
 import Button from '@/components/ui/Button.vue'
 import Card from '@/components/ui/Card.vue'
-import { useQuests } from '@/composables/useQuests';
+import { useQuests } from '@/composables/useQuests'
+import { onMounted, ref } from 'vue'
 
 const { getQuests } = useQuests()
+const quests = ref([])
 
-let quests = ref([])
-
-computed(async () => {
-  quests = await getQuests()
-
-  for (const quest of quests){
-    console.log(quest.name)
-    for (const level of Object.values(quest.questLevels[0].levels)) {
-      console.log(level)
-    }
-    console.log("333333333333")
-  }
+onMounted(async () => {
+  const response = await getQuests()
+  quests.value = response
 })
 // const quests = [
 //   {
