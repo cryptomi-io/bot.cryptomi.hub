@@ -24,13 +24,13 @@ const props = defineProps({
   address: String
 })
 const isLoading = ref(true)
-const isOpenSocials = ref(false)
 const token = ref({
   info: {},
   lock: {},
   audit: {},
   additional: {},
-  price: {}
+  price: {},
+  rank: 0
 })
 const calcToken = ref(0)
 const calcUSD = ref(0)
@@ -38,7 +38,7 @@ const calcUSD = ref(0)
 const socialInfo = computed(() => {
   if (token.value?.info?.socialInfo) {
     return Object.entries(token.value?.info?.socialInfo).filter(([key, value]) => {
-      return key !== 'website' && key !== 'twitter' && value !== ''
+      return value !== ''
     })
   } else {
     return []
@@ -50,17 +50,20 @@ onMounted(async () => {
     router.back()
     return
   }
-  console.log(tokenInfo)
-  token.value.info = tokenInfo
+  if (tokenInfo.rank_tokens.length) {
+    token.value.rank = tokenInfo?.rank_tokens[0]?.rank
+  }
+  token.value.info = tokenInfo.additional_info.info
   token.value.audit = tokenInfo.additional_info?.audit
   token.value.exchange = tokenInfo?.exchange
-  
+
   token.value.additional = await getTokenAdditInfoByAddress(props.chain, props.address)
   delay(1000)
   token.value.lock = await getTokenLockInfoByAddress(props.chain, props.address)
   delay(1000)
   token.value.price = await getTokenPriceByAddress(props.chain, props.address)
 
+  console.log(token.value)
   isLoading.value = false
 })
 const copy = (text) => {
@@ -82,7 +85,6 @@ watch(calcUSD, (newValue) => {
 </script>
 
 <template>
-  {{ console.log(token)}}
   <Loader v-if="isLoading" />
 
   <div v-else class="flex flex-col gap-3">
@@ -96,23 +98,25 @@ watch(calcUSD, (newValue) => {
       </div>
     </template>
     <template v-else>
-      <div class="flex flex-col gap-3 w-full">
+      <div class="flex flex-col gap-3 w-full text-white">
         <!-- --------TOKEN INFO------ -->
         <div class="flex items-center gap-4">
           <div class="relative inline-block">
             <img
-                  class="inline-block w-12 h-12 rounded-full border-2"
-                  :src="`${token?.info?.image}`"
-                  v-if="token?.info?.image"
-                />
-                <div
-                  v-else
-                  class="inline-flex items-center justify-center w-12 h-12 text-xl text-white bg-indigo-500 rounded-full"
-                >
+              class="inline-block w-12 h-12 rounded-full border-2"
+              :src="`${token?.info?.image}`"
+              v-if="token?.info?.image"
+            />
+            <div
+              v-else
+              class="inline-flex items-center justify-center w-12 h-12 text-xl text-white bg-indigo-500 rounded-full"
+            >
               {{ token?.info?.name.substr(0, 1) }}
-                </div>
-         
-            <span class="absolute bottom-1 end-1 block p-1 rounded-full transform translate-y-1/3 translate-x-1/3 w-5 h-5">
+            </div>
+
+            <span
+              class="absolute bottom-1 end-1 block p-1 rounded-full transform translate-y-1/3 translate-x-1/3 w-5 h-5"
+            >
               <img :src="'/images/chains/' + props.chain + '.png'" alt="placeholder" />
             </span>
           </div>
@@ -126,40 +130,18 @@ watch(calcUSD, (newValue) => {
 
     <!-- --------SOCIALS------ -->
     <div class="flex w-full gap-1 mt-4">
-      <div
-        @click="token?.info?.website ? openLink(token?.info?.website) : null"
-        class="flex bg-neutral-800 rounded-xl items-center py-1 px-4 w-full justify-center gap-1 text-xs text-zinc-300"
-      >
-        <Icon icon="mdi:web" class="w-4 h-4" />
-        <span>Website</span>
-      </div>
-      <div
-        @click="token?.info?.twitter ? openLink(token?.info?.twitter) : null"
-        class="flex bg-neutral-800 rounded-xl items-center py-1 px-4 w-full justify-center gap-1 text-xs text-zinc-300"
-      >
-        <Icon icon="basil:twitter-outline" class="w-4 h-4" />
-        <span>Twitter</span>
-      </div>
-      <div class="relative">
-        <div
-          @click="isOpenSocials = !isOpenSocials"
-          class="flex bg-neutral-800 rounded-xl items-center py-1 px-3 text-sm jusstify-center text-zinc-300"
-        >
-          <Icon icon="ri:arrow-down-s-line" class="w-4 h-4" />
+      <div class="flex bg-neutral-800 rounded-xl items-center w-full flex-start text-zinc-300">
+        <div class="flex gap-1 items-center bg-gray-900 h-full p-1 rounded-xl me-2">
+          <Icon icon="fluent-emoji:fire" class="w-6 h-6 text-yellow-500" />
+          <span class="font-bold"> #{{ token?.rank }}</span>
         </div>
         <div
-          v-if="isOpenSocials"
-          class="flex flex-col py-1 bg-neutral-800 rounded-xl absolute right-0 top-[calc(100%+5px)] text-xs w-[130px]"
+          v-for="(item, i) in socialInfo"
+          :key="i"
+          @click="openLink(item[1])"
+          class="px-3 py-2 flex items-center gap-2 text-zinc-300"
         >
-          <div
-            v-for="(item, i) in socialInfo"
-            :key="i"
-            @click="openLink(item[1])"
-            class="px-3 py-1 flex items-center gap-2 text-zinc-300"
-          >
-            <Icon :icon="`cib:${item[0]}`" />
-            <span>{{ capitalizeFirstLetter(item[0]) }}</span>
-          </div>
+          <Icon :icon="`cib:${item[0]}`" />
         </div>
       </div>
     </div>
@@ -251,7 +233,7 @@ watch(calcUSD, (newValue) => {
       </div>
     </Card>
     <!-- --------TOKEN INFO------ -->
-    <div class="rounded-xl border border-neutral-800 text-xs">
+    <div class="rounded-xl border border-neutral-800 text-xs text-white">
       <div
         class="flex w-full justify-between gap-2 border-b border-neutral-800 py-2 items-center px-2"
       >
@@ -344,17 +326,17 @@ watch(calcUSD, (newValue) => {
       class="relative mt-12 pt-12 flex flex-col gap-2 bg-gradient-to-t from-neutral-800 from-10% via-neutral-800 via-30% to-green-500/20 to-90% rounded-lg p-3"
     >
       <div class="absolute w-full left-0 -top-10 flex justify-center">
-         <img
-                  class="inline-block w-[80px] h-[80px] rounded-full border-2"
-                  :src="`${token?.info?.image}`"
-                  v-if="token?.info?.image"
-                />
-                <div
-                  v-else
-                  class="inline-flex items-center justify-center w-[80px] h-[80px] text-xl text-white bg-indigo-500 rounded-full"
-                >
-              {{ token?.info?.name.substr(0, 1) }}
-                </div>
+        <img
+          class="inline-block w-[80px] h-[80px] rounded-full border-2"
+          :src="`${token?.info?.image}`"
+          v-if="token?.info?.image"
+        />
+        <div
+          v-else
+          class="inline-flex items-center justify-center w-[80px] h-[80px] text-xl text-white bg-indigo-500 rounded-full"
+        >
+          {{ token?.info?.name.substr(0, 1) }}
+        </div>
       </div>
       <div class="text-center text-xs text-white">
         <div class="font-bold text-md">{{ token.info.name }} ({{ token.info.symbol }})</div>

@@ -45,6 +45,9 @@ export class MarketController {
     let db_token = await prisma.token.findFirst({
       where: {
         address: address
+      },
+      include: {
+        rank_tokens: true
       }
     })
     //Try to get token from db
