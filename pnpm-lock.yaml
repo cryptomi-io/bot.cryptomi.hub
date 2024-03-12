@@ -68,6 +68,9 @@ dependencies:
   vue-tg:
     specifier: ^0.4.0
     version: 0.4.0(typescript@5.4.2)
+  vue3-marquee:
+    specifier: ^4.2.0
+    version: 4.2.0(vue@3.4.21)
   vue3-toastify:
     specifier: ^0.2.1
     version: 0.2.1(vue@3.4.21)
@@ -9034,6 +9037,15 @@ packages:
       vue: 3.4.21(typescript@5.4.2)
     transitivePeerDependencies:
       - typescript
+    dev: false
+
+  /vue3-marquee@4.2.0(vue@3.4.21):
+    resolution: {integrity: sha512-Ij4iyvHZjTHMrsPqblpJjq6TYbEFq3utihUllAOfuy0E6W2QKX1vX4E7e7qV/ShmHbCbG0pljcEDq3y0FtzBGw==}
+    engines: {node: '>=12'}
+    peerDependencies:
+      vue: ^3.2
+    dependencies:
+      vue: 3.4.21(typescript@5.4.2)
     dev: false
 
   /vue3-toastify@0.2.1(vue@3.4.21):

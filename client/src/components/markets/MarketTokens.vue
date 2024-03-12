@@ -3,11 +3,11 @@ import Card from '@/components/ui/Card.vue'
 import { useDextools } from '@/composables/useDextools'
 import { useDexChains } from '@/store/dextools/chains'
 //import { useGCoinsStore } from '@/store/gecko/coins'
+import { useHelper } from '@/utils/helper'
 import { Icon } from '@iconify/vue'
-import { computed, onMounted, reactive, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { toast } from 'vue3-toastify'
-import { useHelper } from '@/utils/helper'
 
 const { numberFormat } = useHelper()
 const { getTokenInfoFromDbByAddress } = useDextools()
@@ -21,7 +21,6 @@ const router = useRouter()
 const tokensForView = 8
 const isGainersOpen = ref(false)
 const isLosersOpen = ref(false)
-const loadImage = ref(true)
 const searchTokenAddress = ref('')
 const ChainsList = computed(() => DexChains.list || [])
 
@@ -45,16 +44,6 @@ const isLoading = ref(true)
 
 const tab = ref('gainers')
 const currentChain = ref('ether')
-
-const imageStatus = reactive({})
-
-const handleImgLoad = (id) => {
-  imageStatus[id] = true
-}
-
-const handleImgError = (id) => {
-  imageStatus[id] = false
-}
 
 const searchToken = async (address) => {
   const tokenInfo = await getTokenInfoFromDbByAddress(currentChain.value, address)
@@ -225,10 +214,9 @@ watch(currentChain, async (newVal) => {
             </div>
             <div class="flex flex-col items-end">
               <div class="text-zinc-500 text-sm">
-                <span :class="['text-green-500 font-bold text-sm']"
-                
-                  > {{ numberFormat(item?.variation24h, 2, true, true) }} %</span
-                >
+                <span :class="['text-green-500 font-bold text-sm']">
+                  {{ numberFormat(item?.variation24h, 2, true, true) }} %
+                </span>
               </div>
             </div>
           </Card>
@@ -277,10 +265,7 @@ watch(currentChain, async (newVal) => {
               <div class="relative inline-block">
                 <img
                   class="inline-block w-12 h-12 rounded-full border-2"
-                  :src="
-                    `${item?.image}`
-                  "
-                  
+                  :src="`${item?.image}`"
                   v-if="item?.image"
                 />
                 <div
@@ -304,9 +289,8 @@ watch(currentChain, async (newVal) => {
             </div>
             <div class="flex flex-col items-end">
               <div class="text-zinc-500 text-sm">
-                <span :class="['text-red-500 font-bold text-sm shrink-0 whitespace-nowrap']"
-                  >
-                 {{ numberFormat(item?.variation24h,2,true,true) }} %
+                <span :class="['text-red-500 font-bold text-sm shrink-0 whitespace-nowrap']">
+                  {{ numberFormat(item?.variation24h, 2, true, true) }} %
                 </span>
               </div>
             </div>

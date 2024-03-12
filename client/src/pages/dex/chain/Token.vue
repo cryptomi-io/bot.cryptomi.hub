@@ -52,8 +52,8 @@ onMounted(async () => {
   }
   console.log(tokenInfo)
   token.value.info = tokenInfo
-  token.value.audit = tokenInfo.additional_info.audit
-  token.value.exchange = tokenInfo.exchange
+  token.value.audit = tokenInfo.additional_info?.audit
+  token.value.exchange = tokenInfo?.exchange
   
   token.value.additional = await getTokenAdditInfoByAddress(props.chain, props.address)
   delay(1000)

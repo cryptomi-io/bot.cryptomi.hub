@@ -15,11 +15,10 @@ const isGuest = computed(() => {
 </script>
 
 <template>
-  <main class="p-3 pb-[90px] min-h-screen bg-neutral-950 text-gray-500 dark:text-gray-200">
+  <main class="p-3 pb-[90px] min-h-screen bg-neutral-950 text-gray-500">
     <div class="flex flex-col justify-between h-full">
       <Menu v-if="!isGuest" />
       <router-view></router-view>
     </div>
   </main>
 </template>
-./data/routes
