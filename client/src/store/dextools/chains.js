@@ -24,12 +24,16 @@ export const useDexChains = defineStore({
         name: 'Solana'
       }
     ],
+    top: [],
     gainers: [],
     losers: []
   }),
   actions: {
     setList(chains) {
       this.list = chains
+    },
+    setTop(top) {
+      this.top = top
     },
     setGainers(gainers) {
       this.gainers = gainers
@@ -48,6 +52,13 @@ export const useDexChains = defineStore({
       if (response?.status === 200) {
         const chains = response?.data?.data?.results
         this.setList(chains)
+      }
+    },
+    async getTop() {
+      const response = await $hub.get('market/info/top')
+      if (response?.status === 200) {
+        const top = response?.data?.data
+        this.setTop(top)
       }
     },
     async getGainers(chain) {

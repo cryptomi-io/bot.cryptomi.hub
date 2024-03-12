@@ -2,7 +2,6 @@ import { PrismaClient } from '@prisma/client'
 import { validationResult } from 'express-validator'
 import { useDextools } from '../../common/hooks/useDextools.js'
 
-
 const { getTokenInfoByAddress, getTokenAuditByAddress, getImageToken } = useDextools()
 
 const prisma = new PrismaClient()
@@ -46,6 +45,9 @@ export class MarketController {
     let db_token = await prisma.token.findFirst({
       where: {
         address: address
+      },
+      include: {
+        rank_tokens: true
       }
     })
     //Try to get token from db
@@ -57,8 +59,11 @@ export class MarketController {
       if (!token_info_res) {
         return res.status(400).json({ status: 'Token not found' })
       }
-      
-      const imageToken = await getImageToken('https://www.dextools.io/resources/tokens/logos/'+chain+'/'+address+'.png', chain);
+
+      const imageToken = await getImageToken(
+        'https://www.dextools.io/resources/tokens/logos/' + chain + '/' + address + '.png',
+        chain
+      )
       console.log('first upload')
       db_token = await prisma.token.create({
         data: {
@@ -67,19 +72,16 @@ export class MarketController {
           name: token_info_res?.name,
           exchange: '',
           factory: '',
-          image: imageToken,
+          image: imageToken
         }
       })
     }
-    
-    
-    
+
     token = {
       ...db_token,
       additional_info: db_token?.additional_info ? JSON.parse(db_token.additional_info) : null
     }
-    
-    
+
     //if token doesn't has additional info.info
     if (!token?.additional_info?.info || !Object.values(token?.additional_info?.info).length) {
       await delay(1000)
@@ -110,17 +112,20 @@ export class MarketController {
         }
       })
     }
-    
-    const updateImageToken = await getImageToken('https://www.dextools.io/resources/tokens/logos/'+chain+'/'+address+'.png', chain);
-    if(updateImageToken) {
+
+    const updateImageToken = await getImageToken(
+      'https://www.dextools.io/resources/tokens/logos/' + chain + '/' + address + '.png',
+      chain
+    )
+    if (updateImageToken) {
       token = {
         ...db_token,
         image: updateImageToken
       }
-      isUpdateImage = true;
+      isUpdateImage = true
       console.log('update upload ' + isUpdateImage)
     }
-    if(isUpdateImage){
+    if (isUpdateImage) {
       console.log(JSON.stringify(token))
     }
     if (isUpdateImage) {
@@ -136,9 +141,24 @@ export class MarketController {
 
     res.json({ status: 'success', data: token })
   }
-  
-  
-  
+
+  async getTop(req, res) {
+    const tokens = await prisma.rank_tokens.findMany({
+      where: {
+        side: 'gainer'
+      },
+      include: {
+        token: true
+      },
+      orderBy: [
+        {
+          variation24h: 'desc'
+        }
+      ],
+      take: 30
+    })
+    res.json({ status: 'success', data: tokens })
+  }
 }
 
 function delay(ms) {

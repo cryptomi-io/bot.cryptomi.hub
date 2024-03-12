@@ -18,4 +18,10 @@ marketRouter.get(
   controller.getTokenInfo
 )
 
+marketRouter.get(
+  '/info/top',
+  controller.getTop
+)
+
+
 export default marketRouter
