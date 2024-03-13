@@ -217,7 +217,14 @@ export class CronController {
           }
         })
         console.log('[CRON ANALYZER] Stop analyzer')
-
+        $bot.sendMessage(
+          task.user_id,
+          'Your analyze for wallet: ' +
+            task.wallet_address +
+            ' for time period: ' +
+            task.time_period +
+            ' is complete. Check results in analyze bot section.'
+        )
         return
       }
 
