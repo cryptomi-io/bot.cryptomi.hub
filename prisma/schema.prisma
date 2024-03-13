@@ -46,7 +46,25 @@ model rank_tokens {
   @@map("rank_tokens")
 }
 
+model WalletAnalyzer{
+  id                Int                   @id @default(autoincrement())
+  user_id           String
+  wallet_address    String
+  status            WalletAnalyzerStatus  @default(ACTIVE)
+  time_period       Int
+  transactions      Json?
+  historical_prices Json?
+  result            Json? 
+  created_at        DateTime              @default(now())
+  updated_at        DateTime?             @updatedAt
+  @@map("wallet_analyzer")
+}
 
+enum WalletAnalyzerStatus {
+  ACTIVE
+  COMPLETE
+  ERROR
+}
 
 enum Side {
   gainer

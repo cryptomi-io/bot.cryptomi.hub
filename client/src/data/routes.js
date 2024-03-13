@@ -22,7 +22,7 @@ export const AUTH_ROUTES = [
   { path: '/premium', component: Premium, name: 'premium' },
   { path: '/bots', component: Bots, name: 'bots' },
   { path: '/bots/analyzer', component: WalletAnalyzer, name: 'bots.analyzer.index' },
-  { path: '/bots/analyzer/:wallet/:timePeriod', component: ItemWalletAnalyzer, name: 'bots.analyzer.item' }
+  { path: '/bots/analyzer/:id', component: ItemWalletAnalyzer, name: 'bots.analyzer.item' }
 ]
 
 export const routes = [...AUTH_ROUTES, ...GUEST_ROUTES]
