@@ -233,9 +233,24 @@ export class CronController {
             })
           }
         })
-        const tokenHistoricalPrices =
-          await getShitcoinHistoricalMultiplePrices(_tokenDataForGetPrices)
+        let tokenHistoricalPrices = []
+        chunkArray(_tokenDataForGetPrices, 25).forEach(async (chunk) => {
+          tokenHistoricalPrices = [
+            ...tokenHistoricalPrices,
+            ...((await getShitcoinHistoricalMultiplePrices(chunk)) || [])
+          ]
+          delay(1000)
+        })
 
+        if (!tokenHistoricalPrices.length) {
+          console.log(
+            '[CRON ANALYZER] Cannot get historical prices for wallet: ' +
+              task.wallet_address +
+              ' for time period: ' +
+              task.time_period
+          )
+          return
+        }
         await prisma.walletAnalyzer.update({
           where: {
             id: task.id
@@ -443,7 +458,13 @@ export class CronController {
           })
         })
       if (_caForPrices.length > 0) {
-        const _tokenActualPrices = await getShitcoinHistoricalMultiplePrices(_caForPrices)
+        let _tokenActualPrices = []
+        chunkArray(_caForPrices, 25).forEach(async (chunk) => {
+          _tokenActualPrices = [
+            ..._tokenActualPrices,
+            ...(await getShitcoinHistoricalMultiplePrices(chunk))
+          ]
+        })
         Object.values(transactionsTokens).forEach((token) => {
           token.unrealizedPnL =
             token.tokenBalance *
@@ -458,7 +479,7 @@ export class CronController {
         (token) => token.PnL !== 0 || token.unrealizedPnL !== 0
       )
 
-      console.log(transactionsTokens)
+
       await prisma.walletAnalyzer.update({
         where: {
           id: task.id
@@ -481,4 +502,12 @@ export class CronController {
 }
 function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+function chunkArray(array, chunkSize) {
+  const chunks = []
+  for (let i = 0; i < array.length; i += chunkSize) {
+    chunks.push(array.slice(i, i + chunkSize))
+  }
+  return chunks
 }

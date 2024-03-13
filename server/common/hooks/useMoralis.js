@@ -30,7 +30,7 @@ export const useMoralis = () => {
     const response = await $moralis.post(`erc20/prices?${params}`, {
       tokens: tokens
     })
-    if (response.status !== 200) {
+    if (response?.status !== 200) {
       console.error(
         `[historical price] moralis error on tokens; response: \n${JSON.stringify(response)}`
       )
