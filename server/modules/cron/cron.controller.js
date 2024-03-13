@@ -1,13 +1,18 @@
 import { PrismaClient } from '@prisma/client'
+import dotenv from 'dotenv'
+import TelegramBot from 'node-telegram-bot-api'
+import process from 'process'
 import { useDextools } from '../../common/hooks/useDextools.js'
-
 import { useEtherscan } from '../../common/hooks/useEtherscan.js'
 import { useMoralis } from '../../common/hooks/useMoralis.js'
 const { getGainers, getLosers, getImageToken } = useDextools()
 const { getShitcoinHistoricalMultiplePrices } = useMoralis()
-
 const { weiToNumber, getTransactions } = useEtherscan()
+dotenv.config()
+const token = process.env.TELEGRAM_BOT_TOKEN
 const prisma = new PrismaClient()
+const $bot = new TelegramBot(token)
+
 export class CronController {
   static chains = [
     {
@@ -479,7 +484,6 @@ export class CronController {
         (token) => token.PnL !== 0 || token.unrealizedPnL !== 0
       )
 
-
       await prisma.walletAnalyzer.update({
         where: {
           id: task.id
@@ -489,6 +493,14 @@ export class CronController {
           result: JSON.stringify(Object.values(transactionsTokens))
         }
       })
+      $bot.sendMessage(
+        task.user_id,
+        'Your analyze for wallet: ' +
+          task.wallet_address +
+          ' for time period: ' +
+          task.time_period +
+          ' is complete. Check results in analyze bot section.'
+      )
       console.log(
         '[CRON ANALYZER]Complete analyze for wallet: ' +
           task.wallet_address +
