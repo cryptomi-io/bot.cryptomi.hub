@@ -469,6 +469,7 @@ export class CronController {
             ..._tokenActualPrices,
             ...(await getShitcoinHistoricalMultiplePrices(chunk))
           ]
+          delay(1000)
         })
         Object.values(transactionsTokens).forEach((token) => {
           token.unrealizedPnL =
