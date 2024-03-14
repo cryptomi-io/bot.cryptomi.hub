@@ -27,10 +27,8 @@ export const useHelper = () => {
       } else if (number >= 1e3) {
         return (number / 1e3).toFixed(1) + 'K'
       } else {
-        if(!isPercent)
-          return number.toString()
-        else
-          return number.toFixed(1)
+        if (!isPercent) return number.toString()
+        else return number.toFixed(1)
       }
     } else {
       const num = number.toFixed(decimals)
