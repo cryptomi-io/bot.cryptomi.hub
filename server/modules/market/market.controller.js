@@ -1,6 +1,11 @@
 import { PrismaClient } from '@prisma/client'
 import { validationResult } from 'express-validator'
+import fs from 'fs'
+import path from 'path'
 import { useDextools } from '../../common/hooks/useDextools.js'
+
+const rootPath = process.cwd()
+const BASE_UPLOAD_DIR = path.join(rootPath, 'client', 'public', 'uploads')
 
 const { getTokenInfoByAddress, getTokenAuditByAddress, getImageToken } = useDextools()
 
@@ -41,7 +46,6 @@ export class MarketController {
 
     let token = null
     let isUpdateInfo = false
-    let isUpdateImage = false
     let db_token = await prisma.token.findFirst({
       where: {
         address: address
@@ -50,6 +54,7 @@ export class MarketController {
         rank_tokens: true
       }
     })
+
     //Try to get token from db
     if (!db_token) {
       const token_info_res = await getTokenInfoByAddress(chain, address)
@@ -92,6 +97,7 @@ export class MarketController {
       }
       isUpdateInfo = true
     }
+
     if (!token?.additional_info?.audit || !Object.values(token?.additional_info?.audit).length) {
       await delay(1000)
       const audit_response = await getTokenAuditByAddress(chain, address)
@@ -101,6 +107,17 @@ export class MarketController {
       }
       isUpdateInfo = true
     }
+    const filePath = path.join(BASE_UPLOAD_DIR, decodeURIComponent(token.image))
+
+    if (!token.image && !fs.existsSync(filePath)) {
+      const updateImageToken = await getImageToken(
+        'https://www.dextools.io/resources/tokens/logos/' + chain + '/' + address + '.png',
+        chain
+      )
+
+      token.image = updateImageToken
+      isUpdateInfo = true
+    }
 
     if (isUpdateInfo) {
       await prisma.token.update({
@@ -108,33 +125,8 @@ export class MarketController {
           id: token.id
         },
         data: {
+          image: token.image,
           additional_info: JSON.stringify(token.additional_info)
-        }
-      })
-    }
-
-    const updateImageToken = await getImageToken(
-      'https://www.dextools.io/resources/tokens/logos/' + chain + '/' + address + '.png',
-      chain
-    )
-    if (updateImageToken) {
-      token = {
-        ...db_token,
-        image: updateImageToken
-      }
-      isUpdateImage = true
-      console.log('update upload ' + isUpdateImage)
-    }
-    if (isUpdateImage) {
-      console.log(JSON.stringify(token))
-    }
-    if (isUpdateImage) {
-      await prisma.token.update({
-        where: {
-          id: token.id
-        },
-        data: {
-          image: token.image
         }
       })
     }

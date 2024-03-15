@@ -9,7 +9,7 @@ import MarketMarquee from '@/components/markets/MarketMarquee.vue'
 
 <template>
   <div class="pt-10">
-    <MarketMarquee class="fixed top-0 left-0" />
+    <MarketMarquee class="fixed top-0 left-0 z-10" />
     <div class="flex flex-col gap-3">
       <UserShortInfo />
       <UserBalance />
