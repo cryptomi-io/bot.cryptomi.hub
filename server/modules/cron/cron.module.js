@@ -17,4 +17,9 @@ export class CronSchedule {
       CronController.analyzeWallet()
     })
   }
+  static scrapTransfers() {
+    cron.schedule('* * * * *', () => {
+      CronController.scrapTransfers()
+    })
+  }
 }
