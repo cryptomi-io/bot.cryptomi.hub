@@ -15,7 +15,7 @@ datasource db {
 
 model Token {
   id                Int       @id @default(autoincrement())
-  address           String
+  address           String    
   symbol            String    
   name              String
   exchange          String?
@@ -23,9 +23,34 @@ model Token {
   additional_info   Json?
   image             String?
   rank_tokens       rank_tokens[]
-
+  transactions      Transaction[]
   @@map("tokens")
 }
+
+model Block {
+  id            Int             @id @default(autoincrement())
+  blockNumber   Int             @unique
+  blockHash     String
+  timestamp     DateTime
+  chain         String
+  transactions  Transaction[]
+  @@map("blocks")
+}
+
+model Transaction{
+  id              Int      @id @default(autoincrement())
+  block_id        Int
+  token_id        Int
+  transactionHash String
+  fromAddress     String
+  toAddress       String
+  amount          Float
+  token           Token    @relation(fields: [token_id], references: [id])
+  block           Block    @relation(fields: [block_id], references: [blockNumber])
+
+  @@map("transactions")
+}
+
 
 model rank_tokens {
   id                Int         @id @default(autoincrement())
@@ -59,6 +84,17 @@ model WalletAnalyzer{
   updated_at        DateTime?             @updatedAt
   @@map("wallet_analyzer")
 }
+
+
+
+model Settings {
+  id            Int             @id @default(autoincrement())
+  slug          String          @unique
+  value         String?
+  @@map("settings")
+
+}
+
 
 enum WalletAnalyzerStatus {
   ACTIVE
