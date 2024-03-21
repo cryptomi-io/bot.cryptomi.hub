@@ -523,175 +523,177 @@ export class CronController {
   }
 
   static async scrapTransfers() {
-    // try {
-    const res = await prisma.settings.findFirst({
-      where: {
-        slug: 'alchemy_pageKey'
-      },
-      select: {
-        value: true
-      }
-    })
-    const pageKey = res?.value || null
-    const blockFrom = '0x11BCFBF'
-
-    const alchemyParams = {
-      id: 1,
-      jsonrpc: '2.0',
-      method: 'alchemy_getAssetTransfers',
-      params: [
-        {
-          fromBlock: blockFrom,
-          toBlock: 'latest',
-          excludeZeroValue: true,
-          withMetadata: true,
-          maxCount: '0x3e8',
-          category: [
-            AssetTransfersCategory.ERC20,
-            AssetTransfersCategory.EXTERNAL,
-            AssetTransfersCategory.EXTERNAL
-          ]
+    for (let i = 0; i < 10; i++) {
+      const res = await prisma.settings.findFirst({
+        where: {
+          slug: 'alchemy_latestBlock'
+        },
+        select: {
+          value: true
         }
-      ]
-    }
-    if (pageKey) {
-      alchemyParams.params[0].pageKey = pageKey
-    }
-    const headers = {
-      Accept: 'application/json',
-      'Content-Type': 'application/json'
-    }
-    try {
-      const response = await axios.post(
-        'https://eth-mainnet.g.alchemy.com/v2/-RrNuO2ogSva9S90IuTGcbzWTeckazLx',
-        alchemyParams,
-        headers
-      )
-      let arTransactions = []
-      let arTokens = []
-      let arBlocks = []
-      if (response?.data?.result?.transfers) {
-        const transfers = response.data.result.transfers
-        transfers.forEach(async (transfer) => {
-          arBlocks[transfer.blockNum] = {
-            blockNumber: parseInt(transfer.blockNum, 16),
-            blockHash: transfer.hash,
-            timestamp: transfer?.metadata?.blockTimestamp,
-            chain: 'eth'
+      })
+      const blockFrom = res?.value || null
+
+      const alchemyParams = {
+        id: 1,
+        jsonrpc: '2.0',
+        method: 'alchemy_getAssetTransfers',
+        params: [
+          {
+            fromBlock: blockFrom,
+            toBlock: 'latest',
+            excludeZeroValue: true,
+            withMetadata: true,
+            maxCount: '0x3e8',
+            category: [
+              AssetTransfersCategory.ERC20,
+              AssetTransfersCategory.EXTERNAL,
+              AssetTransfersCategory.EXTERNAL
+            ]
           }
-          if (transfer.rawContract?.address && transfer.asset) {
-            arTokens[transfer.rawContract?.address] = {
-              address: transfer.rawContract?.address,
-              symbol: transfer.asset,
-              name: transfer.asset
+        ]
+      }
+
+      const headers = {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      }
+      try {
+        delay(3000)
+        const response = await axios.post(
+          'https://eth-mainnet.g.alchemy.com/v2/-RrNuO2ogSva9S90IuTGcbzWTeckazLx',
+          alchemyParams,
+          headers
+        )
+        let arTransactions = []
+        let arTokens = []
+        let arBlocks = []
+
+        if (response?.data?.result?.transfers) {
+          const transfers = response.data.result.transfers
+          transfers.forEach(async (transfer) => {
+            arBlocks[transfer.blockNum] = {
+              blockNumber: parseInt(transfer.blockNum, 16),
+              blockHash: transfer.hash,
+              timestamp: transfer?.metadata?.blockTimestamp,
+              chain: 'eth'
             }
-          }
-          arTransactions[transfer.hash] = {
-            blockNumber: parseInt(transfer.blockNum, 16),
-            fromAddress: transfer.from,
-            toAddress: transfer.to,
-            amount: transfer.value,
-            transactionHash: transfer.hash,
-            block_number: transfer.blockNum,
-            token_address: transfer.rawContract?.address
-          }
-        })
-
-        await Object.values(arBlocks).forEach(async (block) => {
-          try {
-            await prisma.block.upsert({
-              where: {
-                blockNumber: block.blockNumber
-              },
-              create: {
-                blockNumber: block.blockNumber,
-                blockHash: block.blockHash,
-                timestamp: block.timestamp,
-                chain: block.chain
-              },
-              update: {
-                blockHash: block.blockHash,
-                timestamp: block.timestamp,
-                chain: block.chain
+            if (transfer.rawContract?.address && transfer.asset) {
+              arTokens[transfer.rawContract?.address] = {
+                address: transfer.rawContract?.address,
+                symbol: transfer.asset,
+                name: transfer.asset
               }
-            })
-          } catch (err) {
-            console.log('[CRON ERROR][SCRAP TRANSFERS] The problem with creating block: ' + err)
-          }
-        })
-
-        await Object.values(arTokens).forEach(async (token) => {
-          const db_token = await prisma.token.findFirst({
-            where: {
-              address: token.address
+            }
+            arTransactions[transfer.hash] = {
+              blockNumber: parseInt(transfer.blockNum, 16),
+              fromAddress: transfer.from,
+              toAddress: transfer.to,
+              amount: transfer.value,
+              transactionHash: transfer.hash,
+              block_number: transfer.blockNum,
+              token_address: transfer.rawContract?.address
             }
           })
 
-          if (!db_token) {
+          const latestBlock = transfers.slice(-1)[0]?.blockNum || null
+
+          await Object.values(arBlocks).forEach(async (block) => {
             try {
-              await prisma.token.create({
-                data: {
-                  address: token.address,
-                  symbol: token.symbol,
-                  name: token.name
+              await prisma.block.upsert({
+                where: {
+                  blockNumber: block.blockNumber
+                },
+                create: {
+                  blockNumber: block.blockNumber,
+                  blockHash: block.blockHash,
+                  timestamp: block.timestamp,
+                  chain: block.chain
+                },
+                update: {
+                  blockHash: block.blockHash,
+                  timestamp: block.timestamp,
+                  chain: block.chain
                 }
               })
             } catch (err) {
-              console.log('[CRON ERROR][SCRAP TRANSFERS] The problem with creating token: ' + err)
+              console.log('[CRON ERROR][SCRAP TRANSFERS] The problem with creating block: ' + err)
             }
-          }
-        })
-        await Object.values(arTransactions).forEach(async (transaction) => {
-          if (transaction.token_address) {
-            const token = await prisma.token.findFirst({
+          })
+
+          await Object.values(arTokens).forEach(async (token) => {
+            const db_token = await prisma.token.findFirst({
               where: {
-                address: transaction.token_address
+                address: token.address
               }
             })
-            const block = await prisma.block.findFirst({
-              where: {
-                blockNumber: transaction.blockNumber
-              }
-            })
-            if (token && block) {
+
+            if (!db_token) {
               try {
-                await prisma.transaction.create({
+                await prisma.token.create({
                   data: {
-                    token_id: token.id,
-                    block_id: block.blockNumber,
-                    transactionHash: transaction.transactionHash,
-                    fromAddress: transaction.fromAddress,
-                    toAddress: transaction.toAddress,
-                    amount: transaction.amount
+                    address: token.address,
+                    symbol: token.symbol,
+                    name: token.name
                   }
                 })
               } catch (err) {
-                console.log(
-                  '[CRON ERROR][SCRAP TRANSFERS] The problem with creating transaction: ' + err
-                )
+                console.log('[CRON ERROR][SCRAP TRANSFERS] The problem with creating token: ' + err)
               }
             }
-          }
-        })
-        try {
-          await prisma.settings.upsert({
-            where: {
-              slug: 'alchemy_pageKey'
-            },
-            create: {
-              slug: 'alchemy_pageKey',
-              value: response.data.result.pageKey
-            },
-            update: {
-              value: response.data.result.pageKey
+          })
+          await Object.values(arTransactions).forEach(async (transaction) => {
+            if (transaction.token_address) {
+              const token = await prisma.token.findFirst({
+                where: {
+                  address: transaction.token_address
+                }
+              })
+              const block = await prisma.block.findFirst({
+                where: {
+                  blockNumber: transaction.blockNumber
+                }
+              })
+              if (token && block) {
+                try {
+                  await prisma.transaction.create({
+                    data: {
+                      token_id: token.id,
+                      block_id: block.blockNumber,
+                      transactionHash: transaction.transactionHash,
+                      fromAddress: transaction.fromAddress,
+                      toAddress: transaction.toAddress,
+                      amount: transaction.amount
+                    }
+                  })
+                } catch (err) {
+                  console.log(
+                    '[CRON ERROR][SCRAP TRANSFERS] The problem with creating transaction: ' + err
+                  )
+                }
+              }
             }
           })
-        } catch (err) {
-          console.log('[CRON ERROR][SCRAP TRANSFERS] The problem with update page: ' + err)
+          try {
+            await prisma.settings.upsert({
+              where: {
+                slug: 'alchemy_latestBlock'
+              },
+              create: {
+                slug: 'alchemy_latestBlock',
+                value: latestBlock
+              },
+              update: {
+                value: latestBlock
+              }
+            })
+          } catch (err) {
+            console.log('[CRON ERROR][SCRAP TRANSFERS] The problem with update page: ' + err)
+          }
         }
+      } catch (err) {
+        console.log('[CRON ERROR][SCRAP TRANSFERS] Error: ' + err)
       }
-    } catch (err) {
-      console.log('[CRON ERROR][SCRAP TRANSFERS] Error: ' + err)
     }
   }
 }
