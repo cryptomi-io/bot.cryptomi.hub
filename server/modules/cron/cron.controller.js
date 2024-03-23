@@ -523,7 +523,7 @@ export class CronController {
   }
 
   static async scrapTransfers() {
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 5; i++) {
       const res = await prisma.settings.findFirst({
         where: {
           slug: 'alchemy_latestBlock'
@@ -532,9 +532,18 @@ export class CronController {
           value: true
         }
       })
-      const blockFrom = res?.value || null
+      const resPageKey = await prisma.settings.findFirst({
+        where: {
+          slug: 'alchemy_pageKey'
+        },
+        select: {
+          value: true
+        }
+      })
 
-      const alchemyParams = {
+      const pageKey = resPageKey?.value || null
+      const blockFrom = res?.value || null
+      let alchemyParams = {
         id: 1,
         jsonrpc: '2.0',
         method: 'alchemy_getAssetTransfers',
@@ -553,13 +562,16 @@ export class CronController {
           }
         ]
       }
+      if(pageKey){
+        alchemyParams.params.pageKey = pageKey
+      }
 
       const headers = {
         Accept: 'application/json',
         'Content-Type': 'application/json'
       }
       try {
-        delay(3000)
+        delay(6000)
         const response = await axios.post(
           'https://eth-mainnet.g.alchemy.com/v2/-RrNuO2ogSva9S90IuTGcbzWTeckazLx',
           alchemyParams,
@@ -643,7 +655,7 @@ export class CronController {
             }
           })
           await Object.values(arTransactions).forEach(async (transaction) => {
-            if (transaction.token_address) {
+            if (transaction.token_address && transaction.amount) {
               const token = await prisma.token.findFirst({
                 where: {
                   address: transaction.token_address
@@ -674,7 +686,16 @@ export class CronController {
               }
             }
           })
+
+
           try {
+            const db_latest_block = await prisma.block.findFirst({
+              orderBy: {
+                id: 'desc',
+              },
+              take:1
+            })
+
             await prisma.settings.upsert({
               where: {
                 slug: 'alchemy_latestBlock'
@@ -687,6 +708,24 @@ export class CronController {
                 value: latestBlock
               }
             })
+            
+            await prisma.settings.upsert({
+              where: {
+                slug: 'alchemy_pageKey'
+              },
+              create: {
+                slug: 'alchemy_pageKey',
+                value: db_latest_block.blockNumber !== parseInt(latestBlock, 16) ? null : response?.data?.result.pageKey
+              },
+              update: {
+                value: db_latest_block.blockNumber !== parseInt(latestBlock, 16) ? null : response?.data?.result.pageKey
+              }
+            })
+          
+            const date = new Date()
+
+            console.log('[CRON SUCCESS][SCRAP TRANSFERS] Task is done '+date.getHours()+':'+date.getMinutes()+' '+ date.getDay()+'.'+date.getMonth()+'.'+date.getFullYear())
+
           } catch (err) {
             console.log('[CRON ERROR][SCRAP TRANSFERS] The problem with update page: ' + err)
           }
