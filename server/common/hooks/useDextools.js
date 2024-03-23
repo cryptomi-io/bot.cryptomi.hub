@@ -1,10 +1,9 @@
 import { $dt } from '../services/dextools.js'
-import fetch from 'node-fetch';
-import { writeFile, mkdir, access } from 'fs/promises';
-import { dirname, join } from 'path';
-import { fileURLToPath } from 'url';
-import { constants } from 'fs';
-
+import fetch from 'node-fetch'
+import { writeFile, mkdir, access } from 'fs/promises'
+import { dirname, join } from 'path'
+import { fileURLToPath } from 'url'
+import { constants } from 'fs'
 
 export const useDextools = () => {
   /**
@@ -195,39 +194,38 @@ export const useDextools = () => {
     }
   }
   const getImageToken = async (url, chain) => {
-    const filename = url.split('/').pop();
-    const baseDir = dirname(fileURLToPath(import.meta.url));
-    const dir = join(baseDir, `../../../client/public/images/crypto/${chain}`);
-    const path = join(dir, filename);
-    
+    const filename = url.split('/').pop()
+    const baseDir = dirname(fileURLToPath(import.meta.url))
+    const dir = join(baseDir, `../../../client/assets/images/crypto/${chain}`)
+    const path = join(dir, filename)
+
     try {
       // Проверка на существование файла
-      await access(path, constants.F_OK);
+      await access(path, constants.F_OK)
       //console.log(`File ${filename} already exists. No need to download.`);
       // Возвращаем относительный путь к существующему изображению
-      return `/images/crypto/${chain}/${filename}`;
+      return `/assets/images/crypto/${chain}/${filename}`
     } catch {
       // Файл не существует, продолжаем скачивание
       try {
-        const response = await fetch(url);
+        const response = await fetch(url)
         if (response.ok) {
-          const buffer = await response.buffer();
-          await mkdir(dir, { recursive: true }); // Убедитесь, что директория существует
-          await writeFile(path, buffer);
+          const buffer = await response.buffer()
+          await mkdir(dir, { recursive: true }) // Убедитесь, что директория существует
+          await writeFile(path, buffer)
           //console.log(`Image saved to ${path}`);
-          return `/images/crypto/${chain}/${filename}`;
+          return `/assets/images/crypto/${chain}/${filename}`
         } else {
           //console.log(`Image not found or error occurred: ${response.statusText}`);
-          return null;
+          return null
         }
       } catch (error) {
-       // console.error(`Failed to download image: ${error}`);
-        return null;
+        // console.error(`Failed to download image: ${error}`);
+        return null
       }
     }
   }
-  
-  
+
   return {
     getChains,
     getGainers,
@@ -237,6 +235,6 @@ export const useDextools = () => {
     getTokenAdditInfoByAddress,
     getTokenAuditByAddress,
     getTokenInfoByAddress,
-    getImageToken,
+    getImageToken
   }
 }

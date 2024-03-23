@@ -15,7 +15,7 @@ onMounted(() => {
 })
 </script>
 <template>
-  <div :class="`${props.class}`">
+  <div v-if="tokens.length" :class="`${props.class}`">
     <Vue3Marquee class="bg-neutral-800" :duration="150">
       <router-link
         v-for="(item, i) in tokens"
