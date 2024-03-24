@@ -6,8 +6,13 @@ import Referral from '@/pages/Referral.vue'
 import Settings from '@/pages/Settings.vue'
 import Register from '@/pages/auth/Register.vue'
 import Welcome from '@/pages/auth/Welcome.vue'
-import ItemWalletAnalyzer from '@/pages/bots/analyzer/ItemWalletAnalyzer.vue'
-import WalletAnalyzer from '@/pages/bots/analyzer/WalletAnalyzer.vue'
+
+import BotAnalyzer from '@/pages/bots/analyzer/index.vue'
+import BotAnalyzerWallet from '@/pages/bots/analyzer/wallet/index.vue'
+import BotAnalyzerWalletItem from '@/pages/bots/analyzer/wallet/item.vue'
+
+import BotAnalyzerToken from '@/pages/bots/analyzer/token/index.vue'
+import BotAnalyzerTokenItem from '@/pages/bots/analyzer/token/item.vue'
 
 export const GUEST_ROUTES = [
   { path: '/welcome', component: Welcome, name: 'welcome' },
@@ -21,8 +26,21 @@ export const AUTH_ROUTES = [
   { path: '/settings', component: Settings, name: 'settings' },
   { path: '/premium', component: Premium, name: 'premium' },
   { path: '/bots', component: Bots, name: 'bots' },
-  { path: '/bots/analyzer', component: WalletAnalyzer, name: 'bots.analyzer.index' },
-  { path: '/bots/analyzer/:id', component: ItemWalletAnalyzer, name: 'bots.analyzer.item' }
+
+  { path: '/bots/analyzer', component: BotAnalyzer, name: 'bots.analyzer' },
+  { path: '/bots/analyzer/wallet', component: BotAnalyzerWallet, name: 'bots.analyzer.wallet' },
+  {
+    path: '/bots/analyzer/wallet/:id',
+    component: BotAnalyzerWalletItem,
+    name: 'bots.analyzer.wallet.item'
+  },
+
+  { path: '/bots/analyzer/token', component: BotAnalyzerToken, name: 'bots.analyzer.token' },
+  {
+    path: '/bots/analyzer/token/:id',
+    component: BotAnalyzerTokenItem,
+    name: 'bots.analyzer.token.item'
+  }
 ]
 
 export const routes = [...AUTH_ROUTES, ...GUEST_ROUTES]
