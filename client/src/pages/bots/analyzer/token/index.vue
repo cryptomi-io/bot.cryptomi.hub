@@ -18,7 +18,7 @@ const formData = ref({
   wallet: '',
   contractAddress: 30
 })
-const periods = [1, 7, 30, 60]
+const periods = [7, 14, 30]
 
 const formHandleSubmit = async () => {
   isLoading.value = true

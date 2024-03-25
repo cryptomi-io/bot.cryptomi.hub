@@ -142,8 +142,8 @@ watch(currentChain, async (newVal) => {
         <div
           @click="tab = 'gainers'"
           :class="[
-            'w-full  p-2 text-sm text-center cursor-pointer rounded-xl',
-            tab === 'gainers' ? 'bg-green-500 text-zinc-900' : 'bg-zinc-900 text-zinc-400'
+            'w-full  p-2 text-sm text-center cursor-pointer rounded-xl font-medium text-zinc-100',
+            tab === 'gainers' ? 'bg-green-500' : 'bg-zinc-900 '
           ]"
         >
           #Tomi Gainers
@@ -151,8 +151,8 @@ watch(currentChain, async (newVal) => {
         <div
           @click="tab = 'losers'"
           :class="[
-            'w-full  p-2 text-sm text-center cursor-pointer rounded-xl',
-            tab === 'losers' ? 'bg-green-500 text-zinc-900' : 'bg-zinc-900 text-zinc-400'
+            'w-full  p-2 text-sm text-center cursor-pointer rounded-xl font-medium text-zinc-100',
+            tab === 'losers' ? 'bg-green-500 ' : 'bg-zinc-900'
           ]"
         >
           #Tomi Losers

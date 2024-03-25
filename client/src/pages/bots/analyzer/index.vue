@@ -100,8 +100,8 @@ function handleBackButton() {
         <div
           @click="taskTab = 'completed'"
           :class="[
-            'px-2 py-1 text-sm text-center cursor-pointer rounded-xl',
-            taskTab === 'completed' ? 'bg-green-500 text-zinc-900' : 'bg-zinc-900 text-zinc-400'
+            'px-2 py-1 text-sm text-center cursor-pointer rounded-xl font-medium text-zinc-100',
+            taskTab === 'completed' ? 'bg-green-500 ' : 'bg-zinc-900 '
           ]"
         >
           Completed
@@ -109,8 +109,8 @@ function handleBackButton() {
         <div
           @click="taskTab = 'active'"
           :class="[
-            'px-2 py-1 text-sm text-center cursor-pointer rounded-xl',
-            taskTab === 'active' ? 'bg-green-500 text-zinc-900' : 'bg-zinc-900 text-zinc-400'
+            'px-2 py-1 text-sm text-center cursor-pointer rounded-xl font-medium text-zinc-100',
+            taskTab === 'active' ? 'bg-green-500' : 'bg-zinc-900'
           ]"
         >
           Active
