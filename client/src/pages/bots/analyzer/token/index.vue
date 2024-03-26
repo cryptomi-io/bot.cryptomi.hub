@@ -16,7 +16,7 @@ const isLoading = ref(false)
 const progressWidth = ref(0)
 const formData = ref({
   wallet: '',
-  contractAddress: 30
+  contractAddress: 7
 })
 const periods = [7, 14, 30]
 

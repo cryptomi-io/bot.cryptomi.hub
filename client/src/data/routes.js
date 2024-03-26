@@ -1,4 +1,3 @@
-import Bots from '@/pages/Bots.vue'
 import Home from '@/pages/Home.vue'
 import Premium from '@/pages/Premium.vue'
 import Quests from '@/pages/Quests.vue'
@@ -25,9 +24,8 @@ export const AUTH_ROUTES = [
   { path: '/referral', component: Referral, name: 'referral' },
   { path: '/settings', component: Settings, name: 'settings' },
   { path: '/premium', component: Premium, name: 'premium' },
-  { path: '/bots', component: Bots, name: 'bots' },
 
-  { path: '/bots/analyzer', component: BotAnalyzer, name: 'bots.analyzer' },
+  { path: '/bots', component: BotAnalyzer, name: 'bots.analyzer' },
   { path: '/bots/analyzer/wallet', component: BotAnalyzerWallet, name: 'bots.analyzer.wallet' },
   {
     path: '/bots/analyzer/wallet/:id',

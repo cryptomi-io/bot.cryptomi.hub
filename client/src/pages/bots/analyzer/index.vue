@@ -60,7 +60,7 @@ function handleBackButton() {
       </div>
       <div
         v-if="addButtonDropdownOpen"
-        class="flex w-[180px] z-40 absolute right-0 top-[40px] flex-col rounded-md bg-zinc-800 text-zinc-200 py-1"
+        class="flex w-[180px] z-40 absolute right-0 top-[45px] flex-col rounded-md bg-zinc-800 text-zinc-200 py-1"
       >
         <router-link
           :to="{ name: 'bots.analyzer.wallet' }"

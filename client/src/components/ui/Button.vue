@@ -23,8 +23,8 @@ const props = defineProps({
 const buttonText = ref(props.text)
 
 const classes = {
-  primary: 'bg-green-500 hover:bg-green-600  text-zinc-100',
-  secondary: ''
+  primary: 'bg-green-500 hover:bg-green-600 text-zinc-100',
+  secondary: 'bg-zinc-700 hover:bg-zinc-600 text-zinc-200'
 }
 const sizes = {
   sm: 'text-sm py-1 px-3',

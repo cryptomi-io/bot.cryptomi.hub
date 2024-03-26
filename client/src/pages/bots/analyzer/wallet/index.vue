@@ -19,7 +19,7 @@ const isLoading = ref(false)
 const progressWidth = ref(0)
 const formData = ref({
   wallet: '',
-  timePeriod: 30,
+  timePeriod: 7,
   chain: 'Ethereum'
 })
 const periods = [7, 14, 30]
