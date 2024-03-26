@@ -19,9 +19,11 @@ const isLoading = ref(false)
 const progressWidth = ref(0)
 const formData = ref({
   wallet: '',
-  timePeriod: 30
+  timePeriod: 30,
+  chain: 'Ethereum'
 })
-const periods = [1, 7, 30, 60]
+const periods = [7, 14, 30]
+const chains = ['Solana', 'Ethereum']
 
 const formHandleSubmit = async () => {
   isLoading.value = true
@@ -82,6 +84,22 @@ function handleBackButton() {
             {{ timePeriod }}d
           </div>
         </div>
+      </div>
+      <div class="flex flex-col gap-2">
+        <label>Choose chain</label>
+        <select
+          v-model="formData.chain"
+          class="rounded-xl w-full bg-zinc-900 text-zinc-400 p-3 text-sm focus:outline-none"
+        >
+          <option
+            v-for="chain in chains"
+            :key="chain"
+            :value="chain"
+            :selected="chain === formData.chain"
+          >
+            {{ chain }}
+          </option>
+        </select>
       </div>
       <div class="flex flex-col gap-2">
         <label>Enter user wallet</label>

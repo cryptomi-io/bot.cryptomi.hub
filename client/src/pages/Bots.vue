@@ -11,7 +11,7 @@ const bots = [
     cover: '/images/bots/bot_wallet.png',
     icon: '/images/bots/bot_wallet_icon.png',
     title: 'BOT TOKEN ANALYZER',
-    path: '/bots/analyzer',
+    path: '/bots/analyzer/wallet',
     released: true
   }
 ]
