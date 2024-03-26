@@ -1,10 +1,15 @@
-import { $dt } from '../services/dextools.js'
-import fetch from 'node-fetch'
-import { writeFile, mkdir, access } from 'fs/promises'
-import { dirname, join } from 'path'
-import { fileURLToPath } from 'url'
+import dotenv from 'dotenv'
 import { constants } from 'fs'
+import { access, mkdir, writeFile } from 'fs/promises'
+import fetch from 'node-fetch'
+import { dirname, join } from 'path'
+import process from 'process'
+import { fileURLToPath } from 'url'
+import { $dt } from '../services/dextools.js'
 
+dotenv.config()
+
+const STATIC_PATH = process.env.STATIC_PATH
 export const useDextools = () => {
   /**
    "data": {
@@ -196,7 +201,7 @@ export const useDextools = () => {
   const getImageToken = async (url, chain) => {
     const filename = url.split('/').pop()
     const baseDir = dirname(fileURLToPath(import.meta.url))
-    const dir = join(baseDir, `../../../client/public/images/crypto/${chain}`)
+    const dir = join(baseDir, `../../../server/public/images/crypto/${chain}`)
     const path = join(dir, filename)
 
     try {
@@ -204,7 +209,7 @@ export const useDextools = () => {
       await access(path, constants.F_OK)
       //console.log(`File ${filename} already exists. No need to download.`);
       // Возвращаем относительный путь к существующему изображению
-      return `/images/crypto/${chain}/${filename}`
+      return `${STATIC_PATH}/crypto/${chain}/${filename}`
     } catch {
       // Файл не существует, продолжаем скачивание
       try {
@@ -214,7 +219,7 @@ export const useDextools = () => {
           await mkdir(dir, { recursive: true }) // Убедитесь, что директория существует
           await writeFile(path, buffer)
           //console.log(`Image saved to ${path}`);
-          return `/images/crypto/${chain}/${filename}`
+          return `${STATIC_PATH}/crypto/${chain}/${filename}`
         } else {
           //console.log(`Image not found or error occurred: ${response.statusText}`);
           return null
