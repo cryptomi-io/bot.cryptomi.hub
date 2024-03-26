@@ -132,8 +132,8 @@ function handleBackButton() {
         <div
           @click="tab = 'profit'"
           :class="[
-            'w-full  p-2 text-sm text-center cursor-pointer rounded-xl',
-            tab === 'profit' ? 'bg-green-500 text-zinc-900' : 'bg-zinc-900 text-zinc-400'
+            'w-full  p-2 text-sm text-center cursor-pointer rounded-xl font-medium text-zinc-100',
+            tab === 'profit' ? 'bg-green-500 ' : 'bg-zinc-900'
           ]"
         >
           Top 3 by profit
@@ -141,8 +141,8 @@ function handleBackButton() {
         <div
           @click="tab = 'lose'"
           :class="[
-            'w-full  p-2 text-sm text-center cursor-pointer rounded-xl',
-            tab === 'lose' ? 'bg-green-500 text-zinc-900' : 'bg-zinc-900 text-zinc-400'
+            'w-full  p-2 text-sm text-center cursor-pointer rounded-xl  font-medium text-zinc-100',
+            tab === 'lose' ? 'bg-green-500' : 'bg-zinc-900 '
           ]"
         >
           Top 3 by losses

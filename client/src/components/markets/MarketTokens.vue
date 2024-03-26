@@ -126,7 +126,7 @@ watch(currentChain, async (newVal) => {
         @click="searchToken(searchTokenAddress)"
         class="rounded-2xl px-5 py-2 inline-flex cursor-pointer w-auto text-center items-center justify-center focus:outline-none bg-green-500"
       >
-        <Icon icon="icon-park-outline:search" class="w-5 h-5 text-zinc-900" />
+        <Icon icon="icon-park-outline:search" class="w-5 h-5 text-zinc-100" />
       </button>
     </div>
     <!-- TABS -->

@@ -23,7 +23,7 @@ const props = defineProps({
 const buttonText = ref(props.text)
 
 const classes = {
-  primary: 'bg-green-500 hover:bg-green-600  text-zinc-900',
+  primary: 'bg-green-500 hover:bg-green-600  text-zinc-100',
   secondary: ''
 }
 const sizes = {
@@ -40,7 +40,7 @@ const handleClick = () => {
 <template>
   <button
     :class="[
-      'rounded-2xl px-5 py-2 inline-flex cursor-pointer w-auto text-center justify-center focus:outline-none',
+      'rounded-2xl px-5 py-2 inline-flex font-medium cursor-pointer w-auto text-center justify-center focus:outline-none',
       classes[type],
       sizes[size]
     ]"

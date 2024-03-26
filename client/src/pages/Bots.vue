@@ -36,11 +36,11 @@ const bots = [
           </div>
           <template v-if="bot.released">
             <router-link :to="bot.path">
-              <div class="bg-green-500 text-zinc-900 p-1 text-xs rounded-3xl px-3">Try it now</div>
+              <div class="bg-green-500 text-zinc-100 p-1 text-xs rounded-3xl px-3">Try it now</div>
             </router-link>
           </template>
           <template v-else>
-            <div class="bg-green-500 text-zinc-900 p-1 text-xs rounded-3xl px-3">Soon</div>
+            <div class="bg-green-500 text-zinc-100 p-1 text-xs rounded-3xl px-3">Soon</div>
           </template>
         </div>
       </div>

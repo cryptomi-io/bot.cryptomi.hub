@@ -48,9 +48,9 @@ function handleBackButton() {
             @click="formData.timePeriod = timePeriod"
             :key="timePeriod"
             :class="[
-              'w-full  p-2 text-sm text-center cursor-pointer rounded-xl',
+              'w-full  p-2 text-sm text-center cursor-pointer rounded-xl  font-medium',
               timePeriod === formData.timePeriod
-                ? 'bg-green-500 text-zinc-900'
+                ? 'bg-green-500 text-zinc-100'
                 : 'bg-zinc-900 text-zinc-400'
             ]"
           >
