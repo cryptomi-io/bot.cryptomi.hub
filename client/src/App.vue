@@ -1,5 +1,6 @@
 <script setup>
 import Menu from '@/components/ui/Menu.vue'
+
 import { GUEST_ROUTES } from '@/data/routes'
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'

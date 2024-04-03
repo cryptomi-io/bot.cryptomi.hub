@@ -6,12 +6,17 @@ import Settings from '@/pages/Settings.vue'
 import Register from '@/pages/auth/Register.vue'
 import Welcome from '@/pages/auth/Welcome.vue'
 
+import TokenDetail from '@/pages/dex/chain/Token.vue'
+
+
 import BotAnalyzer from '@/pages/bots/analyzer/index.vue'
 import BotAnalyzerWallet from '@/pages/bots/analyzer/wallet/index.vue'
 import BotAnalyzerWalletItem from '@/pages/bots/analyzer/wallet/item.vue'
 
 import BotAnalyzerToken from '@/pages/bots/analyzer/token/index.vue'
 import BotAnalyzerTokenItem from '@/pages/bots/analyzer/token/item.vue'
+
+import Wallets from '@/pages/wallets/index.vue'
 
 export const GUEST_ROUTES = [
   { path: '/welcome', component: Welcome, name: 'welcome' },
@@ -24,6 +29,9 @@ export const AUTH_ROUTES = [
   { path: '/referral', component: Referral, name: 'referral' },
   { path: '/settings', component: Settings, name: 'settings' },
   { path: '/premium', component: Premium, name: 'premium' },
+  { path: '/wallets', component: Wallets, name: 'wallets' },
+
+
 
   { path: '/bots', component: BotAnalyzer, name: 'bots.analyzer' },
   { path: '/bots/analyzer/wallet', component: BotAnalyzerWallet, name: 'bots.analyzer.wallet' },
@@ -38,6 +46,11 @@ export const AUTH_ROUTES = [
     path: '/bots/analyzer/token/:id',
     component: BotAnalyzerTokenItem,
     name: 'bots.analyzer.token.item'
+  },
+  {
+    path: '/dex/:chain/:address',
+    component: TokenDetail,
+    props: true
   }
 ]
 

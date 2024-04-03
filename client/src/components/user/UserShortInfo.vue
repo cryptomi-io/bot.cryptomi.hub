@@ -1,18 +1,30 @@
 <script setup>
 import { useUserStore } from '@/store/user'
+import { useTonWalletStore } from '@/store/wallets/ton-wallet'
 import { computed, onMounted, ref } from 'vue'
+
 import { TonConnectUI } from '@tonconnect/ui'
 
 const isLoading = ref(true)
 const userStore = useUserStore()
+const TonWalletStore = useTonWalletStore()
 const profile = computed(() => userStore.profile || {})
 
-onMounted(() => {
+onMounted(async () => {
   isLoading.value = true
   userStore.fetchProfile()
   const tonConnectUI = new TonConnectUI({
     manifestUrl: 'https://hub.cryptomi.io/tonconnect-manifest.json',
     buttonRootId: 'ton-connect'
+  })
+
+  tonConnectUI.connectionRestored.then((restored) => {
+    if (restored) {
+      TonWalletStore.setWallet(tonConnectUI.account)
+      TonWalletStore.setIsConnected(tonConnectUI.connected)
+    } else {
+      console.log('Connection was not restored.')
+    }
   })
   setTimeout(() => {
     isLoading.value = false
@@ -29,7 +41,6 @@ onMounted(() => {
       </div>
     </template>
     <template v-else>
-
       <img
         :src="
           profile?.avatar
@@ -44,6 +55,6 @@ onMounted(() => {
         <div class="text-xs text-zinc-400">{{ profile?.uuid }}</div>
       </div>
     </template>
-      <div id="ton-connect"></div>
+    <div id="ton-connect"></div>
   </div>
 </template>
