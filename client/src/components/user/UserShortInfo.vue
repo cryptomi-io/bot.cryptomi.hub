@@ -52,7 +52,7 @@ onMounted(async () => {
       />
       <div class="flex flex-col">
         <div class="text-md font-bold">@{{ profile?.nickname }}</div>
-        <div class="text-xs text-zinc-400">{{ profile?.uuid }}</div>
+        <!-- <div class="text-xs text-zinc-400">{{ profile?.uuid }}</div> -->
       </div>
     </template>
     <div id="ton-connect"></div>
