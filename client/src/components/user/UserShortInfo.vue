@@ -11,7 +11,7 @@ onMounted(() => {
   isLoading.value = true
   userStore.fetchProfile()
   const tonConnectUI = new TonConnectUI({
-    manifestUrl: 'https://localhost:3000/tonconnect-manifest.json',
+    manifestUrl: 'https://hub.cryptomi.io/tonconnect-manifest.json',
     buttonRootId: 'ton-connect'
   })
   setTimeout(() => {
@@ -20,7 +20,7 @@ onMounted(() => {
 })
 </script>
 <template>
-  <div class="flex items-center gap-4">
+  <div class="flex items-center gap-4 justify-between">
     <template v-if="isLoading">
       <div class="rounded-full animate-pulse bg-neutral-700 h-10 w-10"></div>
       <div class="flex flex-col animate-pulse">
@@ -44,6 +44,6 @@ onMounted(() => {
         <div class="text-xs text-zinc-400">{{ profile?.uuid }}</div>
       </div>
     </template>
+      <div id="ton-connect"></div>
   </div>
 </template>
-../../store/user

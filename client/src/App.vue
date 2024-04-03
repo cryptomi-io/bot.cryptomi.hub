@@ -19,7 +19,6 @@ const isGuest = computed(() => {
     <div class="flex flex-col justify-between h-full">
       <Menu v-if="!isGuest" />
       <router-view></router-view>
-      <div id="ton-connect"></div>
     </div>
   </main>
 </template>

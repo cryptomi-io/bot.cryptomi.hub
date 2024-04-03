@@ -35,3 +35,15 @@ body {
     transform: translateY(-20px);
   }
 }
+[data-tc-connect-button="true"]{
+  padding: 7px;
+  height: 35px;
+}
+[data-tc-connect-button="true"] svg{
+  display: none;
+}
+[data-tc-text="true"]{
+  font-size: 12px;
+    line-height: 14px;
+    white-space: nowrap;
+}
