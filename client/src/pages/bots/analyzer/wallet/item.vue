@@ -41,7 +41,6 @@ const generalUnrealizedPnLPercent = ref(0)
 
 onMounted(async () => {
   const response = await getItemTask(id)
-  debugger
   analyze.value = response
   const result = analyze.value.result
   if (result) {

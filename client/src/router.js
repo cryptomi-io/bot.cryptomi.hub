@@ -1,13 +1,8 @@
-import TokenDetail from '@/pages/dex/chain/Token.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import { AUTH_ROUTES, GUEST_ROUTES, routes } from './data/routes.js'
 import { useUserStore } from './store/user'
 
-routes.push({
-  path: '/dex/:chain/:address',
-  component: TokenDetail,
-  props: true // Это позволит передать :chain и :address как props в компонент
-})
+
 
 const router = createRouter({
   history: createWebHistory(),
