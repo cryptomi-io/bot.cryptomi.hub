@@ -14,9 +14,9 @@
     "inMenu": true
   },
   {
-    "name": "Wallets",
-    "icon": "solar:wallet-broken",
-    "path": "/wallets",
+    "name": "Quests",
+    "icon": "codicon:star-full",
+    "path": "/quests",
     "isGuest": false,
     "inMenu": true
   },

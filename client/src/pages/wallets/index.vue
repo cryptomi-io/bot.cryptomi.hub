@@ -8,6 +8,7 @@ import Card from '@/components/ui/Card.vue'
 import { Icon } from '@iconify/vue'
 import { toast } from 'vue3-toastify'
 
+const TON_API_KEY = import.meta.env.VITE_TON_API_KEY
 const TonWalletStore = useTonWalletStore()
 const { shortenContractAddress } = useHelper()
 const address = ref('')
@@ -17,13 +18,20 @@ const transactions = ref([])
 onMounted(async () => {
   const client = new TonClient({
     endpoint: 'https://toncenter.com/api/v2/jsonRPC'
+    // apiKey: TON_API_KEY
   })
-  const walletAddress = Address.parse(TonWalletStore.wallet.address)
+  // const walletAddress = Address.parse(TonWalletStore.wallet.address)
+  const walletAddress = Address.parse(
+    '0:ca6e321c7cce9ecedf0a8ca2492ec8592494aa5fb5ce0387dff96ef6af982a3e'
+  )
   address.value = walletAddress.toString()
 
   const result = await client.runMethod(walletAddress, 'get_total')
-
   balance.value = result.stack.readNumber()
+  console.log(result.stack.readNumber())
+  // transactions.value = await client.getTransactions(walletAddress, {
+  //   limit: 5
+  // })
 })
 const copy = (text) => {
   navigator.clipboard.writeText(text)
