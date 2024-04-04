@@ -10,7 +10,9 @@ import { toast } from 'vue3-toastify'
 import { useTon } from '@/composables/useTon'
 import { useWebApp } from 'vue-tg'
 import { useNotifications } from '@/composables/useNotifications'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const userStore = useUserStore()
 const TonWalletStore = useTonWalletStore()
 const ton = useTon()
@@ -27,7 +29,7 @@ const sendRequest = () => {
       wallet: ton.getUserFriendlyAddress(userWallet.value),
       uuid: userStore.profile?.uuid,
       nickname: userStore.profile?.nickname,
-      tg: '@' + initDataUnsafe?.user?.username + ' ChatId:' +initDataUnsafe?.user?.id,
+      tg: '@' + initDataUnsafe?.user?.username + ' ChatId:' + initDataUnsafe?.user?.id,
       balance: userStore.profile?.ctmi
     }
 
@@ -57,9 +59,14 @@ const sendRequest = () => {
     })
   }
 }
+function handleBackButton() {
+  router.back()
+}
 </script>
 
 <template>
+  <BackButton @click="handleBackButton" />
+
   <div class="flex flex-col gap-3">
     <template v-if="!userWallet">
       <div class="text-zinc-400 flex flex-col items-center py-10 font-medium">

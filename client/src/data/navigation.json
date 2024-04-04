@@ -32,7 +32,8 @@
         "icon": "ri:hand-coin-line",
         "path": "/wallets/airdrop",
         "isGuest": false,
-        "inMenu": true
+        "inMenu": true,
+        "parent": "/wallets"
       }
     ]
   },

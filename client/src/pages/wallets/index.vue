@@ -7,6 +7,9 @@ import Card from '@/components/ui/Card.vue'
 import { Icon } from '@iconify/vue'
 import { toast } from 'vue3-toastify'
 import { useTon } from '@/composables/useTon'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const ton = useTon()
 const TonWalletStore = useTonWalletStore()
@@ -25,7 +28,6 @@ onMounted(async () => {
 
 watch(userWallet.value, async (newVal) => {
   if (!newVal) return
-  debugger
   address.value = await ton.getUserFriendlyAddress(newVal)
   balance.value = await ton.getBalance(newVal)
   transactions.value = await ton.getTransactions(newVal)
@@ -40,9 +42,14 @@ const copy = (text) => {
     toastStyle: 'top:10px'
   })
 }
+function handleBackButton() {
+  router.back()
+}
 </script>
 
 <template>
+  <BackButton @click="handleBackButton" />
+
   <div class="flex flex-col gap-3">
     <template v-if="userWallet">
       <Card class="py-5 px-4 gap-2 items-center flex-col text-zinc-100">
