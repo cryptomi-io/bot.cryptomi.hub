@@ -11,6 +11,7 @@ import { useTon } from '@/composables/useTon'
 import { useWebApp } from 'vue-tg'
 import { useNotifications } from '@/composables/useNotifications'
 import { useRouter } from 'vue-router'
+import { BackButton } from 'vue-tg'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -60,7 +61,7 @@ const sendRequest = () => {
   }
 }
 function handleBackButton() {
-  router.back()
+  router.push('/')
 }
 </script>
 

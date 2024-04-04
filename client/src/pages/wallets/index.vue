@@ -8,6 +8,7 @@ import { Icon } from '@iconify/vue'
 import { toast } from 'vue3-toastify'
 import { useTon } from '@/composables/useTon'
 import { useRouter } from 'vue-router'
+import { BackButton } from 'vue-tg'
 
 const router = useRouter()
 
@@ -44,7 +45,7 @@ const copy = (text) => {
   })
 }
 function handleBackButton() {
-  router.back()
+  router.push('/')
 }
 </script>
 

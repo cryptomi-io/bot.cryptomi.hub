@@ -20,9 +20,12 @@ onMounted(async () => {
 
   tonConnectUI.connectionRestored.then((restored) => {
     if (restored) {
+      console.log('connect')
       TonWalletStore.setWallet(tonConnectUI.account)
       TonWalletStore.setIsConnected(tonConnectUI.connected)
     } else {
+      TonWalletStore.unset()
+      console.log('disconnect')
       console.log('Connection was not restored.')
     }
   })
