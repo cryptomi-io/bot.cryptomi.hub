@@ -1,6 +1,8 @@
 <script setup>
 import { useUserStore } from '@/store/user'
 import { computed, onMounted, ref } from 'vue'
+import { TonConnectUI } from '@tonconnect/ui'
+
 const isLoading = ref(true)
 const userStore = useUserStore()
 const profile = computed(() => userStore.profile || {})
@@ -8,6 +10,10 @@ const profile = computed(() => userStore.profile || {})
 onMounted(() => {
   isLoading.value = true
   userStore.fetchProfile()
+  const tonConnectUI = new TonConnectUI({
+    manifestUrl: 'https://localhost:3000/tonconnect-manifest.json',
+    buttonRootId: 'ton-connect'
+  })
   setTimeout(() => {
     isLoading.value = false
   }, 1000)
@@ -23,6 +29,7 @@ onMounted(() => {
       </div>
     </template>
     <template v-else>
+
       <img
         :src="
           profile?.avatar
