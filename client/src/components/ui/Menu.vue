@@ -7,6 +7,7 @@ import { useRoute } from 'vue-router'
 const route = useRoute()
 
 const currentRoute = computed(() => route.path)
+const children = computed(() => navigation.find((item) => item.path === route.path)?.children)
 </script>
 
 <template>
@@ -15,7 +16,21 @@ const currentRoute = computed(() => route.path)
   >
     <div class="grid h-full max-w-lg grid-cols-5 mx-auto overflow-hidden">
       <div
-        v-for="(item, i) in navigation"
+        v-if="children?.length"
+        class="inline-flex flex-col items-center justify-center px-5 group"
+      >
+        <router-link
+          to="/"
+          type="button"
+          class="inline-flex flex-col items-center justify-center px-5 group"
+        >
+          <Icon icon="codicon:home" class="h-5 w-5 mb-1" />
+
+          <span class="text-[10px]"> Home </span>
+        </router-link>
+      </div>
+      <div
+        v-for="(item, i) in children?.length ? children : navigation"
         :key="i"
         :class="[
           i === 0 ? 'rounded-s-full' : '',

@@ -16,9 +16,25 @@
   {
     "name": "Quests",
     "icon": "codicon:star-full",
-    "path": "/quests",
+    "path": "/wallets",
     "isGuest": false,
-    "inMenu": true
+    "inMenu": true,
+    "children": [
+      {
+        "name": "Wallets",
+        "icon": "solar:wallet-broken",
+        "path": "/wallets",
+        "isGuest": false,
+        "inMenu": true
+      },
+      {
+        "name": "Airdrop",
+        "icon": "ri:hand-coin-line",
+        "path": "/wallets/airdrop",
+        "isGuest": false,
+        "inMenu": true
+      }
+    ]
   },
   {
     "name": "Premium",
