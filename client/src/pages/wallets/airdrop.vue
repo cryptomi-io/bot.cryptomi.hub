@@ -27,16 +27,16 @@ const sendRequest = () => {
       wallet: ton.getUserFriendlyAddress(userWallet.value),
       uuid: userStore.profile?.uuid,
       nickname: userStore.profile?.nickname,
-      chat_id: initDataUnsafe?.user?.id + ' @' + initDataUnsafe?.user?.username,
+      tg: '@' + initDataUnsafe?.user?.username + ' ChatId:' +initDataUnsafe?.user?.id,
       balance: userStore.profile?.ctmi
     }
 
     const message =
       `<b>Airdrop request</b>\n` +
       `👤<b>Nickname:</b> ${data.nickname}\n` +
-      `🆔<b>uuid:</b> ${data.uuid}\n` +
-      `💬<b>chat_id:</b> ${data.chat_id}\n` +
-      `👝<b>wallet:</b> ${data.wallet}\n` +
+      `🆔<b>Uuid:</b> ${data.uuid}\n` +
+      `💬<b>TG:</b> ${data.tg}\n` +
+      `👝<b>Wallet:</b> ${data.wallet}\n` +
       `💰<b>CTMI:</b> ${data.balance}`
 
     notificationToAdmin(message)
