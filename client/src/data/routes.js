@@ -17,6 +17,7 @@ import BotAnalyzerToken from '@/pages/bots/analyzer/token/index.vue'
 import BotAnalyzerTokenItem from '@/pages/bots/analyzer/token/item.vue'
 
 import Wallets from '@/pages/wallets/index.vue'
+import Airdrop from '@/pages/wallets/airdrop.vue'
 
 export const GUEST_ROUTES = [
   { path: '/welcome', component: Welcome, name: 'welcome' },
@@ -29,7 +30,9 @@ export const AUTH_ROUTES = [
   { path: '/referral', component: Referral, name: 'referral' },
   { path: '/settings', component: Settings, name: 'settings' },
   { path: '/premium', component: Premium, name: 'premium' },
+  
   { path: '/wallets', component: Wallets, name: 'wallets' },
+  { path: '/wallets/airdrop', component: Airdrop, name: 'wallets.airdrop' },
 
 
 
