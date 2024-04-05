@@ -17,7 +17,15 @@ onMounted(async () => {
     manifestUrl: 'https://hub.cryptomi.io/tonconnect-manifest.json',
     buttonRootId: 'ton-connect'
   })
-
+  tonConnectUI.onStatusChange((data) => {
+    console.log('status change')
+    if (data) {
+      TonWalletStore.setWallet(data.account)
+      TonWalletStore.setIsConnected(true)
+    } else {
+      TonWalletStore.unset()
+    }
+  })
   tonConnectUI.connectionRestored.then((restored) => {
     if (restored) {
       console.log('connect')
