@@ -13,7 +13,7 @@ const children = computed(() => {
   let children = null
   if (currentRoute.value?.children) {
     children = currentRoute.value?.children
-  } else if (currentRoute.value.parent) {
+  } else if (currentRoute.value?.parent) {
     children = recursiveSearch(navigation, currentRoute.value.parent)?.children
   }
 

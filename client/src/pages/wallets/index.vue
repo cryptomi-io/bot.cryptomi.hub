@@ -13,7 +13,8 @@ const router = useRouter()
 
 const ton = useTon()
 const TonWalletStore = useTonWalletStore()
-const userWallet = computed(() => TonWalletStore.wallet.address)
+// const userWallet = computed(() => TonWalletStore.wallet.address)
+const userWallet = computed(() => 'UQCV3YdlxazBZpIeb-7426nun1B-yyMrAtUNdl5zubWYfRQv')
 const { shortenContractAddress, numberFormat } = useHelper()
 const address = ref('')
 const balance = ref(0)
@@ -53,9 +54,7 @@ function handleBackButton() {
   <div class="flex flex-col gap-3">
     <template v-if="userWallet">
       <Card class="py-5 px-4 gap-2 items-center flex-col text-zinc-100">
-        <div class="text-3xl">
-          {{ numberFormat(balance, 3, true) }} <span class="text-lg">TON</span>
-        </div>
+        <div class="text-3xl">{{ numberFormat(balance, 3) }} <span class="text-lg">TON</span></div>
         <div class="text-xs flex gap-2 items-center" @click="copy(address)">
           {{ shortenContractAddress(address) }}
           <Icon icon="ion:copy" class="w-3 h-3 text-zinc-100" />

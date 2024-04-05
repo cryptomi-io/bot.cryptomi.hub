@@ -1,4 +1,6 @@
+import { toNano } from '@ton/core'
 import { Address, TonClient } from 'ton'
+import Web3 from 'web3'
 
 export const useTon = () => {
   const TON_API_KEY = import.meta.env.VITE_TON_API_KEY
@@ -10,7 +12,7 @@ export const useTon = () => {
     const walletAddress = Address.parse(wallet)
     const balance = await client.getBalance(walletAddress)
 
-    return Number(balance)
+    return Number(Web3.utils.fromWei(balance, 'nano'))
   }
   const getTransactions = async (wallet) => {
     const walletAddress = Address.parse(wallet)
