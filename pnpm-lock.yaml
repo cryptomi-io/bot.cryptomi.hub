@@ -92,6 +92,9 @@ dependencies:
   ton-crypto:
     specifier: ^3.2.0
     version: 3.2.0
+  tonapi-sdk-js:
+    specifier: ^1.0.3
+    version: 1.0.3
   vue:
     specifier: ^3.4.15
     version: 3.4.21(typescript@5.4.2)
@@ -9910,6 +9913,10 @@ packages:
       zod: 3.22.4
     transitivePeerDependencies:
       - debug
+    dev: false
+
+  /tonapi-sdk-js@1.0.3:
+    resolution: {integrity: sha512-YYHQnietuGEpty2KpSYHuaqfT2SltmCvy9PByLS51E8qR9xkB67p+rm8tY2HGmlfoXrXfvZcIlJ7Gw5qy17k7A==}
     dev: false
 
   /touch@3.1.0:

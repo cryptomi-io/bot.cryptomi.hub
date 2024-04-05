@@ -75,10 +75,12 @@ function handleBackButton() {
       </div>
     </template>
     <template v-else>
-      <Card class="py-5 px-4 gap-2 items-center flex-col text-zinc-100">
-        <div class="text-sm">Please send request for get airdrop</div>
-        <Button @click="sendRequest" text="Get" type="primary" class="!w-full" />
-      </Card>
+      <div class="flex flex-col gap-2 justify-between h-[75vh]">
+        <div class="flex items-center justify-center h-full">
+          <img src="/images/trading.svg"/>
+        </div>
+        <Button @click="sendRequest" text="Get Airdrop" type="primary" class="!w-full" />
+      </div>
     </template>
   </div>
 </template>

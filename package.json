@@ -45,6 +45,7 @@
     "ton": "^13.9.0",
     "ton-core": "^0.53.0",
     "ton-crypto": "^3.2.0",
+    "tonapi-sdk-js": "^1.0.3",
     "vue": "^3.4.15",
     "vue-router": "^4.3.0",
     "vue-tg": "^0.4.0",
