@@ -10,7 +10,7 @@
     "monit": "pm2 monit",
     "dev:client": "vite --port 3000",
     "dev:server": "nodemon ./server/index.js",
-    "build:client": "vite build",
+    "build:client": "vite build && cp -R ./client/src/manifests ./client/dist",
     "format": "prettier --write \"server/**/*.{js,ts,jsx,tsx,json,css,md}\" \"client/src/**/*.{js,ts,jsx,tsx,json,css,md}\"",
     "prisma:migrate": "prisma migrate dev",
     "prisma:generate": "prisma generate"
@@ -61,6 +61,7 @@
     "@vue/eslint-config-prettier": "^8.0.0",
     "autoprefixer": "^10.4.17",
     "concurrently": "^8.2.2",
+    "cpy-cli": "^5.0.0",
     "eslint": "^8.49.0",
     "eslint-plugin-vue": "^9.17.0",
     "nodemon": "^3.1.0",

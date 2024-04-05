@@ -14,7 +14,7 @@ onMounted(async () => {
   isLoading.value = true
   userStore.fetchProfile()
   const tonConnectUI = new TonConnectUI({
-    manifestUrl: 'https://hub.cryptomi.io/tonconnect-manifest.json',
+    manifestUrl: 'https://hub.cryptomi.io/manifests/tonconnect-manifest.json',
     buttonRootId: 'ton-connect'
   })
   tonConnectUI.onStatusChange((data) => {
