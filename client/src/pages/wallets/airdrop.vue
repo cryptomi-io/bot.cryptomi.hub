@@ -1,11 +1,10 @@
 <script setup>
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import Button from '@/components/ui/Button.vue'
 
 import { useTonWalletStore } from '@/store/wallets/ton-wallet'
 import { useUserStore } from '@/store/user'
 
-import Card from '@/components/ui/Card.vue'
 import { toast } from 'vue3-toastify'
 import { useTon } from '@/composables/useTon'
 import { useWebApp } from 'vue-tg'
@@ -21,7 +20,7 @@ const { initDataUnsafe } = useWebApp()
 const { notificationToAdmin } = useNotifications()
 
 const userWallet = computed(() => TonWalletStore.wallet.address)
-
+const isSubmit = ref(false)
 onMounted(async () => {})
 
 const sendRequest = () => {
@@ -43,6 +42,7 @@ const sendRequest = () => {
       `💰<b>CTMI:</b> ${data.balance}`
 
     notificationToAdmin(message)
+    isSubmit.value = true
     toast('Request sent', {
       autoClose: 1000,
       type: 'success',
@@ -77,7 +77,8 @@ function handleBackButton() {
     <template v-else>
       <div class="flex flex-col gap-2 justify-between h-[75vh]">
         <div class="flex items-center justify-center h-full">
-          <img src="/images/trading.svg"/>
+          <img v-if="isSubmit" src="/images/success.gif" />
+          <img v-else src="/images/trading.svg" />
         </div>
         <Button @click="sendRequest" text="Get Airdrop" type="primary" class="!w-full" />
       </div>
