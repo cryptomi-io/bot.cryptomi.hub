@@ -22,7 +22,6 @@ const children = computed(() => {
 
 function recursiveSearch(array, targetName) {
   for (let item of array) {
-    console.log(item.path)
     if (item.path === targetName) {
       return item
     } else if (item.children) {

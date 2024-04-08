@@ -1,4 +1,5 @@
 import { Address, TonClient } from 'ton'
+
 import { Api, HttpClient } from 'tonapi-sdk-js'
 import Web3 from 'web3'
 
@@ -129,6 +130,13 @@ export const useTon = () => {
       }
     })
     return transactions
+  }
+
+  const sendTransaction = async (walletTo, amount) => {
+    const walletFrom = 'UQCV3YdlxazBZpIeb-7426nun1B-yyMrAtUNdl5zubWYfRQv'
+
+    const jettonWalletAddress = Address.parse(walletFrom)
+    const destinationAddress = Address.parse(walletTo)
   }
 
   const getJettons = async (walletRaw) => {
@@ -680,6 +688,7 @@ export const useTon = () => {
     getTransactions,
     getUserFriendlyAddress,
     getJettons,
-    getJettonTransfers
+    getJettonTransfers,
+    sendTransaction
   }
 }
