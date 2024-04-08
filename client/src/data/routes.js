@@ -1,5 +1,5 @@
 import Home from '@/pages/Home.vue'
-import Premium from '@/pages/Premium.vue'
+import Sale from '@/pages/Sale.vue'
 import Quests from '@/pages/Quests.vue'
 import Referral from '@/pages/Referral.vue'
 import Settings from '@/pages/Settings.vue'
@@ -29,7 +29,7 @@ export const AUTH_ROUTES = [
   { path: '/quests', component: Quests, name: 'quests' },
   { path: '/referral', component: Referral, name: 'referral' },
   { path: '/settings', component: Settings, name: 'settings' },
-  { path: '/premium', component: Premium, name: 'premium' },
+  { path: '/sale', component: Sale, name: 'sale' },
   
   { path: '/wallets', component: Wallets, name: 'wallets' },
   { path: '/wallets/airdrop', component: Airdrop, name: 'wallets.airdrop' },

@@ -45,9 +45,9 @@
     ]
   },
   {
-    "name": "Premium",
+    "name": "CTMI",
     "icon": "codicon:ruby",
-    "path": "/premium",
+    "path": "/sale",
     "isGuest": false,
     "inMenu": true
   },
