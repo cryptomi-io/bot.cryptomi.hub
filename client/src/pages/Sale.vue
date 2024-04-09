@@ -14,9 +14,9 @@ import 'swiper/css'
 
 const { initDataUnsafe } = useWebApp()
 let chatId = 6754514128
-if (import.meta.env.VITE_NODE_ENV !== 'development') {
-  chatId = initDataUnsafe?.user?.id
-}
+// if (import.meta.env.VITE_NODE_ENV !== 'development') {
+//   chatId = initDataUnsafe?.user?.id
+// }
 
 const tokenomicTerms = [
   {
@@ -262,7 +262,6 @@ onMounted(async () => {
 })
 
 watch(userWallet.value, async (newVal) => {
-  debugger
   if (!newVal) return
   account.value = await ton.getAccount(newVal)
 })
@@ -282,19 +281,19 @@ const transfer = async () => {
   //calculate CTMI sum
   const amount = Number(toNano(formData.value.tonAmount))
 
-  // const transaction = {
-  //   validUntil: Math.floor(Date.now() / 1000) + 60, // 60 sec
-  //   messages: [
-  //     {
-  //       address: walletTo,
-  //       amount: amount
-  //       // stateInit: "base64bocblahblahblah==" // just for instance. Replace with your transaction initState or remove
-  //     }
-  //   ]
-  // }
+   const transaction = {
+     validUntil: Math.floor(Date.now() / 1000) + 60, // 60 sec
+     messages: [
+       {
+         address: walletTo,
+         amount: amount
+         // stateInit: "base64bocblahblahblah==" // just for instance. Replace with your transaction initState or remove
+       }
+     ]
+   }
 
   try {
-    // const result = await window.tonConnectUI.sendTransaction(transaction)
+    const result = await window.tonConnectUI.sendTransaction(transaction)
     await presale.createTransaction({
       user_id: chatId,
       wallet_address: ton.getUserFriendlyAddress(account.value?.address),
@@ -341,74 +340,74 @@ const transfer = async () => {
           <h4 class="text-white fint-bold text-sm">1 TON ~ 35 000 $CTMI</h4>
         </div>
       </div>
-      <template v-if="!account">
-        <span class="text-zinc-100">Please, connect your wallet </span>
-      </template>
-      <template v-else>
-        <div class="w-full">
-          <div class="relative mt-0.5 rounded-md shadow-sm">
-            <div class="pointer-events-none absolute right-2 top-2 flex items-center pl-3">
-              <span class="text-gray-500 sm:text-sm">
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 56 56"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M28 56C43.464 56 56 43.464 56 28C56 12.536 43.464 0 28 0C12.536 0 0 12.536 0 28C0 43.464 12.536 56 28 56Z"
-                    fill="#0098EA"
-                  />
-                  <path
-                    d="M37.5603 15.6277H18.4386C14.9228 15.6277 12.6944 19.4202 14.4632 22.4861L26.2644 42.9409C27.0345 44.2765 28.9644 44.2765 29.7345 42.9409L41.5381 22.4861C43.3045 19.4251 41.0761 15.6277 37.5627 15.6277H37.5603ZM26.2548 36.8068L23.6847 31.8327L17.4833 20.7414C17.0742 20.0315 17.5795 19.1218 18.4362 19.1218H26.2524V36.8092L26.2548 36.8068ZM38.5108 20.739L32.3118 31.8351L29.7417 36.8068V19.1194H37.5579C38.4146 19.1194 38.9199 20.0291 38.5108 20.739Z"
-                    fill="white"
-                  />
-                </svg>
-              </span>
-            </div>
-            <input
-              type="number"
-              v-model="formData.tonAmount"
-              id="ton"
-              class="flex w-full p-2 text-sm text-zinc-100 bg-zinc-900 rounded-xl focus:outline-none h-10"
-              placeholder="0.00"
-            />
-          </div>
-        </div>
-        <div class="w-full mt-0.5 grid justify-items-center">
-          <div
-            class="bg-green-500 text-white shrink-0 text-lg w-[32px] h-[32px] rounded-full flex items-center justify-center"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-              <path
+      <div class="w-full">
+        <div class="relative mt-0.5 rounded-md shadow-sm">
+          <div class="pointer-events-none absolute right-2 top-2 flex items-center pl-3">
+            <span class="text-gray-500 sm:text-sm">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 56 56"
                 fill="none"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2.5"
-                d="M11 8L7 4m0 0L3 8m4-4v16m6-4l4 4m0 0l4-4m-4 4V4"
-              />
-            </svg>
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M28 56C43.464 56 56 43.464 56 28C56 12.536 43.464 0 28 0C12.536 0 0 12.536 0 28C0 43.464 12.536 56 28 56Z"
+                  fill="#0098EA"
+                />
+                <path
+                  d="M37.5603 15.6277H18.4386C14.9228 15.6277 12.6944 19.4202 14.4632 22.4861L26.2644 42.9409C27.0345 44.2765 28.9644 44.2765 29.7345 42.9409L41.5381 22.4861C43.3045 19.4251 41.0761 15.6277 37.5627 15.6277H37.5603ZM26.2548 36.8068L23.6847 31.8327L17.4833 20.7414C17.0742 20.0315 17.5795 19.1218 18.4362 19.1218H26.2524V36.8092L26.2548 36.8068ZM38.5108 20.739L32.3118 31.8351L29.7417 36.8068V19.1194H37.5579C38.4146 19.1194 38.9199 20.0291 38.5108 20.739Z"
+                  fill="white"
+                />
+              </svg>
+            </span>
           </div>
+          <input
+            type="number"
+            v-model="formData.tonAmount"
+            id="ton"
+            class="flex w-full p-2 text-sm text-zinc-100 bg-zinc-900 rounded-xl focus:outline-none h-10"
+            placeholder="0.00"
+          />
         </div>
-        <div class="w-full">
-          <div class="relative mt-0.5 rounded-md shadow-sm">
-            <div class="pointer-events-none absolute right-2 top-1 flex items-center pl-3">
-              <span class="text-gray-500 sm:text-sm">
-                <img src="/images/assets/ctmi.png" class="w-8 h-8" />
-              </span>
-            </div>
-            <input
-              type="number"
-              v-model="formData.ctmiAmount"
-              id="ctmi"
-              class="flex w-full p-2 text-sm text-zinc-100 bg-zinc-900 rounded-xl focus:outline-none h-10"
-              placeholder="0.00"
+      </div>
+      <div class="w-full mt-0.5 grid justify-items-center">
+        <div
+          class="bg-green-500 text-white shrink-0 text-lg w-[32px] h-[32px] rounded-full flex items-center justify-center"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <path
+              fill="none"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2.5"
+              d="M11 8L7 4m0 0L3 8m4-4v16m6-4l4 4m0 0l4-4m-4 4V4"
             />
-          </div>
+          </svg>
         </div>
-        <div class="w-full mt-0.5 grid justify-items-center">
+      </div>
+      <div class="w-full">
+        <div class="relative mt-0.5 rounded-md shadow-sm">
+          <div class="pointer-events-none absolute right-2 top-1 flex items-center pl-3">
+            <span class="text-gray-500 sm:text-sm">
+              <img src="/images/assets/ctmi.png" class="w-8 h-8" />
+            </span>
+          </div>
+          <input
+            type="number"
+            v-model="formData.ctmiAmount"
+            id="ctmi"
+            class="flex w-full p-2 text-sm text-zinc-100 bg-zinc-900 rounded-xl focus:outline-none h-10"
+            placeholder="0.00"
+          />
+        </div>
+      </div>
+      <div class="w-full mt-0.5 grid justify-items-center">
+        <template v-if="!account">
+          <span class="text-zinc-100">Please, connect your wallet </span>
+        </template>
+        <template v-else>
           <Button
             @click="transfer"
             :disabled="!formData.ctmiAmount || !formData.tonAmount || !account"
@@ -417,15 +416,15 @@ const transfer = async () => {
               !formData.ctmiAmount || !formData.tonAmount || !account ? 'secondary' : 'primary'
             "
           />
-        </div>
-        <div class="w-full my-1 text-sm text-white">
-          <h4>
-            * Can also send TON to UQCV3YdlxazBZpIeb-7426nun1B-yyMrAtUNdl5zubWYfRQv or to
-            cryptomi.ton from a decentralised wallet
-          </h4>
-          <h4>** Then Wait for <span class="line-through">Moon</span> Airdrop</h4>
-        </div>
-      </template>
+          </template>
+      </div>
+      <div class="w-full my-1 text-sm text-white">
+        <h4>
+          * Can also send TON to UQCV3YdlxazBZpIeb-7426nun1B-yyMrAtUNdl5zubWYfRQv or to
+          cryptomi.ton from a decentralised wallet
+        </h4>
+        <h4>** Then Wait for <span class="line-through">Moon</span> Airdrop</h4>
+      </div>
     </Card>
     <h2 class="font-bold text-5xl mt-5 text-white text-center">
       <span class="text-green-500 font-bold">CTMI</span> TOKENOMICS
