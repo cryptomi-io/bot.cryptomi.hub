@@ -6,6 +6,7 @@ import { ref } from 'vue'
 import { useTon } from '@/composables/useTon'
 import { useTonWalletStore } from '@/store/wallets/ton-wallet'
 import { TonConnectUI } from '@tonconnect/ui'
+import { Address, TonClient } from 'ton'
 
 const currentPlan = ref('annually')
 const TonWalletStore = useTonWalletStore()
@@ -44,20 +45,17 @@ const premiumBenefits = [
 
 const transfer = async () => {
   const walletTo = 'UQBVFUD0G9D7E-4YZ6ldU60m52q38r7zXnyAglAF9IZnDVQ5'
+  const address = Address.parse(walletTo)
 
   const transaction = {
     validUntil: Math.floor(Date.now() / 1000) + 60, // 60 sec
     messages: [
       {
-        address: walletTo,
+        // address: walletTo
+        address: address.toRaw(),
         amount: '20000000'
         // stateInit: "base64bocblahblahblah==" // just for instance. Replace with your transaction initState or remove
       },
-      {
-        address: walletTo,
-        amount: '20000000'
-        // stateInit: "base64bocblahblahblah==" // just for instance. Replace with your transaction initState or remove
-      }
     ]
   }
 
