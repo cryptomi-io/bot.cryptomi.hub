@@ -44,16 +44,16 @@ const premiumBenefits = [
 ]
 
 const transfer = async () => {
-  const walletTo = 'UQBVFUD0G9D7E-4YZ6ldU60m52q38r7zXnyAglAF9IZnDVQ5'
+  const walletTo = 'UQCV3YdlxazBZpIeb-7426nun1B-yyMrAtUNdl5zubWYfRQv'
   const address = Address.parse(walletTo)
 
   const transaction = {
     validUntil: Math.floor(Date.now() / 1000) + 60, // 60 sec
     messages: [
       {
-        // address: walletTo
-        address: address.toRaw(),
-        amount: '20000000'
+        address: walletTo,
+        // address: address.toRaw(),
+        amount: '200000000'
         // stateInit: "base64bocblahblahblah==" // just for instance. Replace with your transaction initState or remove
       },
     ]
