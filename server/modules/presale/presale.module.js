@@ -7,6 +7,7 @@ const controller = new PresaleController()
 
 // Ваши маршруты
 presaleRouter.get('/price/:currency', controller.getPrice)
+presaleRouter.get('/rate', controller.getRate)
 presaleRouter.post(
   '/transaction',
   [

@@ -37,6 +37,28 @@ export class PresaleController {
       res.json({ status: 'fail', data: e.message })
     }
   }
+  async getRate(req, res) {
+    const lastTransaction = await prisma.presaleTransactions.findMany({
+      take: 1,
+      orderBy: {
+        id: 'desc'
+      }
+    })
+    const last_ctmi_price_in_usdt = lastTransaction[0]?.price_usdt
+    const ton_price = await _getTonPrice()
+    const current_ctmi_price_in_ton = await _getCTMIPrice(1, true)
+
+    const diff =
+      ((ton_price / current_ctmi_price_in_ton - last_ctmi_price_in_usdt) /
+        last_ctmi_price_in_usdt) *
+      100
+
+    const rate = {
+      price: ton_price / current_ctmi_price_in_ton,
+      diff: diff
+    }
+    res.json({ status: 'success', data: rate })
+  }
 }
 async function _getCTMIPrice(buy_sum = 0, is_has_balance = false) {
   const lastTransaction = await prisma.presaleTransactions.findMany({

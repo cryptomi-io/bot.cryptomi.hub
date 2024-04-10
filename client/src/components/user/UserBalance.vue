@@ -1,18 +1,23 @@
 <script setup>
 import Card from '@/components/ui/Card.vue'
-import Button from '@/components/ui/Button.vue'
+import { useHelper } from '@/utils/helper'
 import { useUserStore } from '@/store/user'
 import { computed, onMounted, ref } from 'vue'
+import { usePresale } from '@/composables/usePresale'
+
+const { numberFormat } = useHelper()
+const presale = usePresale()
 const userStore = useUserStore()
 const isLoading = ref(true)
 const profile = computed(() => userStore.profile || {})
 const ctmi = {
   icon: '/images/assets/ctmi.png'
 }
-
-onMounted(() => {
+const ctmiRate = ref(null)
+onMounted(async () => {
   isLoading.value = true
   //FETCH USER INFO HERE IF didn't have before
+  ctmiRate.value = await presale.getRate()
   userStore.fetchProfile()
   setTimeout(() => {
     isLoading.value = false
@@ -38,7 +43,7 @@ onMounted(() => {
         />
         <div class="flex flex-col">
           <div class="text-zinc-100 font-bold text-sm">$CTMI</div>
-          <div class="text-zinc-400 text-xs" v-html="profile?.ctmi"></div>
+          <div class="text-zinc-400 text-xs">{{ profile?.ctmi }} CTMI</div>
         </div>
       </div>
       <div class="flex flex-col items-end">
@@ -49,8 +54,13 @@ onMounted(() => {
         >
           Buy
         </router-link>
+        <div v-if="profile?.ctmi && ctmiRate?.price" class="flex flex-col items-end text-zinc-100">
+          <span v-html="numberFormat(ctmiRate.price) + `$`" class="font-bold"></span>
+          <span class="text-xs" :class="[ctmiRate?.diff > 0 ? 'text-green-500' : 'text-red-500']">
+            {{ ctmiRate?.diff > 0 ? '+' : '-' }}{{ ctmiRate.diff.toFixed(2) }}%
+          </span>
+        </div>
       </div>
     </template>
   </Card>
 </template>
-../../store/user

@@ -11,8 +11,8 @@ export const usePresale = () => {
     return response?.data?.data
   }
 
-  const createTransaction = ({ user_id, wallet_address, amount, price_usdt, price_ton }) => {
-    const response = $hub.post(`/presale/transaction`, {
+  const createTransaction = async ({ user_id, wallet_address, amount, price_usdt, price_ton }) => {
+    const response = await $hub.post(`/presale/transaction`, {
       user_id,
       wallet_address,
       amount,
@@ -22,8 +22,14 @@ export const usePresale = () => {
     return response?.data?.data
   }
 
+  const getRate = async () => {
+    const response = await $hub.get(`/presale/rate`)
+    return response?.data?.data
+  }
+
   return {
     getPrice,
-    createTransaction
+    createTransaction,
+    getRate
   }
 }
