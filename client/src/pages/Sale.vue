@@ -14,9 +14,9 @@ import 'swiper/css'
 
 const { initDataUnsafe } = useWebApp()
 let chatId = 6754514128
-// if (import.meta.env.VITE_NODE_ENV !== 'development') {
-//   chatId = initDataUnsafe?.user?.id
-// }
+if (import.meta.env.VITE_NODE_ENV !== 'development') {
+  chatId = initDataUnsafe?.user?.id
+}
 
 const tokenomicTerms = [
   {
@@ -267,13 +267,17 @@ watch(userWallet.value, async (newVal) => {
 })
 
 watch(formData.value, async (newValue) => {
-  ctmiPrice.value = await presale.getPrice(
-    'CTMI',
-    formData.value.tonAmount,
-    account.value?.balance > 0
-  )
+  if (formData.value.tonAmount <= 0) {
+    formData.value.ctmiAmount = 0
+  } else {
+    ctmiPrice.value = await presale.getPrice(
+      'CTMI',
+      formData.value.tonAmount,
+      account.value?.balance > 0
+    )
 
-  formData.value.ctmiAmount = newValue.tonAmount * ctmiPrice.value
+    formData.value.ctmiAmount = (newValue.tonAmount * ctmiPrice.value).toFixed(4)
+  }
 })
 const transfer = async () => {
   const walletTo = 'UQCV3YdlxazBZpIeb-7426nun1B-yyMrAtUNdl5zubWYfRQv'
@@ -281,16 +285,16 @@ const transfer = async () => {
   //calculate CTMI sum
   const amount = Number(toNano(formData.value.tonAmount))
 
-   const transaction = {
-     validUntil: Math.floor(Date.now() / 1000) + 60, // 60 sec
-     messages: [
-       {
-         address: walletTo,
-         amount: amount
-         // stateInit: "base64bocblahblahblah==" // just for instance. Replace with your transaction initState or remove
-       }
-     ]
-   }
+  const transaction = {
+    validUntil: Math.floor(Date.now() / 1000) + 60, // 60 sec
+    messages: [
+      {
+        address: walletTo,
+        amount: amount
+        // stateInit: "base64bocblahblahblah==" // just for instance. Replace with your transaction initState or remove
+      }
+    ]
+  }
 
   try {
     const result = await window.tonConnectUI.sendTransaction(transaction)
@@ -404,7 +408,7 @@ const transfer = async () => {
         </div>
       </div>
       <div class="w-full mt-0.5 grid justify-items-center">
-        <template v-if="!account">
+        <template v-if="!userWallet">
           <span class="text-zinc-100">Please, connect your wallet </span>
         </template>
         <template v-else>
@@ -416,12 +420,12 @@ const transfer = async () => {
               !formData.ctmiAmount || !formData.tonAmount || !account ? 'secondary' : 'primary'
             "
           />
-          </template>
+        </template>
       </div>
       <div class="w-full my-1 text-sm text-white">
         <h4>
-          * Can also send TON to UQCV3YdlxazBZpIeb-7426nun1B-yyMrAtUNdl5zubWYfRQv or to
-          cryptomi.ton from a decentralised wallet
+          * Can also send TON to UQCV3YdlxazBZpIeb-7426nun1B-yyMrAtUNdl5zubWYfRQv or to cryptomi.ton
+          from a decentralised wallet
         </h4>
         <h4>** Then Wait for <span class="line-through">Moon</span> Airdrop</h4>
       </div>

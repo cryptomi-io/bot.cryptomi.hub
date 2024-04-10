@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client'
+import { Api, HttpClient } from 'tonapi-sdk-js'
 
 const prisma = new PrismaClient()
 
@@ -53,11 +54,30 @@ async function _getCTMIPrice(buy_sum = 0, is_has_balance = false) {
     return defaultPrice
   }
   const tonPrice = await _getTonPrice()
-  console.log(defaultPrice, buy_sum, tonPrice, lastTransactionTotalSum)
   const price = defaultPrice - (0.75 * (buy_sum * tonPrice + lastTransactionTotalSum)) / tonPrice
 
-  return price < 0 ? 0 : price
+  return price < 0 ? 0 : price.toFixed(4)
 }
 async function _getTonPrice() {
-  return 5.6
+  const httpClient = new HttpClient({
+    baseUrl: 'https://tonapi.io/',
+    baseApiParams: {
+      headers: {
+        Authorization: `Bearer AGXYVE4RVCICRRAAAAAP733HDU6CW5IRYGTFNXZBQWS3Z55O7DDG5WEPYZCZFWKAQCCOJGA`,
+        'Content-type': 'application/json'
+      }
+    }
+  })
+
+  try {
+    const tonv2Client = new Api(httpClient)
+
+    const response = await tonv2Client.rates.getRates({
+      tokens: ['ton'],
+      currencies: ['usdt']
+    })
+    return response.rates?.TON?.prices?.USDT
+  } catch (e) {
+    return null
+  }
 }
