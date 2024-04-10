@@ -1,69 +1,325 @@
 <script setup>
 import Button from '@/components/ui/Button.vue'
 import Card from '@/components/ui/Card.vue'
-import { Icon } from '@iconify/vue'
-import { ref } from 'vue'
+import { toNano, Address } from 'ton'
 import { useTon } from '@/composables/useTon'
+import { usePresale } from '@/composables/usePresale'
 import { useTonWalletStore } from '@/store/wallets/ton-wallet'
 import { TonConnectUI } from '@tonconnect/ui'
-import { Address, TonClient } from 'ton'
+import { ref, computed, watch, onMounted } from 'vue'
+import { useWebApp } from 'vue-tg'
+import { toast } from 'vue3-toastify'
+import { Swiper, SwiperSlide } from 'swiper/vue'
+import 'swiper/css'
 
-const currentPlan = ref('annually')
-const TonWalletStore = useTonWalletStore()
+const { initDataUnsafe } = useWebApp()
+let chatId = 6754514128
+if (import.meta.env.VITE_NODE_ENV !== 'development') {
+  chatId = initDataUnsafe?.user?.id
+}
 
-const { sendTransaction } = useTon()
-const plans = [
+const tokenomicTerms = [
   {
-    slug: 'annually',
-    name: 'Annually',
-    price: '29.99 $/month'
-  },
-  {
-    slug: 'monthly',
-    name: 'Monthly',
-    price: '45.75 $/month'
-  }
-]
-const premiumBenefits = [
-  {
-    icon: '/images/premium/1.png',
-    title: 'Participation in platform management',
-    text: 'Giving VIP users the right to vote in key decisions related to the development and management of the DeFi platform, through voting mechanisms or DAOs.'
-  },
-  {
-    icon: '/images/premium/2.png',
-    title: 'Exclusive tools for analysis and research',
-    text: 'Access to professional tools and resources for market analysis, project research and smart contract auditing to help users make informed investment decisions.'
-  },
-  {
-    icon: '/images/premium/3.png',
-
-    title: 'Free ENS address for your wallet for 3 years',
-    text: 'As a Crypto Premium member, you receive the exclusive right to register your own ENS (Ethereum Name Service) address free of charge for three years. This allows you to use an easy-to-remember name instead of a standard Ethereum wallet address, making it easier to exchange addresses and increasing your visibility in the Ethereum ecosystem. The platform covers all associated costs, giving you a convenient and personalized way to manage your DeFi assets.'
-  }
-]
-
-const transfer = async () => {
-  const walletTo = 'UQCV3YdlxazBZpIeb-7426nun1B-yyMrAtUNdl5zubWYfRQv'
-  const address = Address.parse(walletTo)
-
-  const transaction = {
-    validUntil: Math.floor(Date.now() / 1000) + 60, // 60 sec
-    messages: [
+    title: 'Ecosystem $CTMI 10% 200,000,000 CTMI - ',
+    description:
+      "These tokens are intended to support and develop the Cryptomi ecosystem, including partner projects and integrations. The distribution of these tokens motivates holders to actively participate in the platform's development.",
+    data: [
       {
-        address: walletTo,
-        // address: address.toRaw(),
-        amount: '200000000'
-        // stateInit: "base64bocblahblahblah==" // just for instance. Replace with your transaction initState or remove
+        name: 'Total supply',
+        value: '10%'
       },
+      {
+        name: 'Initial unlock',
+        value: '10%'
+      },
+      {
+        name: 'Cilf',
+        value: '-'
+      },
+      {
+        name: 'Vesting',
+        value: '-'
+      }
+    ]
+  },
+  {
+    title: 'Referral Program 15% 300,000,000 CTMI - ',
+    description:
+      'Tokens from this block are aimed at rewarding users for attracting new clients. This incentivizes users to actively bring in new clients and expand the Cryptomi user base.',
+    data: [
+      {
+        name: 'Total supply',
+        value: '10%'
+      },
+      {
+        name: 'Initial unlock',
+        value: '10%'
+      },
+      {
+        name: 'Cilf',
+        value: '-'
+      },
+      {
+        name: 'Vesting',
+        value: '-'
+      }
+    ]
+  },
+  {
+    title: 'Branding and Influencers 10% 200,000,000 CTMI - ',
+    description:
+      'These tokens are allocated for marketing initiatives, including collaboration with influencers. This allows Cryptomi to actively promote its platform and attract the attention of new users.',
+    data: [
+      {
+        name: 'Total supply',
+        value: '10%'
+      },
+      {
+        name: 'Initial unlock',
+        value: '10%'
+      },
+      {
+        name: 'Cilf',
+        value: '-'
+      },
+      {
+        name: 'Vesting',
+        value: '-'
+      }
+    ]
+  },
+  {
+    title: 'Airdrop 15% 300,000,000 CTMI - ',
+    description:
+      "These tokens are allocated to reward the community in the early stages of the project's development. Airdrop allows Cryptomi to interest and attract a wide audience of users from the start.",
+    data: [
+      {
+        name: 'Total supply',
+        value: '10%'
+      },
+      {
+        name: 'Initial unlock',
+        value: '10%'
+      },
+      {
+        name: 'Cilf',
+        value: '-'
+      },
+      {
+        name: 'Vesting',
+        value: '-'
+      }
+    ]
+  },
+  {
+    title: 'Team Incentives (15%): 300,000,000 CTMI - ',
+    description:
+      'These tokens are reserved for rewarding Cryptomi employees and management. This provides motivation and retention of talented specialists in the team and contributes to the successful development of the project.',
+    data: [
+      {
+        name: 'Total supply',
+        value: '10%'
+      },
+      {
+        name: 'Initial unlock',
+        value: '10%'
+      },
+      {
+        name: 'Cilf',
+        value: '-'
+      },
+      {
+        name: 'Vesting',
+        value: '-'
+      }
+    ]
+  },
+  {
+    title: 'Cryptomi Protection Fund (10%): 200,000,000 CTMI - ',
+    description:
+      'These tokens ensure the financial stability and security of the platform. The stability fund provides reserve funds to protect the platform from possible financial risks.',
+    data: [
+      {
+        name: 'Total supply',
+        value: '10%'
+      },
+      {
+        name: 'Initial unlock',
+        value: '10%'
+      },
+      {
+        name: 'Cilf',
+        value: '-'
+      },
+      {
+        name: 'Vesting',
+        value: '-'
+      }
+    ]
+  },
+  {
+    title: 'Exchange for CTMI (25%): 500,000,000 CTMI - ',
+    description:
+      'These tokens are intended to support exchange operations within the ecosystem. Exchange tokens facilitate the process of conducting operations on the Cryptomi platform.',
+    data: [
+      {
+        name: 'Total supply',
+        value: '10%'
+      },
+      {
+        name: 'Initial unlock',
+        value: '10%'
+      },
+      {
+        name: 'Cilf',
+        value: '-'
+      },
+      {
+        name: 'Vesting',
+        value: '-'
+      }
     ]
   }
+]
+const faqTerms = [
+  {
+    title: 'What is a SAAS platform?',
+    description:
+      'SAAS platform is a cloud-based software service that allows users to access and use a variety of tools and functionality.'
+  },
+  {
+    title: 'How does billing work?',
+    description:
+      'We offers a variety of billing options, including monthly and annual subscription plans, as well as pay-as-you-go pricing for certain services. Payment is typically made through a credit card or other secure online payment method.'
+  },
+  {
+    title: 'Can I get a refund for my subscription?',
+    description:
+      'We offers a 30-day money-back guarantee for most of its subscription plans. If you are not satisfied with your subscription within the first 30 days, you can request a full refund. Refunds for subscriptions that have been active for longer than 30 days may be considered on a case-by-case basis.'
+  },
+  {
+    title: 'How do I cancel my subscription?',
+    description:
+      'To cancel your We subscription, you can log in to your account and navigate to the subscription management page. From there, you should be able to cancel your subscription and stop future billing.'
+  },
+  {
+    title: 'Can I try this platform for free?',
+    description:
+      'We offers a free trial of its platform for a limited time. During the trial period, you will have access to a limited set of features and functionality, but you will not be charged.'
+  },
+  {
+    title: 'How do I access documentation?',
+    description:
+      "Documentation is available on the company's website and can be accessed by logging in to your account. The documentation provides detailed information on how to use the , as well as code examples and other resources."
+  },
+  {
+    title: 'How do I contact support?',
+    description:
+      "If you need help with the platform or have any other questions, you can contact the company's support team by submitting a support request through the website or by emailing support@We.com."
+  },
+  {
+    title: 'Do you offer any discounts or promotions?',
+    description:
+      "We may offer discounts or promotions from time to time. To stay up-to-date on the latest deals and special offers, you can sign up for the company's newsletter or follow it on social media."
+  },
+  {
+    title: 'How do we compare to other similar services?',
+    description:
+      'This platform is a highly reliable and feature-rich service that offers a wide range of tools and functionality. It is competitively priced and offers a variety of billing options to suit different needs and budgets.'
+  }
+]
+const assistantTerms = [
+  {
+    title: 'Wallet Analytics',
+    description:
+      ' We have developed a software solution that tracks the activity of "smart" wallets, helping to improve the chances of profitable transactions. Observing their investments in coins provides users with valuable signals for investing. This tool becomes the key to successfully selecting tokens for investment. ',
+    images: ['/images/wallet_analytics/1.png', '/images/wallet_analytics/2.png']
+  }
+]
+const presale = usePresale()
+const ton = useTon()
+const account = ref(null)
+const TonWalletStore = useTonWalletStore()
+const userWallet = computed(() => TonWalletStore.wallet.address)
+const userCTMIransactions = ref([])
+const formData = ref({
+  tonAmount: 0,
+  ctmiAmount: 0
+})
+const tonPrice = ref(0)
+
+const ctmiPrice = ref(0)
+
+onMounted(async () => {
+  if (!userWallet.value) return
+  account.value = await ton.getAccount(userWallet.value)
+  tonPrice.value = await presale.getPrice('TON')
+  ctmiPrice.value = await presale.getPrice(
+    'CTMI',
+    formData.value.tonAmount,
+    account.value?.balance > 0
+  )
+})
+
+watch(userWallet.value, async (newVal) => {
+  debugger
+  if (!newVal) return
+  account.value = await ton.getAccount(newVal)
+})
+
+watch(formData.value, async (newValue) => {
+  ctmiPrice.value = await presale.getPrice(
+    'CTMI',
+    formData.value.tonAmount,
+    account.value?.balance > 0
+  )
+
+  formData.value.ctmiAmount = newValue.tonAmount * ctmiPrice.value
+})
+const transfer = async () => {
+  const walletTo = 'UQCV3YdlxazBZpIeb-7426nun1B-yyMrAtUNdl5zubWYfRQv'
+
+  //calculate CTMI sum
+  const amount = Number(toNano(formData.value.tonAmount))
+
+  // const transaction = {
+  //   validUntil: Math.floor(Date.now() / 1000) + 60, // 60 sec
+  //   messages: [
+  //     {
+  //       address: walletTo,
+  //       amount: amount
+  //       // stateInit: "base64bocblahblahblah==" // just for instance. Replace with your transaction initState or remove
+  //     }
+  //   ]
+  // }
 
   try {
-    const result = await window.tonConnectUI.sendTransaction(transaction)
+    // const result = await window.tonConnectUI.sendTransaction(transaction)
+    await presale.createTransaction({
+      user_id: chatId,
+      wallet_address: ton.getUserFriendlyAddress(account.value?.address),
+      amount: formData.value.ctmiAmount,
+      price_ton: ctmiPrice.value,
+      price_usdt: tonPrice.value / ctmiPrice.value
+    })
 
-    alert('Transaction was sent successfully', result)
+    formData.value.ctmiAmount = 0
+    formData.value.tonAmount = 0
+    toast('Transaction was sent successfully', {
+      autoClose: 3000,
+      type: 'success',
+      position: 'top-right',
+      theme: 'dark',
+      toastStyle: 'top:10px'
+    }) // ToastOptions
   } catch (e) {
+    toast('Something went wrong', {
+      autoClose: 3000,
+      type: 'error',
+      position: 'top-right',
+      theme: 'dark',
+      toastStyle: 'top:10px'
+    }) // ToastOptions
     console.error(e)
   }
 }
@@ -82,101 +338,177 @@ const transfer = async () => {
       <div class="w-full mt-0.5 grid justify-items-center text-center">
         <div>
           <h3 class="text-white font-bold text-xl">Buy before launch!**</h3>
-          <h4 class="text-white fint-bold text-sm">10 TON = 35 000 $CTMI</h4>
+          <h4 class="text-white fint-bold text-sm">1 TON ~ 35 000 $CTMI</h4>
         </div>
       </div>
-      <div class="w-full">
-        <div class="relative mt-0.5 rounded-md shadow-sm">
-          <div class="pointer-events-none absolute right-2 top-2 flex items-center pl-3">
-            <span class="text-gray-500 sm:text-sm">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 56 56"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M28 56C43.464 56 56 43.464 56 28C56 12.536 43.464 0 28 0C12.536 0 0 12.536 0 28C0 43.464 12.536 56 28 56Z"
-                  fill="#0098EA"
-                />
-                <path
-                  d="M37.5603 15.6277H18.4386C14.9228 15.6277 12.6944 19.4202 14.4632 22.4861L26.2644 42.9409C27.0345 44.2765 28.9644 44.2765 29.7345 42.9409L41.5381 22.4861C43.3045 19.4251 41.0761 15.6277 37.5627 15.6277H37.5603ZM26.2548 36.8068L23.6847 31.8327L17.4833 20.7414C17.0742 20.0315 17.5795 19.1218 18.4362 19.1218H26.2524V36.8092L26.2548 36.8068ZM38.5108 20.739L32.3118 31.8351L29.7417 36.8068V19.1194H37.5579C38.4146 19.1194 38.9199 20.0291 38.5108 20.739Z"
-                  fill="white"
-                />
-              </svg>
-            </span>
-          </div>
-          <input
-            type="text"
-            name="ton"
-            id="ton"
-            class="flex w-full p-2 text-sm text-zinc-100 bg-zinc-900 rounded-xl focus:outline-none h-10"
-            placeholder="0.00"
-          />
-        </div>
-      </div>
-      <div class="w-full mt-0.5 grid justify-items-center">
-        <div
-          class="bg-green-500 text-white shrink-0 text-lg w-[32px] h-[32px] rounded-full flex items-center justify-center"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-            <path
-              fill="none"
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2.5"
-              d="M11 8L7 4m0 0L3 8m4-4v16m6-4l4 4m0 0l4-4m-4 4V4"
+      <template v-if="!account">
+        <span class="text-zinc-100">Please, connect your wallet </span>
+      </template>
+      <template v-else>
+        <div class="w-full">
+          <div class="relative mt-0.5 rounded-md shadow-sm">
+            <div class="pointer-events-none absolute right-2 top-2 flex items-center pl-3">
+              <span class="text-gray-500 sm:text-sm">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 56 56"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M28 56C43.464 56 56 43.464 56 28C56 12.536 43.464 0 28 0C12.536 0 0 12.536 0 28C0 43.464 12.536 56 28 56Z"
+                    fill="#0098EA"
+                  />
+                  <path
+                    d="M37.5603 15.6277H18.4386C14.9228 15.6277 12.6944 19.4202 14.4632 22.4861L26.2644 42.9409C27.0345 44.2765 28.9644 44.2765 29.7345 42.9409L41.5381 22.4861C43.3045 19.4251 41.0761 15.6277 37.5627 15.6277H37.5603ZM26.2548 36.8068L23.6847 31.8327L17.4833 20.7414C17.0742 20.0315 17.5795 19.1218 18.4362 19.1218H26.2524V36.8092L26.2548 36.8068ZM38.5108 20.739L32.3118 31.8351L29.7417 36.8068V19.1194H37.5579C38.4146 19.1194 38.9199 20.0291 38.5108 20.739Z"
+                    fill="white"
+                  />
+                </svg>
+              </span>
+            </div>
+            <input
+              type="number"
+              v-model="formData.tonAmount"
+              id="ton"
+              class="flex w-full p-2 text-sm text-zinc-100 bg-zinc-900 rounded-xl focus:outline-none h-10"
+              placeholder="0.00"
             />
-          </svg>
-        </div>
-      </div>
-      <div class="w-full">
-        <div class="relative mt-0.5 rounded-md shadow-sm">
-          <div class="pointer-events-none absolute right-2 top-1 flex items-center pl-3">
-            <span class="text-gray-500 sm:text-sm">
-              <img src="/images/assets/ctmi.png" class="w-8 h-8" />
-            </span>
           </div>
-          <input
-            type="text"
-            name="ctmi"
-            id="ctmi"
-            class="flex w-full p-2 text-sm text-zinc-100 bg-zinc-900 rounded-xl focus:outline-none h-10"
-            placeholder="0.00"
+        </div>
+        <div class="w-full mt-0.5 grid justify-items-center">
+          <div
+            class="bg-green-500 text-white shrink-0 text-lg w-[32px] h-[32px] rounded-full flex items-center justify-center"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+              <path
+                fill="none"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2.5"
+                d="M11 8L7 4m0 0L3 8m4-4v16m6-4l4 4m0 0l4-4m-4 4V4"
+              />
+            </svg>
+          </div>
+        </div>
+        <div class="w-full">
+          <div class="relative mt-0.5 rounded-md shadow-sm">
+            <div class="pointer-events-none absolute right-2 top-1 flex items-center pl-3">
+              <span class="text-gray-500 sm:text-sm">
+                <img src="/images/assets/ctmi.png" class="w-8 h-8" />
+              </span>
+            </div>
+            <input
+              type="number"
+              v-model="formData.ctmiAmount"
+              id="ctmi"
+              class="flex w-full p-2 text-sm text-zinc-100 bg-zinc-900 rounded-xl focus:outline-none h-10"
+              placeholder="0.00"
+            />
+          </div>
+        </div>
+        <div class="w-full mt-0.5 grid justify-items-center">
+          <Button
+            @click="transfer"
+            :disabled="!formData.ctmiAmount || !formData.tonAmount || !account"
+            text="Buy now!*"
+            :type="
+              !formData.ctmiAmount || !formData.tonAmount || !account ? 'secondary' : 'primary'
+            "
           />
         </div>
-      </div>
-      <div class="w-full mt-0.5 grid justify-items-center">
-        <button
-          @click="transfer"
-          class="group relative h-10 w-32 overflow-hidden rounded-2xl bg-green-500 text-lg font-bold text-white"
-        >
-          Buy now!*
-          <div
-            class="absolute inset-0 h-full w-full scale-0 rounded-2xl transition-all duration-300 group-hover:scale-100 group-hover:bg-white/30"
-          ></div>
-        </button>
-      </div>
-      <div class="w-full my-1 text-sm text-white">
-        <h4>
-          * Can also send TON to UQCV3YdlxazBZpIeb-7426nun1B-yyMrAtUNdl5zubWYfRQv or to cryptomi.ton
-          from a decentralised wallet
-        </h4>
-        <h4>** Then Wait for <span class="line-through">Moon</span> Airdrop</h4>
-      </div>
+        <div class="w-full my-1 text-sm text-white">
+          <h4>
+            * Can also send TON to UQCV3YdlxazBZpIeb-7426nun1B-yyMrAtUNdl5zubWYfRQv or to
+            cryptomi.ton from a decentralised wallet
+          </h4>
+          <h4>** Then Wait for <span class="line-through">Moon</span> Airdrop</h4>
+        </div>
+      </template>
     </Card>
+    <h2 class="font-bold text-5xl mt-5 text-white text-center">
+      <span class="text-green-500 font-bold">CTMI</span> TOKENOMICS
+    </h2>
+    <div class="block">
+      <swiper
+        :slides-per-view="'auto'"
+        :space-between="10"
+        :loop="true"
+        :effect="'creative'"
+        :autoplay="{
+          delay: 1000,
+          disableOnInteraction: true
+        }"
+      >
+        <swiper-slide
+          class="!w-[280px] h-full flex flex-col"
+          v-for="(item, i) in tokenomicTerms"
+          :key="i"
+        >
+          <Card class="py-8 px-4 flex-col gap-5 text-zinc-100">
+            <div class="font-bold text-xl h-[56px] text-center">
+              {{ item.title }}
+            </div>
+            <div class="flex w-full flex-col gap-2">
+              <div v-for="(data, j) in item.data" :key="j" class="flex w-full justify-between">
+                <span class="text-slate-400">{{ data.name }}</span>
+                <span>{{ data.value }}</span>
+              </div>
+            </div>
+          </Card>
+        </swiper-slide>
+      </swiper>
+      <div class="flex items-center mt-4 flex-col" v-if="tokenomicTerms.length > 1">
+        <img class="w-[70px]" src="/images/slide.gif" />
+      </div>
+    </div>
+    <h2 class="font-bold text-4xl mt-5 text-white text-center">
+      An indispensable assistant in crypto
+    </h2>
+    <div class="block">
+      <swiper
+        :slides-per-view="'auto'"
+        :space-between="10"
+        :loop="true"
+        :effect="'creative'"
+        :autoplay="{
+          delay: 1000,
+          disableOnInteraction: true
+        }"
+      >
+        <swiper-slide class="h-full flex flex-col" v-for="(item, i) in assistantTerms" :key="i">
+          <Card class="py-8 px-4 flex-col gap-5 text-zinc-100">
+            <div class="font-bold text-3xl h-[56px] text-center">
+              {{ item.title }}
+            </div>
+            <div class="text-center">
+              {{ item.description }}
+            </div>
+            <div class="flex flex-col gap-2">
+              <div v-for="(image, i) in item.images" :key="i">
+                <img :src="image" />
+              </div>
+            </div>
+          </Card>
+        </swiper-slide>
+      </swiper>
+      <div class="flex items-center mt-4 flex-col" v-if="assistantTerms.length > 1">
+        <img class="w-[70px]" src="/images/slide.gif" />
+      </div>
+    </div>
+
     <Card class="py-3 px-4 flex-col gap-5 text-white">
       <div class="flex flex-col items-center">
         <h2 class="font-bold text-5xl mt-5 tracking-tight">FAQ</h2>
         <p class="text-neutral-500 text-base mt-3">Frequenty asked questions</p>
+        <div class="mt-5"></div>
       </div>
-      <div class="grid divide-y divide-neutral-200 max-w-xl mx-auto mt-8">
-        <div class="py-5">
-          <details class="group">
+      <div class="grid divide-y divide-neutral-200 max-w-2xl w-full mx-auto mt-8">
+        <div class="py-5 w-full" v-for="(item, i) in faqTerms" :key="i">
+          <details class="group text-zinc-100">
             <summary class="flex justify-between items-center font-medium cursor-pointer list-none">
-              <span> What is a SAAS platform?</span>
+              <span>{{ item.title }}</span>
               <span class="transition group-open:rotate-180">
                 <svg
                   fill="none"
@@ -193,226 +525,8 @@ const transfer = async () => {
                 </svg>
               </span>
             </summary>
-            <p class="text-neutral-600 mt-3 group-open:animate-fadeIn">
-              SAAS platform is a cloud-based software service that allows users to access and use a
-              variety of tools and functionality.
-            </p>
-          </details>
-        </div>
-        <div class="py-5">
-          <details class="group">
-            <summary class="flex justify-between items-center font-medium cursor-pointer list-none">
-              <span> How does billing work?</span>
-              <span class="transition group-open:rotate-180">
-                <svg
-                  fill="none"
-                  height="24"
-                  shape-rendering="geometricPrecision"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="1.5"
-                  viewBox="0 0 24 24"
-                  width="24"
-                >
-                  <path d="M6 9l6 6 6-6"></path>
-                </svg>
-              </span>
-            </summary>
-            <p class="text-neutral-600 mt-3 group-open:animate-fadeIn">
-              We offers a variety of billing options, including monthly and annual subscription
-              plans, as well as pay-as-you-go pricing for certain services. Payment is typically
-              made through a credit card or other secure online payment method.
-            </p>
-          </details>
-        </div>
-        <div class="py-5">
-          <details class="group">
-            <summary class="flex justify-between items-center font-medium cursor-pointer list-none">
-              <span> Can I get a refund for my subscription?</span>
-              <span class="transition group-open:rotate-180">
-                <svg
-                  fill="none"
-                  height="24"
-                  shape-rendering="geometricPrecision"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="1.5"
-                  viewBox="0 0 24 24"
-                  width="24"
-                >
-                  <path d="M6 9l6 6 6-6"></path>
-                </svg>
-              </span>
-            </summary>
-            <p class="text-neutral-600 mt-3 group-open:animate-fadeIn">
-              We offers a 30-day money-back guarantee for most of its subscription plans. If you are
-              not satisfied with your subscription within the first 30 days, you can request a full
-              refund. Refunds for subscriptions that have been active for longer than 30 days may be
-              considered on a case-by-case basis.
-            </p>
-          </details>
-        </div>
-        <div class="py-5">
-          <details class="group">
-            <summary class="flex justify-between items-center font-medium cursor-pointer list-none">
-              <span> How do I cancel my subscription?</span>
-              <span class="transition group-open:rotate-180">
-                <svg
-                  fill="none"
-                  height="24"
-                  shape-rendering="geometricPrecision"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="1.5"
-                  viewBox="0 0 24 24"
-                  width="24"
-                >
-                  <path d="M6 9l6 6 6-6"></path>
-                </svg>
-              </span>
-            </summary>
-            <p class="text-neutral-600 mt-3 group-open:animate-fadeIn">
-              To cancel your We subscription, you can log in to your account and navigate to the
-              subscription management page. From there, you should be able to cancel your
-              subscription and stop future billing.
-            </p>
-          </details>
-        </div>
-        <div class="py-5">
-          <details class="group">
-            <summary class="flex justify-between items-center font-medium cursor-pointer list-none">
-              <span> Can I try this platform for free?</span>
-              <span class="transition group-open:rotate-180">
-                <svg
-                  fill="none"
-                  height="24"
-                  shape-rendering="geometricPrecision"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="1.5"
-                  viewBox="0 0 24 24"
-                  width="24"
-                >
-                  <path d="M6 9l6 6 6-6"></path>
-                </svg>
-              </span>
-            </summary>
-            <p class="text-neutral-600 mt-3 group-open:animate-fadeIn">
-              We offers a free trial of its platform for a limited time. During the trial period,
-              you will have access to a limited set of features and functionality, but you will not
-              be charged.
-            </p>
-          </details>
-        </div>
-        <div class="py-5">
-          <details class="group">
-            <summary class="flex justify-between items-center font-medium cursor-pointer list-none">
-              <span> How do I access documentation?</span>
-              <span class="transition group-open:rotate-180">
-                <svg
-                  fill="none"
-                  height="24"
-                  shape-rendering="geometricPrecision"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="1.5"
-                  viewBox="0 0 24 24"
-                  width="24"
-                >
-                  <path d="M6 9l6 6 6-6"></path>
-                </svg>
-              </span>
-            </summary>
-            <p class="text-neutral-600 mt-3 group-open:animate-fadeIn">
-              Documentation is available on the company's website and can be accessed by logging in
-              to your account. The documentation provides detailed information on how to use the ,
-              as well as code examples and other resources.
-            </p>
-          </details>
-        </div>
-        <div class="py-5">
-          <details class="group">
-            <summary class="flex justify-between items-center font-medium cursor-pointer list-none">
-              <span> How do I contact support?</span>
-              <span class="transition group-open:rotate-180">
-                <svg
-                  fill="none"
-                  height="24"
-                  shape-rendering="geometricPrecision"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="1.5"
-                  viewBox="0 0 24 24"
-                  width="24"
-                >
-                  <path d="M6 9l6 6 6-6"></path>
-                </svg>
-              </span>
-            </summary>
-            <p class="text-neutral-600 mt-3 group-open:animate-fadeIn">
-              If you need help with the platform or have any other questions, you can contact the
-              company's support team by submitting a support request through the website or by
-              emailing support@We.com.
-            </p>
-          </details>
-        </div>
-        <div class="py-5">
-          <details class="group">
-            <summary class="flex justify-between items-center font-medium cursor-pointer list-none">
-              <span> Do you offer any discounts or promotions?</span>
-              <span class="transition group-open:rotate-180">
-                <svg
-                  fill="none"
-                  height="24"
-                  shape-rendering="geometricPrecision"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="1.5"
-                  viewBox="0 0 24 24"
-                  width="24"
-                >
-                  <path d="M6 9l6 6 6-6"></path>
-                </svg>
-              </span>
-            </summary>
-            <p class="text-neutral-600 mt-3 group-open:animate-fadeIn">
-              We may offer discounts or promotions from time to time. To stay up-to-date on the
-              latest deals and special offers, you can sign up for the company's newsletter or
-              follow it on social media.
-            </p>
-          </details>
-        </div>
-        <div class="py-5">
-          <details class="group">
-            <summary class="flex justify-between items-center font-medium cursor-pointer list-none">
-              <span> How do we compare to other similar services?</span>
-              <span class="transition group-open:rotate-180">
-                <svg
-                  fill="none"
-                  height="24"
-                  shape-rendering="geometricPrecision"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="1.5"
-                  viewBox="0 0 24 24"
-                  width="24"
-                >
-                  <path d="M6 9l6 6 6-6"></path>
-                </svg>
-              </span>
-            </summary>
-            <p class="text-neutral-600 mt-3 group-open:animate-fadeIn">
-              This platform is a highly reliable and feature-rich service that offers a wide range
-              of tools and functionality. It is competitively priced and offers a variety of billing
-              options to suit different needs and budgets.
+            <p class="text-zinc-400 mt-3 group-open:animate-fadeIn">
+              {{ item.description }}
             </p>
           </details>
         </div>

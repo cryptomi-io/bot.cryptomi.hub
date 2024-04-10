@@ -85,6 +85,19 @@ model WalletAnalyzer{
   @@map("wallet_analyzer")
 }
 
+model PresaleTransactions{
+  id                Int                   @id @default(autoincrement())
+  user_id           String
+  wallet_address    String
+  amount            Float
+  price_usdt        Float
+  price_ton         Float
+  created_at        DateTime              @default(now())
+  updated_at        DateTime?             @updatedAt
+  @@map("presale_transactions")
+
+}
+
 
 
 model Settings {

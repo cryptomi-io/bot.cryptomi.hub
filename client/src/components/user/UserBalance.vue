@@ -1,5 +1,6 @@
 <script setup>
 import Card from '@/components/ui/Card.vue'
+import Button from '@/components/ui/Button.vue'
 import { useUserStore } from '@/store/user'
 import { computed, onMounted, ref } from 'vue'
 const userStore = useUserStore()
@@ -41,9 +42,13 @@ onMounted(() => {
         </div>
       </div>
       <div class="flex flex-col items-end">
-        <div class="text-zinc-500 text-sm">
-          <span :class="['text-zinc-100 font-bold']">soon</span>
-        </div>
+        <router-link
+          v-if="!profile?.ctmi"
+          to="/sale"
+          class="rounded-2xl px-5 py-2 inline-flex font-medium cursor-pointer text-center justify-center bg-green-500 text-zinc-100 text-md"
+        >
+          Buy
+        </router-link>
       </div>
     </template>
   </Card>
