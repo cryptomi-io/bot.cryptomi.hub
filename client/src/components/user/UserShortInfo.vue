@@ -17,6 +17,7 @@ onMounted(async () => {
     manifestUrl: 'https://hub.cryptomi.io/manifests/tonconnect-manifest.json',
     buttonRootId: 'ton-connect'
   })
+  window.tonConnectUI = tonConnectUI
   tonConnectUI.onStatusChange((data) => {
     console.log('status change')
     if (data) {

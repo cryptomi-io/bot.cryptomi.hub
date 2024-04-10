@@ -10,7 +10,7 @@ const router = createRouter({
   scrollBehavior(to, from, savedPosition) {
     // возвращаем требуемую позицию скролла
     return { top: 0 }
-  }
+  },
 })
 
 router.beforeEach((to, from, next) => {
@@ -18,7 +18,7 @@ router.beforeEach((to, from, next) => {
   if(to?.query?.ref){
     localStorage.setItem('ref', to.query.ref)
   }
-  if (AUTH_ROUTES.find((item) => item.path === to.path) && !isAuth) {
+  if (AUTH_ROUTES.find((item) => item.path === to.path) && !isAuth && !isAuth.AuthT) {
     next('/welcome')
   } else if (isAuth && GUEST_ROUTES.find((item) => item.path === to.path)) {
     next('/')

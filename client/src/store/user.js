@@ -6,6 +6,7 @@ export const useUserStore = defineStore({
   state: () => ({
     isLoading: false,
     isAuth: false,
+    AuthT: !! localStorage.getItem('AuthToken'),
     profile: null,
     balance: {
       usd: 0,
@@ -53,6 +54,7 @@ export const useUserStore = defineStore({
     setIsLoggedIn(isLoggedIn = true) {
       if (isLoggedIn) {
         this.isAuth = true
+        localStorage.setItem('AuthToken', this.isAuth)
         this.fetchProfile()
       } else {
         this.clearProfile()
@@ -102,6 +104,7 @@ export const useUserStore = defineStore({
 
     async logout() {
       this.isAuth = false
+      localStorage.removeItem('AuthToken')
       this.clearProfile()
     }
   }

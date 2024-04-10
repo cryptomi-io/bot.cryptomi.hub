@@ -16,7 +16,7 @@ const router = useRouter()
 const ton = useTon()
 const TonWalletStore = useTonWalletStore()
 const userWallet = computed(() => TonWalletStore.wallet.address)
-// const userWallet = computed(() => 'UQCV3YdlxazBZpIeb-7426nun1B-yyMrAtUNdl5zubWYfRQv')
+
 const { shortenContractAddress, numberFormat } = useHelper()
 const address = ref('')
 const account = ref(null)
@@ -39,7 +39,7 @@ watch(userWallet.value, async (newVal) => {
   if (!newVal) return
   isLoading.value = true
   address.value = ton.getUserFriendlyAddress(newVal)
-  account.value = await ton.getBalance(newVal)
+  account.value = await ton.getAccount(newVal)
   transactions.value = await ton.getTransactions(userWallet.value, 30)
   isLoading.value = false
 })
