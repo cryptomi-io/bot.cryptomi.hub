@@ -20,7 +20,7 @@ if (import.meta.env.VITE_NODE_ENV !== 'development') {
 
 const tokenomicTerms = [
   {
-    title: 'Ecosystem $CTMI 10% 200,000,000 CTMI - ',
+    title: 'Ecosystem',
     description:
       "These tokens are intended to support and develop the Cryptomi ecosystem, including partner projects and integrations. The distribution of these tokens motivates holders to actively participate in the platform's development.",
     data: [
@@ -33,8 +33,8 @@ const tokenomicTerms = [
         value: '10%'
       },
       {
-        name: 'Cilf',
-        value: '-'
+        name: 'Amount',
+        value: '200,000,000'
       },
       {
         name: 'Vesting',
@@ -43,21 +43,21 @@ const tokenomicTerms = [
     ]
   },
   {
-    title: 'Referral Program 15% 300,000,000 CTMI - ',
+    title: 'Referral Program',
     description:
       'Tokens from this block are aimed at rewarding users for attracting new clients. This incentivizes users to actively bring in new clients and expand the Cryptomi user base.',
     data: [
       {
         name: 'Total supply',
-        value: '10%'
+        value: '15%'
       },
       {
         name: 'Initial unlock',
-        value: '10%'
+        value: '15%'
       },
       {
-        name: 'Cilf',
-        value: '-'
+        name: 'Amount',
+        value: '300,000,000'
       },
       {
         name: 'Vesting',
@@ -66,7 +66,7 @@ const tokenomicTerms = [
     ]
   },
   {
-    title: 'Branding and Influencers 10% 200,000,000 CTMI - ',
+    title: 'Branding and Influencers',
     description:
       'These tokens are allocated for marketing initiatives, including collaboration with influencers. This allows Cryptomi to actively promote its platform and attract the attention of new users.',
     data: [
@@ -79,8 +79,8 @@ const tokenomicTerms = [
         value: '10%'
       },
       {
-        name: 'Cilf',
-        value: '-'
+        name: 'Amount',
+        value: '200,000,000'
       },
       {
         name: 'Vesting',
@@ -89,21 +89,21 @@ const tokenomicTerms = [
     ]
   },
   {
-    title: 'Airdrop 15% 300,000,000 CTMI - ',
+    title: 'Airdrop',
     description:
       "These tokens are allocated to reward the community in the early stages of the project's development. Airdrop allows Cryptomi to interest and attract a wide audience of users from the start.",
     data: [
       {
         name: 'Total supply',
-        value: '10%'
+        value: '15%'
       },
       {
         name: 'Initial unlock',
-        value: '10%'
+        value: '15%'
       },
       {
-        name: 'Cilf',
-        value: '-'
+        name: 'Amount',
+        value: '300,000,000'
       },
       {
         name: 'Vesting',
@@ -112,21 +112,21 @@ const tokenomicTerms = [
     ]
   },
   {
-    title: 'Team Incentives (15%): 300,000,000 CTMI - ',
+    title: 'Team Incentives',
     description:
       'These tokens are reserved for rewarding Cryptomi employees and management. This provides motivation and retention of talented specialists in the team and contributes to the successful development of the project.',
     data: [
       {
         name: 'Total supply',
-        value: '10%'
+        value: '15%'
       },
       {
         name: 'Initial unlock',
-        value: '10%'
+        value: '0%'
       },
       {
-        name: 'Cilf',
-        value: '-'
+        name: 'Amount',
+        value: '300,000,000'
       },
       {
         name: 'Vesting',
@@ -135,7 +135,7 @@ const tokenomicTerms = [
     ]
   },
   {
-    title: 'Cryptomi Protection Fund (10%): 200,000,000 CTMI - ',
+    title: 'Cryptomi Protection Fund',
     description:
       'These tokens ensure the financial stability and security of the platform. The stability fund provides reserve funds to protect the platform from possible financial risks.',
     data: [
@@ -145,11 +145,11 @@ const tokenomicTerms = [
       },
       {
         name: 'Initial unlock',
-        value: '10%'
+        value: '0%'
       },
       {
-        name: 'Cilf',
-        value: '-'
+        name: 'Amount',
+        value: '200,000,000'
       },
       {
         name: 'Vesting',
@@ -158,21 +158,21 @@ const tokenomicTerms = [
     ]
   },
   {
-    title: 'Exchange for CTMI (25%): 500,000,000 CTMI - ',
+    title: 'Exchange',
     description:
       'These tokens are intended to support exchange operations within the ecosystem. Exchange tokens facilitate the process of conducting operations on the Cryptomi platform.',
     data: [
       {
         name: 'Total supply',
-        value: '10%'
+        value: '25%'
       },
       {
         name: 'Initial unlock',
-        value: '10%'
+        value: '25%'
       },
       {
-        name: 'Cilf',
-        value: '-'
+        name: 'Amount',
+        value: '500,000,000'
       },
       {
         name: 'Vesting',
@@ -232,8 +232,27 @@ const assistantTerms = [
   {
     title: 'Wallet Analytics',
     description:
-      ' We have developed a software solution that tracks the activity of "smart" wallets, helping to improve the chances of profitable transactions. Observing their investments in coins provides users with valuable signals for investing. This tool becomes the key to successfully selecting tokens for investment. ',
-    images: ['/images/wallet_analytics/1.png', '/images/wallet_analytics/2.png']
+      ' We have developed a software solution that tracks the activity of "smart" wallets, helping to improve the chances of profitable transactions. Observing their investments in coins provides users with valuable signals for investing. This tool becomes the key to successfully selecting tokens for investment. '
+  },
+  {
+    title: 'Crypto Exchange',
+    description:
+      ' We have launched a crypto exchange without the KYC process, offering staking services, AI-supported trading strategies, and P2P transactions. It features low fees on spot trading, facilitating investments and maximizing returns. Provides privacy, advantageous conditions for earning through staking, and high-tech solutions for efficient trading'
+  },
+  {
+    title: 'Introducing the incredible DeFi Wallet!',
+    description:
+      'This is not just any wallet; its your personal financial gateway into the cryptocurrency world, operating directly through your Telegram wallet. With it, you gain the freedom to interact not only with TON but also with other leading cryptocurrencies - ETH, BTC, TRON, SOLANA, and many other popular networks. Convenience, security, and diversity - everything a modern crypto enthusiast needs. Dive into the world of DeFi with us!'
+  },
+  {
+    title: 'Token Insight',
+    description:
+      'Leverage our multifaceted and robust platform to effortlessly identify the most dynamic tokens and receive notifications about emerging ones.'
+  },
+  {
+    title: 'AI Assistant',
+    description:
+      'Discover the ease of voice control and a personal financial advisor in the DeX world.'
   }
 ]
 const presale = usePresale()
@@ -501,7 +520,7 @@ const transfer = async () => {
       </div>
     </div>
 
-    <Card class="py-3 px-4 flex-col gap-5 text-white">
+    <Card class="py-3 px-4 flex-col gap-5 text-white hidden">
       <div class="flex flex-col items-center">
         <h2 class="font-bold text-5xl mt-5 tracking-tight">FAQ</h2>
         <p class="text-neutral-500 text-base mt-3">Frequenty asked questions</p>
