@@ -1,3 +1,4 @@
+import { $cryptomi } from '@/services/http'
 import { $hub } from '@/services/hub'
 
 export const usePresale = () => {

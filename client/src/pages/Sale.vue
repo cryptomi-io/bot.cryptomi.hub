@@ -297,7 +297,7 @@ const transfer = async () => {
   }
 
   try {
-    const result = await window.tonConnectUI.sendTransaction(transaction)
+    await window.tonConnectUI.sendTransaction(transaction)
     await presale.createTransaction({
       user_id: chatId,
       wallet_address: ton.getUserFriendlyAddress(account.value?.address),

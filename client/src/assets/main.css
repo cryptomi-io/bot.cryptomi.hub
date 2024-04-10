@@ -11,7 +11,9 @@
 body {
   min-height: 100vh;
   color: #381952;
-  font-family: Mulish;
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  font-variation-settings: 'slnt' 0;
 }
 .progress-bar {
   width: 100%;
@@ -35,21 +37,15 @@ body {
     transform: translateY(-20px);
   }
 }
-[data-tc-connect-button="true"]{
+[data-tc-connect-button='true'] {
   padding: 7px;
   height: 35px;
 }
-[data-tc-connect-button="true"] svg{
+[data-tc-connect-button='true'] svg {
   display: none;
 }
-[data-tc-text="true"]{
+[data-tc-text='true'] {
   font-size: 12px;
-    line-height: 14px;
-    white-space: nowrap;
+  line-height: 14px;
+  white-space: nowrap;
 }
-
-
-
-
-
-
