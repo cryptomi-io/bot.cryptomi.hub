@@ -14,7 +14,6 @@ export class PresaleController {
     const { currency } = req.params
     const { buy_sum } = req.query
     let price = 0
-ç
 
     if (currency === 'TON') {
       price = await _getTonPrice()
