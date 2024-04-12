@@ -56,8 +56,8 @@ onMounted(async () => {
         </router-link>
         <div v-if="profile?.ctmi && ctmiRate?.price" class="flex flex-col items-end text-zinc-100">
           <span v-html="numberFormat(ctmiRate.price) + `$`" class="font-bold"></span>
-          <span class="text-xs" :class="[ctmiRate?.diff > 0 ? 'text-green-500' : 'text-red-500']">
-            {{ ctmiRate?.diff > 0 ? '+' : '-' }}{{ ctmiRate.diff.toFixed(2) }}%
+          <span class="text-xs" v-if="ctmiRate?.diff" :class="[ctmiRate?.diff > 0 ? 'text-green-500' : 'text-red-500']">
+            {{ ctmiRate?.diff > 0 ? '+' : '-' }}{{ ctmiRate?.diff?.toFixed(2) }}%
           </span>
         </div>
       </div>
