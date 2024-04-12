@@ -6,7 +6,7 @@ import { useTon } from '@/composables/useTon'
 import { usePresale } from '@/composables/usePresale'
 import { useTonWalletStore } from '@/store/wallets/ton-wallet'
 import { TonConnectUI } from '@tonconnect/ui'
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import { useWebApp } from 'vue-tg'
 import { toast } from 'vue3-toastify'
 import { Swiper, SwiperSlide } from 'swiper/vue'
@@ -260,24 +260,40 @@ const ton = useTon()
 const account = ref(null)
 const TonWalletStore = useTonWalletStore()
 const userWallet = computed(() => TonWalletStore.wallet.address)
-const userCTMIransactions = ref([])
+
 const formData = ref({
-  tonAmount: 0,
+  tonAmount: 10,
   ctmiAmount: 0
 })
-const tonPrice = ref(0)
+
+const isLoading = ref(true)
 
 const ctmiPrice = ref(0)
+
+const tonPrice = ref(0)
+const lastTransaction = ref(0)
+const updatePriceInterval = ref(null)
 
 onMounted(async () => {
   if (!userWallet.value) return
   account.value = await ton.getAccount(userWallet.value)
   tonPrice.value = await presale.getPrice('TON')
-  ctmiPrice.value = await presale.getPrice(
-    'CTMI',
-    formData.value.tonAmount,
-    account.value?.balance > 0
-  )
+  lastTransaction.value = await presale.getLastTransaction()
+  ctmiPrice.value = await getCtmiPrice(1)
+  console.log(ctmiPrice.value)
+  isLoading.value = false
+
+  updatePriceInterval.value = setInterval(async () => {
+    isLoading.value = true
+    tonPrice.value = await presale.getPrice('TON')
+    lastTransaction.value = await presale.getLastTransaction()
+    ctmiPrice.value = await getCtmiPrice(1)
+    formData.value.ctmiAmount = (formData.value.tonAmount * ctmiPrice.value).toFixed(4)
+    isLoading.value = false
+  }, 10000)
+})
+onBeforeUnmount(() => {
+  clearInterval(updatePriceInterval.value)
 })
 
 watch(userWallet.value, async (newVal) => {
@@ -289,16 +305,21 @@ watch(formData.value, async (newValue) => {
   if (formData.value.tonAmount <= 0) {
     formData.value.ctmiAmount = 0
   } else {
-    ctmiPrice.value = await presale.getPrice(
-      'CTMI',
-      formData.value.tonAmount,
-      account.value?.balance > 0
-    )
-
-    formData.value.ctmiAmount = (newValue.tonAmount * ctmiPrice.value).toFixed(4)
+    const price = await getCtmiPrice(newValue.tonAmount)
+    formData.value.ctmiAmount = (newValue.tonAmount * price).toFixed(4)
   }
 })
 const transfer = async () => {
+  if (formData.value.tonAmount < 10) {
+    toast('Minimum amount is 10 TON', {
+      autoClose: 3000,
+      type: 'warning',
+      position: 'top-right',
+      theme: 'dark',
+      toastStyle: 'top:10px'
+    })
+    return
+  }
   const walletTo = 'UQCV3YdlxazBZpIeb-7426nun1B-yyMrAtUNdl5zubWYfRQv'
 
   //calculate CTMI sum
@@ -345,6 +366,18 @@ const transfer = async () => {
     console.error(e)
   }
 }
+const getCtmiPrice = async (amount) => {
+  isLoading.value = true
+  const defaultPrice = lastTransaction.value?.price_ton || 35000
+  const lastTransactionTotalSum = lastTransaction.value
+    ? lastTransaction.value?.price_usdt * lastTransaction.value?.amount
+    : 0
+
+  const price =
+    defaultPrice - (0.75 * (amount * tonPrice.value + lastTransactionTotalSum)) / tonPrice.value
+  isLoading.value = false
+  return price
+}
 </script>
 
 <template>
@@ -360,7 +393,15 @@ const transfer = async () => {
       <div class="w-full mt-0.5 grid justify-items-center text-center">
         <div>
           <h3 class="text-white font-bold text-xl">Buy before launch!**</h3>
-          <h4 class="text-white fint-bold text-sm">1 TON ~ 35 000 $CTMI</h4>
+          <h4 class="text-white fint-bold text-sm items-center flex gap-2 justify-center">
+            1 TON ~
+            <span v-if="!isLoading">{{ ctmiPrice?.toFixed(4) }}</span
+            ><span
+              v-else
+              class="w-[30px] h-[15px] shrink-0 inline-flex rounded-full animate-pulse bg-neutral-700"
+            ></span>
+            $CTMI
+          </h4>
         </div>
       </div>
       <div class="w-full">
@@ -386,9 +427,11 @@ const transfer = async () => {
             </span>
           </div>
           <input
+            :disabled="isLoading"
             type="number"
             v-model="formData.tonAmount"
             id="ton"
+            min="10"
             class="flex w-full p-2 text-sm text-zinc-100 bg-zinc-900 rounded-xl focus:outline-none h-10"
             placeholder="0.00"
           />
@@ -420,6 +463,8 @@ const transfer = async () => {
           <input
             type="number"
             v-model="formData.ctmiAmount"
+            disabled
+            readonly
             id="ctmi"
             class="flex w-full p-2 text-sm text-zinc-100 bg-zinc-900 rounded-xl focus:outline-none h-10"
             placeholder="0.00"
@@ -433,10 +478,12 @@ const transfer = async () => {
         <template v-else>
           <Button
             @click="transfer"
-            :disabled="!formData.ctmiAmount || !formData.tonAmount || !account"
+            :disabled="!formData.ctmiAmount || !formData.tonAmount || !account || isLoading"
             text="Buy now!*"
             :type="
-              !formData.ctmiAmount || !formData.tonAmount || !account ? 'secondary' : 'primary'
+              !formData.ctmiAmount || !formData.tonAmount || !account || isLoading
+                ? 'secondary'
+                : 'primary'
             "
           />
         </template>

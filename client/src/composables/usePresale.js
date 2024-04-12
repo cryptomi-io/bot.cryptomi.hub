@@ -1,4 +1,3 @@
-import { $cryptomi } from '@/services/http'
 import { $hub } from '@/services/hub'
 
 export const usePresale = () => {
@@ -28,9 +27,15 @@ export const usePresale = () => {
     return response?.data?.data
   }
 
+  const getLastTransaction = async () => {
+    const response = await $hub.get(`/presale/transactions/last`)
+    return response?.data?.data
+  }
+
   return {
     getPrice,
     createTransaction,
-    getRate
+    getRate,
+    getLastTransaction
   }
 }

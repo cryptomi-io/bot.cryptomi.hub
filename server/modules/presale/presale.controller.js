@@ -73,6 +73,15 @@ export class PresaleController {
     }
     res.json({ status: 'success', data: rate })
   }
+  async getLastTransaction(req, res) {
+    const lastTransaction = await prisma.presaleTransactions.findMany({
+      take: 1,
+      orderBy: {
+        id: 'desc'
+      }
+    })
+    res.json({ status: 'success', data: lastTransaction.length ? lastTransaction[0] : null })
+  }
 }
 async function _getCTMIPrice(buy_sum = 0, is_has_balance = false) {
   const lastTransaction = await prisma.presaleTransactions.findMany({
