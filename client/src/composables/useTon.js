@@ -75,6 +75,7 @@ export const useTon = () => {
         available_balance: Web3.utils.fromWei(accountResponse.balance, 'nano')
       }
     }
+    await delay(1500)
     const jettonResponse = await tonv2Client.accounts.getAccountJettonsBalances(wallet)
     jettonResponse.balances.forEach((item) => {
       wallets[item.jetton.symbol] = {
@@ -96,7 +97,6 @@ export const useTon = () => {
         return Number(b.available_balance) - Number(a.available_balance)
       })
     }
-    console.log(response)
     return response
   }
   const getTransactions = async (walletRaw, limit) => {
@@ -130,13 +130,6 @@ export const useTon = () => {
       }
     })
     return transactions
-  }
-
-  const sendTransaction = async (walletTo, amount) => {
-    const walletFrom = 'UQCV3YdlxazBZpIeb-7426nun1B-yyMrAtUNdl5zubWYfRQv'
-
-    const jettonWalletAddress = Address.parse(walletFrom)
-    const destinationAddress = Address.parse(walletTo)
   }
 
   const getJettons = async (walletRaw) => {
@@ -682,13 +675,14 @@ export const useTon = () => {
     const response = await tonv2Client.accounts.getAccountJettonsHistory(walletRaw, { limit: 1000 })
     return response?.events || []
   }
-
+  function delay(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms))
+  }
   return {
     getAccount,
     getTransactions,
     getUserFriendlyAddress,
     getJettons,
-    getJettonTransfers,
-    sendTransaction
+    getJettonTransfers
   }
 }
