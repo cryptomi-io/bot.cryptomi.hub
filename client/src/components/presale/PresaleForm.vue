@@ -389,7 +389,7 @@ const transfer = async () => {
       <!-- SEPORATE -->
       <div class="relative border-b border-zinc-400 w-full my-2"></div>
       <!-- END SEPORATE -->
-      <div class="flex flex-col gap-2 w-full px-2">
+      <div class="flex flex-col gap-2 w-full px-2 py-3">
         <div
           v-if="ctmiTonPrice"
           class="flex items-center justify-between text-sm text-zinc-100"
