@@ -238,7 +238,7 @@ const transfer = async () => {
           <input
             type="number"
             placeholder="0.00"
-            class="w-[180px] bg-transparent text-3xl font-bold text-right text-zinc-100 focus:outline-none"
+            class="w-full bg-transparent text-3xl font-bold text-right text-zinc-100 focus:outline-none"
           />
           <div class="flex gap-1 items-center text-zinc-400 text-sm">
             <span
@@ -257,8 +257,8 @@ const transfer = async () => {
       </div>
       <!-- END SEPORATE -->
       <div class="flex w-full px-2 justify-between items-start">
-        <div class="flex flex-col">
-          <div class="text-sm text-zinc-400">You receive</div>
+        <div class="flex flex-col shrink-0">
+          <div class="text-sm text-zinc-400 text-nowrap">You receive</div>
           <div class="flex items-center gap-1">
             <img src="/images/assets/ctmi.png" class="w-8 h-8" />
             <div class="text-2xl text-zinc-100 font-bold">CTMI</div>
@@ -274,7 +274,7 @@ const transfer = async () => {
           <input
             type="number"
             placeholder="0.00"
-            class="w-[180px] bg-transparent text-3xl font-bold text-right text-zinc-100 focus:outline-none"
+            class="w-full bg-transparent text-3xl font-bold text-right text-zinc-100 focus:outline-none"
           />
           <div class="flex gap-1 items-center text-zinc-400 text-sm">
             <span
@@ -315,9 +315,9 @@ const transfer = async () => {
       </div>
 
       <div class="flex w-full px-2 justify-between items-start">
-        <div class="flex flex-col">
+        <div class="flex flex-col shrink-0">
           <div class="text-sm text-zinc-400">You send</div>
-          <div class="flex items-center gap-1">
+          <div class="flex items-center gap-1 mt-1">
             <svg
               width="32"
               height="32"
@@ -346,7 +346,7 @@ const transfer = async () => {
             type="number"
             placeholder="0.00"
             v-model="formData.tonAmount"
-            class="w-[180px] bg-transparent text-3xl font-bold text-right text-zinc-100 focus:outline-none"
+            class="w-full bg-transparent text-3xl font-bold text-right text-zinc-100 focus:outline-none"
           />
           <div v-if="tonUsdtPrice" class="flex gap-1 items-center text-zinc-400 text-sm">
             <span>${{ tonUsdtPrice.toFixed(4) }}</span>
@@ -363,9 +363,9 @@ const transfer = async () => {
       </div>
       <!-- END SEPORATE -->
       <div class="flex w-full px-2 justify-between items-start">
-        <div class="flex flex-col">
+        <div class="flex flex-col shrink-0">
           <div class="text-sm text-zinc-400">You receive</div>
-          <div class="flex items-center gap-1">
+          <div class="flex items-center gap-1 mt-1">
             <img src="/images/assets/ctmi.png" class="w-8 h-8" />
             <div class="text-2xl text-zinc-100 font-bold">CTMI</div>
           </div>
@@ -379,7 +379,7 @@ const transfer = async () => {
             type="number"
             placeholder="0.00"
             v-model="formData.ctmiAmount"
-            class="w-[180px] bg-transparent text-3xl font-bold text-right text-zinc-100 focus:outline-none"
+            class="w-full bg-transparent text-3xl font-bold text-right text-zinc-100 focus:outline-none"
           />
           <div v-if="ctmiUsdtPrice" class="flex gap-1 items-center text-zinc-400 text-sm">
             <span>${{ ctmiUsdtPrice.toFixed(4) }}</span>
