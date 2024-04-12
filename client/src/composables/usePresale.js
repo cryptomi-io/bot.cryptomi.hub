@@ -1,10 +1,9 @@
 import { $hub } from '@/services/hub'
 
 export const usePresale = () => {
-  const getPrice = async (currency, buy_sum = 0, is_has_balance = true) => {
+  const getPrice = async (currency, buy_sum = 0) => {
     const response = await $hub.get(`/presale/price/${currency}`, {
       params: {
-        is_has_balance,
         buy_sum
       }
     })

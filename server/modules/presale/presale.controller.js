@@ -12,7 +12,7 @@ const prisma = new PrismaClient()
 export class PresaleController {
   async getPrice(req, res) {
     const { currency } = req.params
-    const { is_has_balance, buy_sum } = req.query
+    const { buy_sum } = req.query
     let price = 0
     console.log(is_has_balance, buy_sum)
 
@@ -21,7 +21,7 @@ export class PresaleController {
     }
 
     if (currency === 'CTMI') {
-      price = await _getCTMIPrice(buy_sum, is_has_balance)
+      price = await _getCTMIPrice(buy_sum)
     }
     res.json({ status: 'success', data: price })
   }
@@ -60,7 +60,7 @@ export class PresaleController {
     })
     const last_ctmi_price_in_usdt = lastTransaction[0]?.price_usdt
     const ton_price = await _getTonPrice()
-    const current_ctmi_price_in_ton = await _getCTMIPrice(1, true)
+    const current_ctmi_price_in_ton = await _getCTMIPrice(1)
 
     const diff =
       ((ton_price / current_ctmi_price_in_ton - last_ctmi_price_in_usdt) /
@@ -83,7 +83,7 @@ export class PresaleController {
     res.json({ status: 'success', data: lastTransaction.length ? lastTransaction[0] : null })
   }
 }
-async function _getCTMIPrice(buy_sum = 0, is_has_balance = false) {
+async function _getCTMIPrice(buy_sum = 0) {
   const lastTransaction = await prisma.presaleTransactions.findMany({
     take: 1,
     orderBy: {
@@ -95,9 +95,6 @@ async function _getCTMIPrice(buy_sum = 0, is_has_balance = false) {
     ? lastTransaction[0].price_usdt * lastTransaction[0].amount
     : 0
 
-  if (!is_has_balance) {
-    return defaultPrice
-  }
   const tonPrice = await _getTonPrice()
   const price = defaultPrice - (0.75 * (buy_sum * tonPrice + lastTransactionTotalSum)) / tonPrice
   return price < 0 ? 0 : price.toFixed(4)
