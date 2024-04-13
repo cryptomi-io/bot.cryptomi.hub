@@ -15,6 +15,8 @@ import TonWeb from 'tonweb'
 
 //transfer
 import { mnemonicToPrivateKey } from 'ton-crypto'
+import {mnemonicToKeyPair} from "tonweb-mnemonic";
+
 const { JettonMinter, JettonWallet } = TonWeb.token.jetton
 //transfer end
 
@@ -145,55 +147,67 @@ function delay(ms) {
 }
 const transfer = async () => {
   console.log('transfer start')
-  const tonweb = new TonWeb()
-  const mnemonic =
-    'tail cushion action idle album network detect glory birth barrel prosper wing base motor shy bone head record pride fury access village key endless'
-
-  const wallet_address_2 = 'UQBVFUD0G9D7E-4YZ6ldU60m52q38r7zXnyAglAF9IZnDVQ5'
-
-  //Sender wallet address
-  const keyPair = await mnemonicToPrivateKey(mnemonic.split(' '))
-
-  const WalletClass = tonweb.wallet.all['v3R1']
-  const wallet = new WalletClass(tonweb.provider, {
-    publicKey: keyPair.publicKey,
-    wc: 0
-  })
-  const walletAddress = await wallet.getAddress()
   const JETTON_WALLET_ADDRESS = 'EQB-7zmoFD21TpedIAu4HAo5P2mU-NfQhtbp3xNnlwetbl0E'
-  const jettonWallet = new JettonWallet(tonweb.provider, {
-    address: JETTON_WALLET_ADDRESS
-  })
-  console.log('transfer start')
 
-  const seqno = (await wallet.methods.seqno().call()) || 0
-
-  const comment = new Uint8Array([...new Uint8Array(4), ...new TextEncoder().encode('Airdrop')])
-  await delay(2000)
-  try {
-    console.log(
-      await wallet.methods
-        .transfer({
-          secretKey: keyPair.secretKey,
-          toAddress: wallet_address_2,
-          amount: TonWeb.utils.toNano('0.0001'),
-          seqno: seqno,
-          payload: await jettonWallet.createTransferBody({
-            jettonAmount: TonWeb.utils.toNano('0.0001'),
-            toAddress: new TonWeb.utils.Address(wallet_address_2),
-            forwardAmount: TonWeb.utils.toNano('0.0001'),
-            forwardPayload: new TextEncoder().encode('gift'),
-            responseAddress: walletAddress
-          }),
-          sendMode: 3
-        })
-        .send()
-    )
-  } catch (e) {
-    console.log(e.messages)
-  }
 
   console.log('-----------------------------------')
+
+
+    const tonweb = new TonWeb(new TonWeb.HttpProvider(
+        'https://toncenter.com/api/v2/jsonRPC', {
+            apiKey: '27dfe35981c2b60031be8e7bd27e44596696c73cc4672d6ee17c99fa67ac6e7a'
+        })
+    );
+    const mnemonic =
+    'tail cushion action idle album network detect glory birth barrel prosper wing base motor shy bone head record pride fury access village key endless'
+
+    const destinationAddress = new TonWeb.Address('UQDhkGqIoT2xq03WAwWo_I-xaEJowcTm_d1hptYeAzhbjMMk');
+
+    const forwardPayload = new TonWeb.boc.Cell();
+    forwardPayload.bits.writeUint(0, 32); // 0 opcode means we have a comment
+    forwardPayload.bits.writeString('Hello, CRYPTOMI SALE TEST!');
+
+    /*
+        Tonweb has a built-in class for interacting with jettons, which has
+        a method for creating a transfer. However, it has disadvantages, so
+        we manually create the message body. Additionally, this way we have a
+        better understanding of what is stored and how it functions.
+     */
+
+    const jettonTransferBody = new TonWeb.boc.Cell();
+    jettonTransferBody.bits.writeUint(0xf8a7ea5, 32); // opcode for jetton transfer
+    jettonTransferBody.bits.writeUint(0, 64); // query id
+    jettonTransferBody.bits.writeCoins(new TonWeb.utils.BN('5')); // jetton amount, amount * 10^9
+    jettonTransferBody.bits.writeAddress(destinationAddress);
+    jettonTransferBody.bits.writeAddress(destinationAddress); // response destination
+    jettonTransferBody.bits.writeBit(false); // no custom payload
+    jettonTransferBody.bits.writeCoins(TonWeb.utils.toNano('0.0001')); // forward amount
+    jettonTransferBody.bits.writeBit(true); // we store forwardPayload as a reference
+    jettonTransferBody.refs.push(forwardPayload);
+
+    const keyPair = await mnemonicToKeyPair(mnemonic.split(' '));
+    const jettonWallet = new TonWeb.token.ft.JettonWallet(tonweb.provider, {
+        address: JETTON_WALLET_ADDRESS
+    });
+
+    // available wallet types: simpleR1, simpleR2, simpleR3,
+    // v2R1, v2R2, v3R1, v3R2, v4R1, v4R2
+    const wallet = new tonweb.wallet.all['v4R2'](tonweb.provider, {
+        publicKey: keyPair.publicKey,
+        wc: 0 // workchain
+    });
+
+    await wallet.methods.transfer({
+        secretKey: keyPair.secretKey,
+        toAddress: jettonWallet.address,
+        amount: tonweb.utils.toNano('0.1'),
+        seqno: await wallet.methods.seqno().call(),
+        payload: jettonTransferBody,
+        sendMode: 3
+    }).send(); // create transfer and send it
+
+
+
 
   return
   if (formData.value.tonAmount < 10) {
