@@ -1,5 +1,4 @@
 import { Address, TonClient } from 'ton'
-
 import { Api, HttpClient } from 'tonapi-sdk-js'
 import Web3 from 'web3'
 
@@ -9,6 +8,7 @@ export const useTon = () => {
     endpoint: 'https://toncenter.com/api/v2/jsonRPC',
     apiKey: TON_API_KEY
   })
+
   const httpClient = new HttpClient({
     baseUrl: 'https://tonapi.io/',
     baseApiParams: {
@@ -675,6 +675,9 @@ export const useTon = () => {
     const response = await tonv2Client.accounts.getAccountJettonsHistory(walletRaw, { limit: 1000 })
     return response?.events || []
   }
+
+  const sendJettons = async () => {}
+  
   function delay(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms))
   }
@@ -683,6 +686,7 @@ export const useTon = () => {
     getTransactions,
     getUserFriendlyAddress,
     getJettons,
-    getJettonTransfers
+    getJettonTransfers,
+    sendJettons
   }
 }

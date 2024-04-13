@@ -1,6 +1,4 @@
 <script setup>
-import Button from '@/components/ui/Button.vue'
-import Card from '@/components/ui/Card.vue'
 // import FAQ from '@/components/ui/FAQ.vue'
 import UserBalance from '@/components/user/UserBalance.vue'
 import PresaleForm from '@/components/presale/PresaleForm.vue'

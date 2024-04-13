@@ -10,6 +10,13 @@ import { useUserStore } from '@/store/user'
 import { toast } from 'vue3-toastify'
 import { useWebApp } from 'vue-tg'
 import { toNano } from 'ton'
+import { useHelper } from '@/utils/helper'
+import TonWeb from 'tonweb'
+
+//transfer
+import { mnemonicToPrivateKey } from 'ton-crypto'
+const { JettonMinter, JettonWallet } = TonWeb.token.jetton
+//transfer end
 
 //TG
 const { initDataUnsafe } = useWebApp()
@@ -19,15 +26,19 @@ if (import.meta.env.VITE_NODE_ENV !== 'development') {
 }
 
 //Hooks
+
 const ton = useTon()
+
 const presale = usePresale()
+const { numberFormat } = useHelper()
 
 //Store
 const TonWalletStore = useTonWalletStore()
 const userStore = useUserStore()
 
 //Computed
-const userWallet = computed(() => TonWalletStore.wallet.address)
+// const userWallet = computed(() => TonWalletStore.wallet.address)
+const userWallet = computed(() => 'UQCV3YdlxazBZpIeb-7426nun1B-yyMrAtUNdl5zubWYfRQv')
 const profile = computed(() => userStore.profile || {})
 
 //UI REFS
@@ -85,24 +96,28 @@ const init = async () => {
   lastTransaction.value = await presale.getLastTransaction()
   userStore.fetchProfile()
   account.value = await ton.getAccount(userWallet.value)
+
   tonBalance.value = account.value?.balance || 0
   tonUsdtPrice.value = await presale.getPrice('TON')
   ctmiTonPrice.value = await getCtmiPrice(1)
   ctmiUsdtPrice.value = tonUsdtPrice.value / ctmiTonPrice.value
-  ctmiBalance.value = profile.value?.ctmi || 0
-  console.log(account.value)
+
+  const defiWalletBalance =
+    account.value?.wallets &&
+    account.value?.wallets.find((item) => item.currency === 'CTMI')?.available_balance
+
+  ctmiBalance.value = defiWalletBalance || profile.value?.ctmi || 0
   formData.value.ctmiAmount = formData.value.tonAmount * ctmiTonPrice.value
 
   isLoading.value = false
 
-  initUpdatePriceInterval(async () => {
-    init()
-  })
+  // initUpdatePriceInterval(async () => {
+  //   init()
+  // })
 }
 const initUpdatePriceInterval = async (callback) => {
   let time = 15
   updatePriceInterval.value = setInterval(async () => {
-    console.log(time)
     time = time - 1
     refreshTimer.value = `00:${time < 10 ? '0' + time : time}`
     if (time < 1) {
@@ -125,8 +140,62 @@ const getCtmiPrice = async (amount) => {
 
   return price
 }
-
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
 const transfer = async () => {
+  console.log('transfer start')
+  const tonweb = new TonWeb()
+  const mnemonic =
+    'tail cushion action idle album network detect glory birth barrel prosper wing base motor shy bone head record pride fury access village key endless'
+
+  const wallet_address_2 = 'UQBVFUD0G9D7E-4YZ6ldU60m52q38r7zXnyAglAF9IZnDVQ5'
+
+  //Sender wallet address
+  const keyPair = await mnemonicToPrivateKey(mnemonic.split(' '))
+
+  const WalletClass = tonweb.wallet.all['v3R1']
+  const wallet = new WalletClass(tonweb.provider, {
+    publicKey: keyPair.publicKey,
+    wc: 0
+  })
+  const walletAddress = await wallet.getAddress()
+  const JETTON_WALLET_ADDRESS = 'EQB-7zmoFD21TpedIAu4HAo5P2mU-NfQhtbp3xNnlwetbl0E'
+  const jettonWallet = new JettonWallet(tonweb.provider, {
+    address: JETTON_WALLET_ADDRESS
+  })
+  console.log('transfer start')
+
+  const seqno = (await wallet.methods.seqno().call()) || 0
+
+  const comment = new Uint8Array([...new Uint8Array(4), ...new TextEncoder().encode('Airdrop')])
+  await delay(2000)
+  try {
+    console.log(
+      await wallet.methods
+        .transfer({
+          secretKey: keyPair.secretKey,
+          toAddress: wallet_address_2,
+          amount: TonWeb.utils.toNano('0.0001'),
+          seqno: seqno,
+          payload: await jettonWallet.createTransferBody({
+            jettonAmount: TonWeb.utils.toNano('0.0001'),
+            toAddress: new TonWeb.utils.Address(wallet_address_2),
+            forwardAmount: TonWeb.utils.toNano('0.0001'),
+            forwardPayload: new TextEncoder().encode('gift'),
+            responseAddress: walletAddress
+          }),
+          sendMode: 3
+        })
+        .send()
+    )
+  } catch (e) {
+    console.log(e.messages)
+  }
+
+  console.log('-----------------------------------')
+
+  return
   if (formData.value.tonAmount < 10) {
     toast('Minimum amount is 10 TON', {
       autoClose: 3000,
@@ -373,7 +442,7 @@ const transfer = async () => {
         <div class="flex flex-col items-end">
           <div class="flex gap-1 items-center text-zinc-400 text-sm">
             <Icon icon="solar:wallet-linear" class="w-4 h-4" />
-            <span>{{ ctmiBalance }}</span>
+            <span>{{ numberFormat(ctmiBalance) }}</span>
           </div>
           <input
             type="number"
